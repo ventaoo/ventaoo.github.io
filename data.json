@@ -1,0 +1,22 @@
+{
+    "products": [
+        {
+            "name": "Chinese Tea Set",
+            "description": "A beautiful and traditional Chinese tea set.",
+            "price": 29.99,
+            "image": "product1.jpg"
+        },
+        {
+            "name": "Silk Scarf",
+            "description": "A luxurious silk scarf with vibrant colors.",
+            "price": 19.99,
+            "image": "product2.jpg"
+        },
+        {
+            "name": "Handcrafted Pottery",
+            "description": "Unique handcrafted pottery, made by artisans.",
+            "price": 49.99,
+            "image": "product3.jpg"
+        }
+    ]
+}

@@ -1,0 +1,76 @@
+/* 通用样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* 上半部分的背景图片 */
+.header {
+    position: relative;
+    width: 100%;
+    height: 50vh; /* 50% of the viewport height */
+}
+
+.background-image {
+    background-image: url('background.jpg'); /* 请替换为你的背景图片 */
+    background-size: cover;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+}
+
+/* 商品展示部分 */
+.content {
+    padding: 20px;
+    text-align: center;
+}
+
+/* 商品列表样式 */
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.product-item {
+    width: 250px;
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.product-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.product-item h3 {
+    margin-top: 15px;
+    font-size: 1.2rem;
+}
+
+.product-item p {
+    color: #777;
+}
+
+@media (max-width: 768px) {
+    .product-item {
+        width: 80%;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-item {
+        width: 90%;
+    }
+}

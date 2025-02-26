@@ -6,71 +6,127 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
+    line-height: 1.6;
+    color: #333;
 }
 
 /* 上半部分的背景图片 */
 .header {
     position: relative;
     width: 100%;
-    height: 50vh; /* 50% of the viewport height */
+    height: 60vh; /* 60% of the viewport height */
 }
 
 .background-image {
-    background-image: url('background.jpg'); /* 请替换为你的背景图片 */
+    background-image: url('bg.jpg'); /* 替换为你的背景图片 */
     background-size: cover;
     background-position: center;
     height: 100%;
     width: 100%;
+    filter: blur(5px); /* 添加模糊效果 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1; /* 保证图片在内容下面 */
 }
 
-/* 商品展示部分 */
+/* 店铺信息板块 */
+.store-info {
+    position: absolute;
+    bottom: 20px; /* 距离底部一定的距离 */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: white;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+}
+
+.store-info h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.store-info p {
+    font-size: 1.1rem;
+}
+
+/* 内容部分 */
 .content {
     padding: 20px;
     text-align: center;
 }
 
-/* 商品列表样式 */
+/* 商品展示部分 */
 .product-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    margin-top: 30px;
 }
 
+/* 商品卡片样式 */
 .product-item {
     width: 250px;
     margin: 20px;
     padding: 20px;
     background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     text-align: center;
+}
+
+.product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .product-item img {
     width: 100%;
     height: auto;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 .product-item h3 {
     margin-top: 15px;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    font-weight: bold;
 }
 
 .product-item p {
     color: #777;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+}
+
+.product-item p strong {
+    font-size: 1.1rem;
+    color: #333;
 }
 
 @media (max-width: 768px) {
     .product-item {
-        width: 80%;
+        width: 90%;
+    }
+
+    .store-info {
+        width: 90%;
+        font-size: 1rem;
     }
 }
 
 @media (max-width: 480px) {
-    .product-item {
-        width: 90%;
+    .store-info h1 {
+        font-size: 2rem;
+    }
+
+    .store-info p {
+        font-size: 0.9rem;
     }
 }

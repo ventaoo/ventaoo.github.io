@@ -56,6 +56,15 @@ body {
     font-size: 1.1rem;
 }
 
+.store-info a {
+    font-size: 1.1rem;
+    color: white;
+}
+
+.store-info a:hover {
+    color: white;
+}
+
 /* 内容部分 */
 .content {
     padding: 20px;

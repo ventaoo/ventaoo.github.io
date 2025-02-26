@@ -72,7 +72,8 @@ body {
 
 /* 商品卡片样式 */
 .product-item {
-    width: 250px;
+    width: 280px; /* 改为宽度大于高度 */
+    height: 360px; /* 高度适当增加，保持卡片比例 */
     margin: 20px;
     padding: 20px;
     background-color: #fff;
@@ -80,6 +81,9 @@ body {
     border-radius: 15px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* 确保内容之间的间距合理 */
 }
 
 .product-item:hover {
@@ -91,6 +95,7 @@ body {
     width: 100%;
     height: auto;
     border-radius: 10px;
+    margin-bottom: 15px;
 }
 
 .product-item h3 {
@@ -105,14 +110,47 @@ body {
     margin-bottom: 10px;
 }
 
+/* 价格和数量选择器区域 */
+.product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
 .product-item p strong {
     font-size: 1.1rem;
     color: #333;
 }
 
+.quantity-selector {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-selector button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 0 5px;
+}
+
+.quantity-selector input {
+    width: 40px;
+    text-align: center;
+    font-size: 1rem;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
 @media (max-width: 768px) {
     .product-item {
-        width: 90%;
+        width: 90%; /* 在较小屏幕下，卡片宽度变小 */
     }
 
     .store-info {
@@ -128,5 +166,9 @@ body {
 
     .store-info p {
         font-size: 0.9rem;
+    }
+
+    .quantity-selector button {
+        font-size: 1rem;
     }
 }

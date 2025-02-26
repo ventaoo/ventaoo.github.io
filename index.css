@@ -20,7 +20,7 @@ body {
 }
 
 .background-image {
-    background-image: url('background.jpg'); /* 替换为你的背景图片 */
+    background-image: url('bg.jpg'); /* 替换为你的背景图片 */
     background-size: cover;
     background-position: center;
     height: 100%;
@@ -59,6 +59,7 @@ body {
 .store-info a {
     font-size: 1.1rem;
     color: white;
+    text-decoration: none;
 }
 
 .store-info a:hover {

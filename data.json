@@ -2,24 +2,59 @@
     "products": [
         {
             "id": "1",
-            "name": "Chinese Tea Set",
-            "description": "A beautiful and traditional Chinese tea set.",
-            "price": 29.99,
+            "name": "Ганьцуймянь",
+            "description": "Сухие лапши, очень хрустящие и вкусные.",
+            "price": 9.99,
             "image": "./product_imgs/1.jpg"
         },
         {
             "id": "2",
-            "name": "Silk Scarf",
-            "description": "A luxurious silk scarf with vibrant colors.",
-            "price": 19.99,
+            "name": "Су дадао мясо",
+            "description": "Вкусное и пикантное мясо с острым соусом.",
+            "price": 14.99,
             "image": "./product_imgs/2.jpg"
         },
         {
             "id": "3",
-            "name": "Handcrafted Pottery",
-            "description": "Unique handcrafted pottery, made by artisans.",
-            "price": 49.99,
+            "name": "Сунцзы",
+            "description": "Молодые побеги бамбука, нежные и хрустящие.",
+            "price": 12.99,
             "image": "./product_imgs/3.jpg"
+        },
+        {
+            "id": "4",
+            "name": "Су ниужин",
+            "description": "Вегетарианская альтернатива говяжьим жилкам, текстура похожа на мясо.",
+            "price": 15.99,
+            "image": "./product_imgs/4.jpg"
+        },
+        {
+            "id": "5",
+            "name": "Куки",
+            "description": "Сладкие печенья с разнообразными начинками, идеально для чая.",
+            "price": 8.99,
+            "image": "./product_imgs/5.jpg"
+        },
+        {
+            "id": "6",
+            "name": "Шоугунь юаньбин",
+            "description": "Ручная работа, мягкие лепешки с различными начинками.",
+            "price": 10.99,
+            "image": "./product_imgs/6.jpg"
+        },
+        {
+            "id": "7",
+            "name": "Цзясинь бинган",
+            "description": "Печенье с начинкой, сладкое и хрустящее.",
+            "price": 7.99,
+            "image": "./product_imgs/7.jpg"
+        },
+        {
+            "id": "8",
+            "name": "Гуодон",
+            "description": "Желе с фруктовыми вкусами, освежающее и вкусное.",
+            "price": 4.99,
+            "image": "./product_imgs/8.jpg"
         }
     ]
 }

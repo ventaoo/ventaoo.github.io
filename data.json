@@ -2,24 +2,115 @@
     "products": [
         {
             "id": "1",
-            "name": "Chinese Tea Set",
-            "description": "A beautiful and traditional Chinese tea set.",
-            "price": 29.99,
+            "name": "Vintage Ceramic Tea Set",
+            "description": "Traditional Chinese ceramic tea set with carved patterns for authentic tea ceremonies.",
+            "price": 45.99,
             "image": "./product_imgs/1.jpg"
         },
         {
             "id": "2",
-            "name": "Silk Scarf",
-            "description": "A luxurious silk scarf with vibrant colors.",
-            "price": 19.99,
+            "name": "Floral Silk Scarf",
+            "description": "Lightweight silk scarf with peony embroidery inspired by Suzhou gardens.",
+            "price": 22.50,
             "image": "./product_imgs/2.jpg"
         },
         {
             "id": "3",
-            "name": "Handcrafted Pottery",
-            "description": "Unique handcrafted pottery, made by artisans.",
-            "price": 49.99,
+            "name": "Celadon Tea Cups",
+            "description": "Hand-glazed celadon teacups with crackled texture and wooden gift box.",
+            "price": 68.00,
             "image": "./product_imgs/3.jpg"
+        },
+        {
+            "id": "4",
+            "name": "Bamboo Tea Tray",
+            "description": "Waterproof bamboo tea ceremony tray with drainage system.",
+            "price": 39.90,
+            "image": "./product_imgs/4.jpg"
+        },
+        {
+            "id": "5",
+            "name": "Jasmine Pearl Tea",
+            "description": "Premium grade jasmine green tea with hand-rolled pearl-shaped leaves.",
+            "price": 18.75,
+            "image": "./product_imgs/5.jpg"
+        },
+        {
+            "id": "6",
+            "name": "Resin Hairpin Set",
+            "description": "Han Dynasty-style hair accessories with floral resin decorations.",
+            "price": 9.99,
+            "image": "./product_imgs/6.jpg"
+        },
+        {
+            "id": "7",
+            "name": "Spicy Tofu Snack Pack",
+            "description": "Szechuan-style marinated tofu strips with numbing chili flavor.",
+            "price": 6.80,
+            "image": "./product_imgs/7.jpg"
+        },
+        {
+            "id": "8",
+            "name": "Butterfly Hair Clips",
+            "description": "Gold-plated butterfly hairpins with crystal accents for formal events.",
+            "price": 15.20,
+            "image": "./product_imgs/8.jpg"
+        },
+        {
+            "id": "9",
+            "name": "Compressed Pu'er Cake",
+            "description": "10-year aged raw Pu'er tea cake from Yunnan ancient trees.",
+            "price": 89.00,
+            "image": "./product_imgs/9.jpg"
+        },
+        {
+            "id": "10",
+            "name": "Fruit Flavored Lollipops",
+            "description": "Assorted tropical fruit flavor lollipops with cartoon character wrappers.",
+            "price": 3.99,
+            "image": "./product_imgs/10.jpg"
+        },
+        {
+            "id": "11",
+            "name": "Nezha Action Figure",
+            "description": "PVC articulated Nezha figurine with fire-tip spear accessory.",
+            "price": 32.99,
+            "image": "./product_imgs/11.jpg"
+        },
+        {
+            "id": "12",
+            "name": "Tea Pet Sculpture",
+            "description": "Clay tea companion figurine that develops patina through tea pouring.",
+            "price": 27.50,
+            "image": "./product_imgs/12.jpg"
+        },
+        {
+            "id": "13",
+            "name": "Herbal Cooling Gum",
+            "description": "Menthol and chrysanthemum infused gum for throat refreshment.",
+            "price": 4.25,
+            "image": "./product_imgs/13.jpg"
+        },
+        {
+            "id": "14",
+            "name": "Embroidered Coin Purse",
+            "description": "Round silk pouch with phoenix embroidery and drawstring closure.",
+            "price": 7.80,
+            "image": "./product_imgs/14.jpg"
+        },
+        {
+            "id": "15",
+            "name": "Tea Blooming Flower",
+            "description": "Hand-tied flowering tea bulbs that blossom in hot water.",
+            "price": 14.99,
+            "image": "./product_imgs/15.jpg"
+        },
+        {
+            "id": "16",
+            "name": "Nezha Cosplay Set",
+            "description": "Complete Nezha costume set with red armbands and cosmic wheel prop.",
+            "price": 75.00,
+            "image": "./product_imgs/16.jpg"
         }
     ]
 }

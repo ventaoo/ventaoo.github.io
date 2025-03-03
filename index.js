@@ -142,16 +142,27 @@ async function showCart() {
                     <p class='name'>${item.name}</p>
                     <p class='num'>${item.price} × ${item.quantity}</p>
                 </div>
-                <p>${item.subtotal}₽</p>
+                <p>${formatCurrency(item.subtotal)}</p>
             </li>
         `).join('');
 
         const total = cartEntries.reduce((sum, item) => sum + item.subtotal, 0);
-        document.getElementById('totalPrice').textContent = total;
+        document.getElementById('totalPrice').textContent = formatCurrency(total);
         modal.style.display = 'block';
     } catch (error) {
         console.error('加载购物车数据失败:', error);
     }
+}
+
+// 新增格式化函数
+function formatCurrency(amount) {
+    // 处理浮点精度问题并保留两位小数
+    const fixedAmount = (Math.round(amount * 100) / 100).toFixed(2);
+    
+    // 添加俄语格式：用逗号作为小数分隔符，空格作为千位分隔符
+    return fixedAmount
+        .replace('.', ',')
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + '₽';
 }
 
 // 隐藏购物车

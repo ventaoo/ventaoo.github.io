@@ -1,264 +1,350 @@
+:root {
+    --primary-color: #2d3436;
+    --secondary-color: #a29bfe;
+    --accent-color: #ffeaa7;
+    --light-bg: #f9f9f9;
+    --text-color: #2d3436;
+    --header-bg: url('your-default-header-bg.jpg');
+}
 
-  /* 全局样式 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  }
-  
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-    line-height: 1.6;
-    color: #333;
-  }
-  
-  /* Header */
-  .header {
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* 头部样式 */
+.header {
+    background: linear-gradient(rgba(45, 52, 54, 0.85), rgba(45, 52, 54, 0.85)),
+                var(--header-bg) center/cover;
+    color: #fff;
+    padding: 2rem 1rem;
     position: relative;
-    height: 60vh;
-  }
-  
-  .background-image {
-    background-image: url('bg.jpg');
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.title-group {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.2rem;
+    justify-content: center;
+}
+
+.shop-title {
+    font-size: 2rem;
+    color: rgba(255,255,255,0.99);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    margin: 0;
+}
+
+.telegram-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.seven-icon {
+    width: 32px;
+    height: 32px;
+    fill: currentColor;
+    opacity: 0.9;
+}
+
+.channel-text {
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.channel-text::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.3s ease;
+}
+
+.telegram-link:hover {
+    opacity: 1;
+}
+
+.telegram-link:hover .channel-text::after {
+    width: 100%;
+}
+
+.welcome-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.9);
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* 分类导航 */
+.categories-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.categories {
+    padding: 1rem 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.categories::-webkit-scrollbar {
+    display: none;
+}
+
+.category-btn {
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 25px;
+    background: var(--secondary-color);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0 0.5rem;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.category-btn.active {
+    background: var(--primary-color);
+    transform: scale(1.05);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+/* 商品网格 */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.product-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-image {
+    height: 250px;
     background-size: cover;
     background-position: center;
-    height: 100%;
-    width: 100%;
-    filter: blur(5px);
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-  }
-  
-  .store-info {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    color: white;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    width: 80%;
-    max-width: 600px;
-  }
-  
-  .store-info h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-  }
-  
-  /* 修饰 Our channel: snackseek 💬 */
-  .store-info a {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 10px 15px;
-    background-color: #f3a683;
-    color: white;
-    font-weight: bold;
-    border-radius: 20px;
-    text-decoration: none;
-    transition: background 0.3s ease-in-out;
-  }
-  
-  .store-info a:hover {
-    background-color: #f19066;
-  }
-  
-  /* Products */
-  .content {
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .product-list {
+}
+
+.product-info {
+    padding: 1.5rem;
+}
+
+.product-footer {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 30px;
-  }
-  
-  .product-item {
-    width: 250px;
-    margin: 20px;
-    padding: 20px;
-    background: white;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-    border-radius: 15px;
-    transition: transform 0.3s ease;
-  }
-  
-  .product-item:hover {
-    transform: translateY(-5px);
-  }
-  
-  /* 统一商品图片大小及容器定位 */
-  .img-container {
-    position: relative; /* 确保子元素（如价格）绝对定位相对于此容器 */
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-    border-radius: 10px;
-    margin-bottom: 15px;
-  }
-  
-  .img-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .product-price {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-  }
-  
-  /* 数量控制，默认显示数量为 0 */
-  .quantity-controls {
-    display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
-    margin: 15px 0;
-  }
-  
-  .quantity-controls button {
+    margin-top: 1rem;
+}
+
+.product-price {
+    font-weight: bold;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quantity {
+    min-width: 30px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.quantity-btn {
     width: 30px;
     height: 30px;
+    border: none;
     border-radius: 50%;
-    border: none;
-    background: #f19066;
+    background: var(--secondary-color);
     color: white;
     cursor: pointer;
-  }
-  
-  /* 加入购物车按钮 */
-  .add-to-cart {
-    background: #778beb;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .add-to-cart:hover {
-    background: #546de5;
-  }
-  
-  /* Cart */
-  .cart-notification {
+}
+
+/* 购物车 */
+.cart-floating {
     position: fixed;
-    bottom: -50px;
-    left: 0;
-    width: 100%;
-    background: #333;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--primary-color);
     color: white;
-    padding: 15px;
-    text-align: center;
-    transition: bottom 0.3s;
+    padding: 1rem 2rem;
+    border-radius: 30px;
     cursor: pointer;
-    z-index: 1000;
-  }
-  
-  .cart-modal {
+    display: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.cart-modal {
     display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 1001;
-  }
-  
-  .cart-modal.show {
-    display: block;
-  }
-  
-  .cart-content {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 1000;
+}
+
+.modal-content {
     background: white;
-    margin: 10vh auto;
-    padding: 20px;
-    width: 90%;
-    max-width: 600px;
-    border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    width: 95%;
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
     position: relative;
-    animation: fadeIn 0.3s ease-in-out;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  
-  .cart-item {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.close-btn:hover {
+    opacity: 1;
+}
+
+.cart-title {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+#cartItems {
+    max-height: 50vh;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+}
+
+.cart-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .cart-controls {
+    padding: 1rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.cart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+}
+
+.total-price {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.checkout-btn {
+    background: var(--secondary-color);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    gap: 10px;
-  }
-  
-  .cart-controls button {
-    width: 30px;
-    height: 30px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    background: #f8f8f8;
+    gap: 0.5rem;
     cursor: pointer;
-  }
-  
-  .cart-remove {
-    color: #ff4444;
-    border-color: #ff4444 !important;
-  }
-  
-  .cart-total {
-    text-align: right;
-    font-size: 1.2rem;
-    margin: 20px 0;
-    padding-top: 15px;
-    border-top: 2px solid #ddd;
-  }
-  
-  .copy-btn {
-    background: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-  }
-  
-  .close {
-    position: absolute;
-    right: 20px;
-    top: 15px;
-    font-size: 28px;
-    cursor: pointer;
-  }
-  
-  @media (max-width: 768px) {
-    .product-item {
-      width: 90%;
+    transition: transform 0.2s;
+}
+
+.checkout-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .title-group {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
     }
-  }
-  
+    
+    .shop-title {
+        font-size: 1.2rem;
+    }
+    
+    .telegram-link {
+        font-size: 1.2rem;
+    }
+
+    .welcome-text {
+        font-size: 1rem;
+    }
+    
+    .seven-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .categories-container {
+        padding: 0 1rem;
+    }
+    
+    .categories {
+        padding: 0.5rem 0;
+    }
+    
+    .category-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        margin: 0 0.3rem;
+    }
+
+    .products-grid {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+}

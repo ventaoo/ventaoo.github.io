@@ -8,27 +8,131 @@
     "products": [
         {
             "id": 1,
-            "name": "设计师台灯",
-            "category": "home",
-            "price": 299,
-            "description": "现代简约设计，营造温馨氛围",
-            "image": "https://example.com/lamp.jpg"
+            "name": "Чайный блин",
+            "category": "food",
+            "price": 38.88,
+            "description": "Набор для дегустации 30 видов чая: сырой чай, выдержанный чай, цин гань, пуэр из Юньнани, дяньхун чай, белый чай из Фудина, прессованные чайные блины.",
+            "image": "./product_imgs/1.jpg"
         },
         {
             "id": 2,
-            "name": "皮质手提包",
-            "category": "fashion",
-            "price": 599,
-            "description": "头层牛皮制作，经典款式",
-            "image": "https://example.com/bag.jpg"
+            "name": "Браслет",
+            "category": "accessories",
+            "price": 22.50,
+            "description": "INS стиль: звездный шнурок для телефона DIY, новый дизайн с подвесками для CCD камеры, универсальный аксессуар для сумок с бусинами и цепочками.",
+            "image": "./product_imgs/2.jpg"
         },
         {
             "id": 3,
-            "name": "陶瓷餐具套装",
-            "category": "home",
-            "price": 399,
-            "description": "景德镇高白瓷，四件套装",
-            "image": "https://example.com/dishes.jpg"
+            "name": "Браслет",
+            "category": "accessories",
+            "price": 68.00,
+            "description": "Минималистичный цепочный браслет с бабочками и бусинами, универсальная подвеска для телефона, чехлов, ключей и CCD камер.",
+            "image": "./product_imgs/3.jpg"
+        },
+        {
+            "id": 4,
+            "name": "Браслет",
+            "category": "accessories",
+            "price": 39.90,
+            "description": "Стиль INS: металлическая цепочка с бабочками для CCD камеры, антипотерятельный аксессуар для чехлов телефонов и Polaroid.",
+            "image": "./product_imgs/4.jpg"
+        },
+        {
+            "id": 5,
+            "name": "Браслет",
+            "category": "accessories",
+            "price": 18.75,
+            "description": "Эксклюзивный жемчужный браслет с бабочками, универсальная подвеска для чехлов, ключей и женских сумок.",
+            "image": "./product_imgs/5.jpg"
+        },
+        {
+            "id": 6,
+            "name": "Острые полоски",
+            "category": "food",
+            "price": 9.99,
+            "description": "Вегетарианские острые полоски Бибизань Су Дадао Жоу",
+            "image": "./product_imgs/6.jpg"
+        },
+        {
+            "id": 7,
+            "name": "Лапша",
+            "category": "food",
+            "price": 6.80,
+            "description": "Хрустящая лапша Бибизань для перекуса, набор закусок в удобной упаковке.",
+            "image": "./product_imgs/7.jpg"
+        },
+        {
+            "id": 8,
+            "name": "Чайный блин",
+            "category": "food",
+            "price": 15.20,
+            "description": "Набор из 30 видов чая: юньнаньский пуэр (выдержанный и сырой), красный чай, зеленый чай, белый чай из Фудина.",
+            "image": "./product_imgs/8.jpg"
+        },
+        {
+            "id": 9,
+            "name": "Заколка",
+            "category": "accessories",
+            "price": 89.00,
+            "description": "Миниатюрные заколки для волос с кристаллами, универсальные для челки и укладки.",
+            "image": "./product_imgs/9.jpg"
+        },
+        {
+            "id": 10,
+            "name": "Заколка",
+            "category": "accessories",
+            "price": 3.99,
+            "description": "Винтажная заколка в стиле ханьфу с цветами пипа и утконосом, аксессуар для причесок.",
+            "image": "./product_imgs/10.jpg"
+        },
+        {
+            "id": 11,
+            "name": "Острые полоски",
+            "category": "food",
+            "price": 32.99,
+            "description": "Чжэньсян Сянгу Фэйню - вегетарианская острая говядина с грибами",
+            "image": "./product_imgs/11.jpg"
+        },
+        {
+            "id": 12,
+            "name": "Жвачка",
+            "category": "food",
+            "price": 27.50,
+            "description": "Жевательная резинка Дада",
+            "image": "./product_imgs/12.jpg"
+        },
+        {
+            "id": 13,
+            "name": "Конфеты",
+            "category": "food",
+            "price": 4.25,
+            "description": "Леденцы Цзайцзай Бан",
+            "image": "./product_imgs/13.jpg"
+        },
+        {
+            "id": 14,
+            "name": "Брелок",
+            "category": "accessories",
+            "price": 7.80,
+            "description": "Акриловый брелок Нечжа из мультфильма 'Непоседа Нечжа 2'",
+            "image": "./product_imgs/14.jpg"
+        },
+        {
+            "id": 15,
+            "name": "Подвеска",
+            "category": "accessories",
+            "price": 14.99,
+            "description": "Подвеска 'Лотос и Бин' из мультфильма 'Непоседа Нечжа 2', аксессуар для рюкзаков и телефонов.",
+            "image": "./product_imgs/15.jpg"
+        },
+        {
+            "id": 16,
+            "name": "Конфеты",
+            "category": "food",
+            "price": 75.00,
+            "description": "Мятные леденцы Лишуан без сахара, освежающие таблетки в компактной упаковке.",
+            "image": "./product_imgs/16.jpg"
         }
     ]
 }

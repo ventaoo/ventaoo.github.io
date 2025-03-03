@@ -12,7 +12,7 @@
             "category": "food",
             "price": 38.88,
             "description": "Набор для дегустации 30 видов чая: сырой чай, выдержанный чай, цин гань, пуэр из Юньнани, дяньхун чай, белый чай из Фудина, прессованные чайные блины.",
-            "image": "./product_imgs/1.jpg"
+            "image": "./product_imgs/1.png"
         },
         {
             "id": 2,
@@ -20,7 +20,7 @@
             "category": "accessories",
             "price": 22.50,
             "description": "INS стиль: звездный шнурок для телефона DIY, новый дизайн с подвесками для CCD камеры, универсальный аксессуар для сумок с бусинами и цепочками.",
-            "image": "./product_imgs/2.jpg"
+            "image": "./product_imgs/2.png"
         },
         {
             "id": 3,
@@ -28,7 +28,7 @@
             "category": "accessories",
             "price": 68.00,
             "description": "Минималистичный цепочный браслет с бабочками и бусинами, универсальная подвеска для телефона, чехлов, ключей и CCD камер.",
-            "image": "./product_imgs/3.jpg"
+            "image": "./product_imgs/3.png"
         },
         {
             "id": 4,
@@ -60,7 +60,7 @@
             "category": "food",
             "price": 6.80,
             "description": "Хрустящая лапша Бибизань для перекуса, набор закусок в удобной упаковке.",
-            "image": "./product_imgs/7.jpg"
+            "image": "./product_imgs/7.png"
         },
         {
             "id": 8,
@@ -68,7 +68,7 @@
             "category": "food",
             "price": 15.20,
             "description": "Набор из 30 видов чая: юньнаньский пуэр (выдержанный и сырой), красный чай, зеленый чай, белый чай из Фудина.",
-            "image": "./product_imgs/8.jpg"
+            "image": "./product_imgs/8.png"
         },
         {
             "id": 9,
@@ -92,7 +92,7 @@
             "category": "food",
             "price": 32.99,
             "description": "Чжэньсян Сянгу Фэйню - вегетарианская острая говядина с грибами",
-            "image": "./product_imgs/11.jpg"
+            "image": "./product_imgs/11.png"
         },
         {
             "id": 12,
@@ -100,7 +100,7 @@
             "category": "food",
             "price": 27.50,
             "description": "Жевательная резинка Дада",
-            "image": "./product_imgs/12.jpg"
+            "image": "./product_imgs/12.png"
         },
         {
             "id": 13,
@@ -108,7 +108,7 @@
             "category": "food",
             "price": 4.25,
             "description": "Леденцы Цзайцзай Бан",
-            "image": "./product_imgs/13.jpg"
+            "image": "./product_imgs/13.png"
         },
         {
             "id": 14,
@@ -116,7 +116,7 @@
             "category": "accessories",
             "price": 7.80,
             "description": "Акриловый брелок Нечжа из мультфильма 'Непоседа Нечжа 2'",
-            "image": "./product_imgs/14.jpg"
+            "image": "./product_imgs/14.png"
         },
         {
             "id": 15,
@@ -124,7 +124,7 @@
             "category": "accessories",
             "price": 14.99,
             "description": "Подвеска 'Лотос и Бин' из мультфильма 'Непоседа Нечжа 2', аксессуар для рюкзаков и телефонов.",
-            "image": "./product_imgs/15.jpg"
+            "image": "./product_imgs/15.png"
         },
         {
             "id": 16,
@@ -132,7 +132,7 @@
             "category": "food",
             "price": 75.00,
             "description": "Мятные леденцы Лишуан без сахара, освежающие таблетки в компактной упаковке.",
-            "image": "./product_imgs/16.jpg"
+            "image": "./product_imgs/16.png"
         }
     ]
 }

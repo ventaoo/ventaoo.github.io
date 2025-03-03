@@ -16,11 +16,16 @@
 
 /* 头部样式 */
 .header {
-    background: linear-gradient(rgba(45, 52, 54, 0.85), rgba(45, 52, 54, 0.85)),
+    background: linear-gradient(rgba(45, 52, 54, 0.65), rgba(45, 52, 54, 0.65)),
                 var(--header-bg) center/cover;
     color: #fff;
     padding: 2rem 1rem;
     position: relative;
+    height: 18rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .header-content {
@@ -98,7 +103,7 @@
 .categories-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 1rem 2rem 0rem 2rem;
 }
 
 .categories {
@@ -124,6 +129,7 @@
     margin: 0 0.5rem;
     display: inline-block;
     white-space: nowrap;
+    font-size: 0.85rem;
 }
 
 .category-btn.active {
@@ -253,7 +259,7 @@
 }
 
 .cart-title {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     color: var(--primary-color);
     margin-bottom: 1.5rem;
     font-weight: 500;
@@ -262,7 +268,7 @@
 #cartItems {
     max-height: 50vh;
     overflow-y: auto;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.3rem;
 }
 
 .cart-item {
@@ -271,6 +277,7 @@
     align-items: center;
     padding: 1rem 0;
     border-bottom: 1px solid #f0f0f0;
+    color: var(--text-color);
 }
 
 .cart-footer {
@@ -281,7 +288,7 @@
 }
 
 .total-price {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     color: var(--primary-color);
     font-weight: 600;
 }
@@ -289,14 +296,15 @@
 .checkout-btn {
     background: var(--secondary-color);
     color: white;
-    padding: 0.8rem 1.5rem;
+    padding: 0.8rem 1rem;
     border: none;
-    border-radius: 8px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
     transition: transform 0.2s;
+    font-size: 0.8rem;
 }
 
 .checkout-btn:hover {

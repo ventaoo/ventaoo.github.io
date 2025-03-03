@@ -48,7 +48,7 @@ function renderProducts(products) {
                 <h3>${product.name}</h3>
                 <p>${product.description}</p>
                 <div class="product-footer">
-                    <span class="product-price">¥${product.price}</span>
+                    <span class="product-price">${product.price}₽</span>
                     <div class="quantity-selector" data-id="${product.id}">
                         <button class="quantity-btn minus">-</button>
                         <span class="quantity">0</span>
@@ -115,7 +115,7 @@ function updateCartDisplay() {
     const cartBtn = document.getElementById('cartBtn');
     
     cartBtn.style.display = totalItems > 0 ? 'block' : 'none';
-    cartBtn.textContent = `查看购物车 (${totalItems})`;
+    cartBtn.textContent = `Корзина (${totalItems})`;
 }
 
 // 显示购物车详情
@@ -125,7 +125,8 @@ async function showCart() {
     
     try {
         const response = await fetch('data.json');
-        const products = await response.json();
+        const data = await response.json(); // 1. 先获取完整数据对象
+        const products = data.products;     // 2. 正确提取products数组
         
         const cartEntries = products
             .filter(p => cart[p.id] > 0)
@@ -138,10 +139,10 @@ async function showCart() {
         cartItems.innerHTML = cartEntries.map(item => `
             <li class="cart-item">
                 <div>
-                    <h4>${item.name}</h4>
-                    <p>¥${item.price} × ${item.quantity}</p>
+                    <p class='name'>${item.name}</p>
+                    <p class='num'>${item.price} × ${item.quantity}</p>
                 </div>
-                <p>¥${item.subtotal}</p>
+                <p>${item.subtotal}₽</p>
             </li>
         `).join('');
 

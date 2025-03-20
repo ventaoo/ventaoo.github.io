@@ -24,14 +24,43 @@ async function loadShopInfo() {
     }
 }
 
-// 修改初始化函数
+// 新增分类渲染函数
+function renderCategories(categories) {
+    const container = document.getElementById('categoriesList');
+    
+    // 生成分类按钮
+    const buttons = categories.map(cat => `
+        <button class="category-btn ${cat.id === 'all' ? 'active' : ''}" 
+                data-category="${cat.id}">
+            ${cat.name}
+        </button>
+    `).join('');
+
+    container.innerHTML = buttons;
+    
+    // 立即绑定事件监听
+    container.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', handleCategoryClick);
+    });
+}
+
+// 独立分类点击处理函数
+function handleCategoryClick(e) {
+    const btn = e.currentTarget;
+    document.querySelector('.category-btn.active')?.classList.remove('active');
+    btn.classList.add('active');
+    filterProducts(btn.dataset.category);
+}
+
 async function loadProducts() {
     try {
         const response = await fetch('data.json');
         const data = await response.json();
         
-        loadShopInfo(); // 加载店铺信息
-        renderProducts(data.products);
+        // 修改后的加载顺序
+        loadShopInfo();
+        renderCategories(data.categories);  // 先加载分类
+        renderProducts(data.products);      // 再加载商品
         initEventListeners();
     } catch (error) {
         console.error('加载数据失败:', error);
@@ -116,6 +145,48 @@ function updateCartDisplay() {
     
     cartBtn.style.display = totalItems > 0 ? 'block' : 'none';
     cartBtn.textContent = `Корзина (${totalItems})`;
+}
+
+document.querySelector('.checkout-btn').addEventListener('click', async () => {
+    // 生成订单文本
+    const items = Array.from(document.querySelectorAll('#cartItems li'))
+        .map(li => `▸ ${li.textContent.trim()}`)
+        .join('\n');
+    
+    const total = document.getElementById('totalPrice').textContent;
+    const orderText = `🛒 Список покупок:\n${items}\n\n💳 Итого: ${total}`;
+
+    // 现代剪贴板API
+    try {
+        await navigator.clipboard.writeText(orderText);
+        showToast('✅ Заказ скопирован в буфер!');
+    } catch (err) {
+        // 兼容旧浏览器的备用方案
+        const textarea = document.createElement('textarea');
+        textarea.value = orderText;
+        textarea.style.position = 'fixed';
+        document.body.appendChild(textarea);
+        textarea.select();
+        
+        try {
+            document.execCommand('copy');
+            showToast('✅ Текст скопирован!');
+        } catch (err) {
+            showToast('❌ Ошибка копирования', true);
+        } finally {
+            document.body.removeChild(textarea);
+        }
+    }
+});
+
+// 简单的toast通知
+function showToast(message, isError = false) {
+    const toast = document.createElement('div');
+    toast.className = `copy-toast ${isError ? 'error' : ''}`;
+    toast.textContent = message;
+    
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
 }
 
 // 显示购物车详情

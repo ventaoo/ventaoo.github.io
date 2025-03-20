@@ -16,8 +16,15 @@
 
 /* 头部样式 */
 .header {
-    background: linear-gradient(rgba(45, 52, 54, 0.65), rgba(45, 52, 54, 0.65)),
-                var(--header-bg) center/cover;
+    background-image: 
+        linear-gradient(rgba(45, 52, 54, 0.1), rgba(45, 52, 54, 0.3)),
+        var(--header-bg);  /* 背景图片变量 */
+    
+    /* 多重背景设置 */
+    background-position: center;  /* 统一居中定位 */
+    background-size: auto, cover;  /* 遮罩保持原尺寸，背景图等比例铺满 */
+    background-repeat: no-repeat;  /* 禁用重复 */
+    
     color: #fff;
     padding: 2rem 1rem;
     position: relative;
@@ -26,6 +33,11 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    
+    /* 新增响应式处理 */
+    min-height: 480px;  /* 设置最小高度 */
+    width: 100vw;  /* 撑满视口宽度 */
+    margin-left: calc(-50vw + 50%);  /* 水平居中修正 */
 }
 
 .header-content {
@@ -37,7 +49,7 @@
 .title-group {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 0.5rem;
     margin-bottom: 1.2rem;
     justify-content: center;
 }
@@ -321,7 +333,8 @@
     }
     
     .shop-title {
-        font-size: 1.2rem;
+        font-size: 1.4rem;
+        font-weight: bold;
     }
     
     .telegram-link {

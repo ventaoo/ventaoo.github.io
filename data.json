@@ -1,7 +1,7 @@
 {
     "shopInfo": {
         "shopName": "703 shop",
-        "welcomeText": "Актуальная информация в канале 👆\nРежим работы: 08:00 - 18:00 (ежедневно)\n📢",
+        "welcomeText": "Актуальная информация в канале 👆\nРежим работы: 08:00 - 18:00 (ежедневно)",
         "telegramLink": "https://t.me/TT_703shop",
         "headerBg": "./bg.jpg"
     },

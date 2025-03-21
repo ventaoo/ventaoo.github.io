@@ -159,7 +159,10 @@ document.querySelector('.checkout-btn').addEventListener('click', async () => {
     // 现代剪贴板API
     try {
         await navigator.clipboard.writeText(orderText);
-        showToast('✅ Заказ скопирован в буфер!');
+        showToast(`
+            <span class="toast-main">Заказ скопирован в буфер!</span>
+            <span class="toast-sub">Отправьте его мне в <a href="https://t.me/zwtttttt" target="_blank" class="telegram-link">Telegram</a></span>
+          `, false, 4000);
     } catch (err) {
         // 兼容旧浏览器的备用方案
         const textarea = document.createElement('textarea');
@@ -170,23 +173,55 @@ document.querySelector('.checkout-btn').addEventListener('click', async () => {
         
         try {
             document.execCommand('copy');
-            showToast('✅ Текст скопирован!');
+            showToast(`
+                <span class="toast-main">Заказ скопирован в буфер!</span>
+                <span class="toast-sub">Отправьте его мне в <a href="https://t.me/zwtttttt" target="_blank" class="telegram-link">Telegram</a></span>
+              `, false, 4000);
         } catch (err) {
-            showToast('❌ Ошибка копирования', true);
+            showToast('Ошибка копирования', true);
         } finally {
             document.body.removeChild(textarea);
         }
     }
 });
 
-// 简单的toast通知
-function showToast(message, isError = false) {
+// 自定义弹窗函数（新增duration参数控制显示时间）
+function showToast(message, isError = false, duration = 3000) {
+    // 创建弹窗容器
     const toast = document.createElement('div');
-    toast.className = `copy-toast ${isError ? 'error' : ''}`;
-    toast.textContent = message;
+    toast.className = `custom-toast ${isError ? 'error' : 'success'}`;
     
+    // 弹窗内容结构
+    toast.innerHTML = `
+        <div class="toast-icon">${isError ? '✖️' : '💜'}</div>
+        <div class="toast-content">
+            <p>${message}</p>
+            <div class="progress-bar"></div>
+        </div>
+    `;
+
+    // 添加到页面
     document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
+
+    // 触发入场动画
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    // 自动消失逻辑
+    const timer = setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+
+    // 进度条动画
+    const progressBar = toast.querySelector('.progress-bar');
+    progressBar.style.animation = `progress ${duration}ms linear`;
+
+    // 点击立即关闭
+    toast.addEventListener('click', () => {
+        clearTimeout(timer);
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    });
 }
 
 // 显示购物车详情

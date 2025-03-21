@@ -161,7 +161,7 @@ document.querySelector('.checkout-btn').addEventListener('click', async () => {
         await navigator.clipboard.writeText(orderText);
         showToast(`
             <span class="toast-main">Заказ скопирован в буфер!</span>
-            <span class="toast-sub">Отправьте его мне в <a href="https://t.me/zwtttttt" target="_blank" class="telegram-link">Telegram</a></span>
+            <span class="toast-sub">Отправьте его мне в <a href="https://t.me/zwtttttt" target="_blank" class="telegram-link-copy">Telegram</a></span>
           `, false, 4000);
     } catch (err) {
         // 兼容旧浏览器的备用方案
@@ -175,7 +175,7 @@ document.querySelector('.checkout-btn').addEventListener('click', async () => {
             document.execCommand('copy');
             showToast(`
                 <span class="toast-main">Заказ скопирован в буфер!</span>
-                <span class="toast-sub">Отправьте его мне в <a href="https://t.me/zwtttttt" target="_blank" class="telegram-link">Telegram</a></span>
+                <span class="toast-sub">Отправьте его мне в <a href="https://t.me/zwtttttt" target="_blank" class="telegram-link-copy">Telegram</a></span>
               `, false, 4000);
         } catch (err) {
             showToast('Ошибка копирования', true);

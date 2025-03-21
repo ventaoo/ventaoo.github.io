@@ -1,6 +1,16 @@
 // app.js
 let cart = {};
 
+function formatWelcomeText(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+        .replace(/\n/g, '<br>');
+}
+
 // 添加头部分数据加载
 async function loadShopInfo() {
     try {
@@ -12,7 +22,7 @@ async function loadShopInfo() {
         
         // 填充文本内容
         document.getElementById('shopName').textContent = data.shopInfo.shopName;
-        document.getElementById('welcomeText').textContent = data.shopInfo.welcomeText;
+        document.getElementById('welcomeText').innerHTML = formatWelcomeText(data.shopInfo.welcomeText);
         
         // 设置Telegram链接
         const tgLink = document.getElementById('telegramLink');
@@ -29,10 +39,11 @@ function renderCategories(categories) {
     const container = document.getElementById('categoriesList');
     
     // 生成分类按钮
+    // 后续考虑多语言 @TODO
     const buttons = categories.map(cat => `
         <button class="category-btn ${cat.id === 'all' ? 'active' : ''}" 
                 data-category="${cat.id}">
-            ${cat.name}
+            ${cat.name.ru}
         </button>
     `).join('');
 
@@ -75,7 +86,7 @@ function renderProducts(products) {
             <div class="product-image" style="background-image: url('${product.image}')"></div>
             <div class="product-info">
                 <h3>${product.name}</h3>
-                <p>${product.description}</p>
+                <p>${formatWelcomeText(product.description)}</p>
                 <div class="product-footer">
                     <span class="product-price">${product.price}₽</span>
                     <div class="quantity-selector" data-id="${product.id}">

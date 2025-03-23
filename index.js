@@ -171,11 +171,16 @@ function updateCartDisplay() {
 document.querySelector('.checkout-btn').addEventListener('click', async () => {
     // 生成订单文本
     const items = Array.from(document.querySelectorAll('#cartItems li'))
-        .map(li => `▸ ${li.textContent.trim()}`)
+        .map(li => {
+            const name = li.querySelector('.name').textContent.trim();
+            const num = li.querySelector('.num').textContent.trim();
+            const price = li.querySelector('.price').textContent.trim();
+            return `- ${name} ${num}\n${price}`
+        })
         .join('\n');
     
     const total = document.getElementById('totalPrice').textContent;
-    const orderText = `🛒 Список покупок:\n${items}\n\n💳 Итого: ${total}`;
+    const orderText = `**🛒 Список покупок:**\n\`\`\`${items}\`\`\`\n💳 Итого: ${total}`;
 
     // 现代剪贴板API
     try {
@@ -269,7 +274,7 @@ async function showCart() {
                     <p class='name'>${item.name[language]}</p>
                     <p class='num'>${item.price} × ${item.quantity}</p>
                 </div>
-                <p>${formatCurrency(item.subtotal)}</p>
+                <p class='price'>${formatCurrency(item.subtotal)}</p>
             </li>
         `).join('');
 

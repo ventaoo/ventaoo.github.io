@@ -222,8 +222,8 @@
 /* 购物车 */
 .cart-floating {
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
+    bottom: 1.5rem;
+    left: 2rem;
     background: var(--primary-color);
     color: white;
     padding: 1rem 2rem;

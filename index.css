@@ -16,9 +16,11 @@
 
 /* 头部样式 */
 .header {
-    background-image: 
-        linear-gradient(rgba(45, 52, 54, 0), rgba(45, 52, 54, 0.3)),
-        var(--header-bg);  /* 背景图片变量 */
+    background-image: radial-gradient(
+        circle at center,
+        #bfbbfc 0%,
+        var(--secondary-color) 100%
+    );
     
     /* 多重背景设置 */
     background-position: center;  /* 统一居中定位 */
@@ -147,7 +149,7 @@
 .category-btn.active {
     background: var(--primary-color);
     transform: scale(1.05);
-    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    /* box-shadow: 0 3px 8px rgba(0,0,0,0.2); */
 }
 
 /* 商品网格 */

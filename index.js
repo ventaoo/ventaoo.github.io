@@ -1,3 +1,10 @@
+import { ProductService, initializeSupabase } from './db.js';
+
+const supabase_client = initializeSupabase() // init the client
+const products = await ProductService.getProducts(supabase_client) // load the dataset
+const language = navigator.language || navigator.languages[0];
+console.log(language);
+
 // app.js
 let cart = {};
 
@@ -39,11 +46,10 @@ function renderCategories(categories) {
     const container = document.getElementById('categoriesList');
     
     // 生成分类按钮
-    // 后续考虑多语言 @TODO
     const buttons = categories.map(cat => `
         <button class="category-btn ${cat.id === 'all' ? 'active' : ''}" 
                 data-category="${cat.id}">
-            ${cat.name.ru}
+            ${cat.name[language]}
         </button>
     `).join('');
 
@@ -67,11 +73,12 @@ async function loadProducts() {
     try {
         const response = await fetch('data.json');
         const data = await response.json();
+        const products_ = data.products.concat(products)
         
         // 修改后的加载顺序
         loadShopInfo();
         renderCategories(data.categories);  // 先加载分类
-        renderProducts(data.products);      // 再加载商品
+        renderProducts(products_);      // 再加载商品
         initEventListeners();
     } catch (error) {
         console.error('加载数据失败:', error);
@@ -83,10 +90,10 @@ function renderProducts(products) {
     const container = document.getElementById('productsContainer');
     container.innerHTML = products.map(product => `
         <div class="product-card" data-category="${product.category}">
-            <div class="product-image" style="background-image: url('${product.image}')"></div>
+            <div class="product-image" style="background-image: url('${product.image_url}')"></div>
             <div class="product-info">
-                <h3>${product.name}</h3>
-                <p>${formatWelcomeText(product.description)}</p>
+                <h3>${product.name[language]}</h3>
+                <p>${formatWelcomeText(product.description[language])}</p>
                 <div class="product-footer">
                     <span class="product-price">${product.price}₽</span>
                     <div class="quantity-selector" data-id="${product.id}">
@@ -130,8 +137,11 @@ function initEventListeners() {
             const quantityElement = selector.querySelector('.quantity');
             const productId = selector.dataset.id;
             
-            const current = parseInt(quantityElement.textContent);
-            const newValue = Math.max(0, current + (isMinus ? -1 : 1));
+            const current = parseInt(quantityElement.textContent); // 当前商品的数量
+            
+            let stock = 0
+            if (productId != 0){ stock = products[productId - 1].stock }
+            const newValue = Math.min(Math.max(0, current + (isMinus ? -1 : 1)), stock);
             
             quantityElement.textContent = newValue;
             cart[productId] = newValue;
@@ -242,10 +252,10 @@ async function showCart() {
     
     try {
         const response = await fetch('data.json');
-        const data = await response.json(); // 1. 先获取完整数据对象
-        const products = data.products;     // 2. 正确提取products数组
+        const data = await response.json();
+        const products_ = data.products.concat(products)
         
-        const cartEntries = products
+        const cartEntries = products_
             .filter(p => cart[p.id] > 0)
             .map(p => ({
                 ...p,
@@ -256,7 +266,7 @@ async function showCart() {
         cartItems.innerHTML = cartEntries.map(item => `
             <li class="cart-item">
                 <div>
-                    <p class='name'>${item.name}</p>
+                    <p class='name'>${item.name[language]}</p>
                     <p class='num'>${item.price} × ${item.quantity}</p>
                 </div>
                 <p>${formatCurrency(item.subtotal)}</p>

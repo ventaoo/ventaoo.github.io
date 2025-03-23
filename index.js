@@ -180,7 +180,7 @@ document.querySelector('.checkout-btn').addEventListener('click', async () => {
         .join('\n');
     
     const total = document.getElementById('totalPrice').textContent;
-    const orderText = `**🛒 Список покупок:**\n\`\`\`${items}\`\`\`\n💳 Итого: ${total}`;
+    const orderText = `🛒 Список покупок:\n\`\`\`${items}\`\`\`\n💳 Итого: **${total}**`;
 
     // 现代剪贴板API
     try {

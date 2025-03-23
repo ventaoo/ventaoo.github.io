@@ -15,19 +15,19 @@
             }
         },
         {
-            "id": "eyeshadows",
-            "name": {
-                "ru": "тени",
-                "en": "Eyeshadows",
-                "zh": "眼影"
-            }
-        },
-        {
             "id": "blush",
             "name": {
                 "ru": "румяна",
                 "en": "Blush",
                 "zh": "腮红"
+            }
+        },
+        {
+            "id": "eyeshadows",
+            "name": {
+                "ru": "тени",
+                "en": "Eyeshadows",
+                "zh": "眼影"
             }
         },
         {

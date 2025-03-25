@@ -2,7 +2,15 @@ import { ProductService, initializeSupabase } from './db.js';
 
 const supabase_client = initializeSupabase() // init the client
 const products = await ProductService.getProducts(supabase_client) // load the dataset
-const language = navigator.language || navigator.languages[0];
+const system_language = navigator.language || navigator.languages[0];
+const languageMap = {
+    "zh": "zh",
+    "en": "en",
+    "ru": "ru"
+};
+
+const langCode = system_language.split('-')[0];  // 取 "zh-CN" 的 "zh"
+const language = languageMap[langCode] || "en";  // 默认使用英文
 console.log(language);
 
 // app.js

@@ -1,93 +1,34 @@
 /* ============================================================================
-   CRT · reveals · pixel cursor · confetti · small animations
+   Reveals · route transition · focus
    ========================================================================= */
 
-/* ── CRT overlay ─────────────────────────────────────────────────────── */
-.crt { position: fixed; inset: 0; z-index: var(--z-crt); pointer-events: none; }
-.crt__scan {
-  position: absolute; inset: 0;
-  opacity: 0.46;
-  mix-blend-mode: multiply;
-  background: repeating-linear-gradient(180deg,
-    color-mix(in srgb, #000 20%, transparent) 0 1px,
-    transparent 1px 3px);
-}
-.crt__vignette {
-  position: absolute; inset: 0;
-  background: radial-gradient(125% 100% at 50% 50%, transparent 46%, rgba(0, 0, 0, 0.5) 100%);
-}
-.crt__glow {
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--a3) 6%, transparent), transparent 28%);
-  animation: crt-flicker 5.5s steps(3) infinite;
-}
-@keyframes crt-flicker { 0%, 96%, 100% { opacity: 0.22 } 97% { opacity: 0.5 } }
-[data-crt='off'] .crt { display: none; }
-
-/* one-frame glitch on route change */
-.glitching .view { animation: glitch 380ms steps(2) 1; }
-@keyframes glitch {
-  0%   { transform: translate(0); clip-path: inset(0 0 0 0) }
-  20%  { transform: translate(-5px, 2px); clip-path: inset(14% 0 44% 0) }
-  40%  { transform: translate(4px, -2px); clip-path: inset(56% 0 10% 0) }
-  60%  { transform: translate(-2px, 0); clip-path: inset(0 0 0 0) }
-  100% { transform: translate(0) }
-}
-
-/* ── scroll reveals ──────────────────────────────────────────────────── */
-/* Progressive enhancement: without JS nothing is ever hidden.              */
-/* The resting state must NOT clip the element's box — a fully clipped      */
-/* target has a zero-area intersection rect and IntersectionObserver would  */
-/* never report it, deadlocking the reveal. So the pixel wipe is a one-shot */
-/* animation fired on .in, never part of the resting state.                 */
+/* Progressive enhancement: nothing is hidden without JS. The resting state
+   must not clip the box, or IntersectionObserver sees a zero-area target and
+   the reveal deadlocks. */
 html.js .reveal {
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 280ms steps(4), transform 460ms var(--ease-step);
+  transform: translateY(14px);
+  transition: opacity 760ms var(--ease-soft), transform 900ms var(--ease);
 }
-html.js .reveal.in { opacity: 1; transform: none; animation: pv-wipe 520ms steps(7) 1; }
-@keyframes pv-wipe {
-  0% { clip-path: inset(0 0 92% 0); }
-  100% { clip-path: inset(0 0 0 0); }
+html.js .reveal.in { opacity: 1; transform: none; }
+
+/* the statement line swaps with a soft cross-fade rather than a hard cut */
+.line-fade { animation: line-in 620ms var(--ease) both; }
+@keyframes line-in {
+  from { opacity: 0; transform: translateY(6px); filter: blur(2px); }
+  to { opacity: 1; transform: none; filter: none; }
 }
 
-/* ── pixel cursor ────────────────────────────────────────────────────── */
-.pcursor, .pcursor-dot { position: fixed; top: 0; left: 0; z-index: var(--z-cursor); pointer-events: none; }
-.pcursor { width: 20px; height: 20px; mix-blend-mode: difference; }
-.pcursor::before, .pcursor::after { content: ''; position: absolute; background: #fff; }
-.pcursor::before { left: 0; top: 9px; width: 20px; height: 2px; }
-.pcursor::after { top: 0; left: 9px; width: 2px; height: 20px; }
-.pcursor.is-hot::before { animation: spin-x 800ms steps(8) infinite; }
-@keyframes spin-x { 50% { transform: rotate(90deg) } }
-.pcursor-dot {
-  width: 6px; height: 6px;
-  background: var(--a1);
-  transition: transform 140ms var(--ease-step), background 140ms;
-}
-body.pixel-cursor, body.pixel-cursor a, body.pixel-cursor button,
-body.pixel-cursor input, body.pixel-cursor textarea { cursor: none; }
-@media (hover: none), (max-width: 780px) { .pcursor, .pcursor-dot { display: none } }
-
-/* ── confetti ────────────────────────────────────────────────────────── */
-.confetti {
-  position: fixed; inset: 0; z-index: var(--z-cursor);
-  width: 100%; height: 100%;
-  pointer-events: none;
+/* ── focus ───────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
-/* ── the sun / moon hit target, positioned by the world renderer ─────── */
-.sun-hit {
-  position: fixed; z-index: 2;
-  padding: 0; border: 0;
-  background: transparent;
-  cursor: pointer;
-  transition: filter 150ms steps(3);
+/* ── route transition ────────────────────────────────────────────────── */
+.view { animation: view-in 560ms var(--ease) both; }
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
 }
-.sun-hit:hover { filter: brightness(1.4) saturate(1.3); }
-.sun-hit:focus-visible { outline: 3px dashed var(--a1); outline-offset: 4px; }
-
-/* ── tiny animations ─────────────────────────────────────────────────── */
-@keyframes blink { 50% { opacity: 0 } }
-@keyframes blink-slow { 50% { opacity: 0.3 } }
-@keyframes bob { 50% { transform: translateY(-7px) } }
-.bob { animation: bob 3s steps(4) infinite; }

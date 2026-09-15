@@ -1,61 +1,63 @@
-/** Multi-phrase typewriter with an authentic per-character blip. */
-import { chip } from '../core/audio';
+/**
+ * Types a phrase out, holds it, then backspaces and moves on — the same rhythm
+ * a person uses when they are thinking about what to say next.
+ */
 import { reducedMotion } from '../core/ticker';
 
-export interface TypedOptions {
-  phrases: string[];
+export interface RotateOptions {
   typeMs?: number;
   holdMs?: number;
-  deleteMs?: number;
-  sound?: boolean;
-  cursor?: string;
+  eraseMs?: number;
 }
 
-export function typewriter(el: HTMLElement, opts: TypedOptions): () => void {
-  const { phrases, typeMs = 55, holdMs = 1900, deleteMs = 26, sound = true } = opts;
-  const cursor = `<span class="cur"></span>`;
-  let phrase = 0;
-  let char = 0;
-  let deleting = false;
-  let timer: number | undefined;
-  let dead = false;
+export function rotateLines(el: HTMLElement, phrases: string[], opts: RotateOptions = {}): () => void {
+  const { typeMs = 78, holdMs = 2600, eraseMs = 26 } = opts;
 
-  if (reducedMotion) {
-    el.innerHTML = phrases[0] + cursor;
+  if (!phrases.length) {
+    el.textContent = '';
+    return () => {};
+  }
+  if (reducedMotion || phrases.length === 1) {
+    el.textContent = phrases[0];
     return () => {};
   }
 
-  const render = () => {
-    el.innerHTML = phrases[phrase].slice(0, char).replace(/</g, '&lt;') + cursor;
-  };
+  let phrase = 0;
+  let char = 0;
+  let erasing = false;
+  let timer: number | undefined;
+  let dead = false;
 
   const step = () => {
     if (dead) return;
     const text = phrases[phrase];
-    if (!deleting) {
+
+    if (!erasing) {
       char++;
-      if (sound && char % 2 === 0) chip.type();
-      render();
+      el.textContent = text.slice(0, char);
       if (char >= text.length) {
-        deleting = true;
+        erasing = true;
         timer = window.setTimeout(step, holdMs);
         return;
       }
-      timer = window.setTimeout(step, typeMs + Math.random() * 45);
-    } else {
-      char--;
-      render();
-      if (char <= 0) {
-        deleting = false;
-        phrase = (phrase + 1) % phrases.length;
-        timer = window.setTimeout(step, 340);
-        return;
-      }
-      timer = window.setTimeout(step, deleteMs);
+      timer = window.setTimeout(step, typeMs + Math.random() * 70);
+      return;
     }
+
+    char -= 2;
+    if (char <= 0) {
+      el.textContent = '';
+      erasing = false;
+      char = 0;
+      phrase = (phrase + 1) % phrases.length;
+      timer = window.setTimeout(step, 420);
+      return;
+    }
+    el.textContent = text.slice(0, char);
+    timer = window.setTimeout(step, eraseMs);
   };
 
-  timer = window.setTimeout(step, 420);
+  timer = window.setTimeout(step, 520);
   return () => {
     dead = true;
     clearTimeout(timer);

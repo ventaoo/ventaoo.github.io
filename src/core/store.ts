@@ -1,28 +1,23 @@
-/** Persisted preferences (theme, palette, effects) with a tiny pub/sub. */
+/** Persisted preferences (theme + accent ink) with a tiny pub/sub. */
 
-export type Theme = 'night' | 'day';
-export type Palette = 'dusk' | 'gameboy' | 'vapor' | 'amber';
+export type Theme = 'light' | 'dark';
+export type Accent = 'vermillion' | 'indigo' | 'moss' | 'ochre';
 
-export const PALETTES: Palette[] = ['dusk', 'gameboy', 'vapor', 'amber'];
-export const PALETTE_LABEL: Record<Palette, string> = {
-  dusk: '暮色',
-  gameboy: '掌机绿',
-  vapor: '蒸汽波',
-  amber: '琥珀',
+export const ACCENTS: Accent[] = ['vermillion', 'indigo', 'moss', 'ochre'];
+export const ACCENT_LABEL: Record<Accent, string> = {
+  vermillion: '朱砂',
+  indigo: '靛青',
+  moss: '苔绿',
+  ochre: '赭石',
 };
 
 export interface Settings {
   theme: Theme;
-  palette: Palette;
-  crt: boolean;
-  sound: boolean;
-  music: boolean;
+  accent: Accent;
 }
 
-const KEY = 'pv:settings';
-const VISITS_KEY = 'pv:visits';
-
-const DEFAULTS: Settings = { theme: 'night', palette: 'dusk', crt: true, sound: true, music: false };
+const KEY = 'vx:settings';
+const DEFAULTS: Settings = { theme: 'light', accent: 'vermillion' };
 
 function load(): Settings {
   try {
@@ -34,15 +29,6 @@ function load(): Settings {
 }
 
 export const settings: Settings = load();
-
-/** How many times this browser has opened the site. */
-export let visits = 1;
-try {
-  visits = Number(localStorage.getItem(VISITS_KEY) ?? '0') + 1;
-  localStorage.setItem(VISITS_KEY, String(visits));
-} catch {
-  /* private mode — run without persistence */
-}
 
 type Listener = () => void;
 const listeners = new Set<Listener>();
@@ -57,11 +43,14 @@ export function setSetting<K extends keyof Settings>(key: K, value: Settings[K])
   try {
     localStorage.setItem(KEY, JSON.stringify(settings));
   } catch {
-    /* ignore */
+    /* private mode */
   }
-  if (key === 'theme') document.documentElement.dataset.theme = value as string;
-  if (key === 'palette') document.documentElement.dataset.palette = value as string;
-  if (key === 'crt') document.documentElement.dataset.crt = value ? 'on' : 'off';
+  if (key === 'theme') {
+    document.documentElement.dataset.theme = value as string;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', value === 'dark' ? '#14130f' : '#f7f4ed');
+  }
+  if (key === 'accent') document.documentElement.dataset.accent = value as string;
   listeners.forEach((l) => l());
 }
 
@@ -69,6 +58,5 @@ export function setSetting<K extends keyof Settings>(key: K, value: Settings[K])
 export function applyBootState(): void {
   const root = document.documentElement;
   root.dataset.theme = settings.theme;
-  root.dataset.palette = settings.palette;
-  root.dataset.crt = settings.crt ? 'on' : 'off';
+  root.dataset.accent = settings.accent;
 }

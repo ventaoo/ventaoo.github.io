@@ -22,7 +22,7 @@ if (!exe) {
   process.exit(1);
 }
 
-// read the config so we can prove the home page really renders from it
+// read the config so we can prove the page really renders from it
 const cfg = readFileSync('site.config.ts', 'utf8');
 const block = /lines:\s*\[([\s\S]*?)\]/.exec(cfg)?.[1] ?? '';
 const CONFIG_LINES = [...block.matchAll(/'([^']+)'/g)].map((m) => m[1]);
@@ -37,6 +37,22 @@ const blank = await browser.newPage();
 const errors = [];
 page.on('console', (m) => m.type() === 'error' && errors.push('[console] ' + m.text()));
 page.on('pageerror', (e) => errors.push('[pageerror] ' + e.message));
+
+let fontBytes = 0;
+const fontUrls = new Set();
+page.on('response', async (res) => {
+  const url = res.url();
+  if (!/\.woff2?($|\?)/.test(url)) return;
+  const name = url.split('/').pop();
+  if (fontUrls.has(name)) return; // count each file once, not once per navigation
+  fontUrls.add(name);
+  try {
+    const len = Number(res.headers()['content-length'] ?? 0);
+    fontBytes += len || (await res.body()).length;
+  } catch {
+    /* ignore */
+  }
+});
 
 async function ascii(buffer, cols = 92) {
   return blank.evaluate(
@@ -78,157 +94,146 @@ const check = (name, ok, detail = '') => {
 };
 
 /* ── 1. render every route ─────────────────────────────────────────── */
-await page.goto(base + '/', { waitUntil: 'load' });
-await page.evaluate(() => sessionStorage.setItem('pv:booted', '1'));
-
 for (const r of ['/', '/blog', '/blog/hello-world']) {
   await page.goto(base + r, { waitUntil: 'load' });
-  await page.waitForTimeout(2500);
+  await page.waitForTimeout(2400);
   console.log('\n═══ ' + r + ' ═══');
   console.log(await ascii(await page.screenshot()));
 }
 
 /* ── 2. behaviour ──────────────────────────────────────────────────── */
 await page.goto(base + '/', { waitUntil: 'load' });
-await page.waitForTimeout(1600);
+await page.waitForTimeout(1400);
 
-check('boot overlay dismissed', (await page.locator('#boot').count()) === 0);
-
-const canvasStats = await page.evaluate(() => {
-  const c = document.getElementById('world');
+// the ink wash is painted, and it breathes
+const paint = await page.evaluate(() => {
+  const c = document.getElementById('atmosphere');
   const ctx = c.getContext('2d');
-  const { width: w, height: h } = c;
-  const band = (y) => {
-    const d = ctx.getImageData(0, y, w, Math.max(1, Math.floor(h * 0.18))).data;
-    let r = 0, g = 0, b = 0;
-    for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i + 1]; b += d[i + 2]; }
-    const n = d.length / 4;
-    return [Math.round(r / n), Math.round(g / n), Math.round(b / n)];
-  };
-  const full = ctx.getImageData(0, 0, w, h).data;
-  const colours = new Set();
-  for (let i = 0; i < full.length; i += 4 * 7) colours.add((full[i] << 16) | (full[i + 1] << 8) | full[i + 2]);
-  return { w, h, top: band(0), bot: band(Math.floor(h * 0.8)), colours: colours.size };
+  const d = ctx.getImageData(0, 0, c.width, c.height).data;
+  let painted = 0;
+  const seen = new Set();
+  for (let i = 0; i < d.length; i += 4 * 97) {
+    if (d[i + 3] > 2) painted++;
+    seen.add((d[i] >> 3) + ',' + (d[i + 1] >> 3) + ',' + (d[i + 2] >> 3));
+  }
+  return { w: c.width, h: c.height, painted, sampled: Math.floor(d.length / (4 * 97)), tones: seen.size };
 });
-check('world canvas is painted', canvasStats.colours > 25, canvasStats.colours + ' colours');
-check('canvas is chunky (low-res upscale)', canvasStats.w < 700, canvasStats.w + 'x' + canvasStats.h);
-check(
-  'sky band differs from ground band',
-  Math.abs(canvasStats.top[0] - canvasStats.bot[0]) + Math.abs(canvasStats.top[2] - canvasStats.bot[2]) > 15,
-  JSON.stringify(canvasStats.top) + ' vs ' + JSON.stringify(canvasStats.bot),
-);
+check('ink wash canvas is painted', paint.painted / paint.sampled > 0.6, paint.painted + '/' + paint.sampled + ' samples');
+check('ink wash has tonal range', paint.tones > 8, paint.tones + ' tones');
+check('canvas renders at device resolution', paint.w >= 1400, paint.w + 'x' + paint.h);
+const frameA = await page.evaluate(() => document.getElementById('atmosphere').toDataURL().slice(-1500));
+await page.waitForTimeout(1200);
+const frameB = await page.evaluate(() => document.getElementById('atmosphere').toDataURL().slice(-1500));
+check('ink wash drifts over time', frameA !== frameB);
 
-// config-driven home copy
+// config-driven copy
 const brand = await page.locator('#brand-name').innerText();
 check('brand comes from site.config', brand === BRAND, brand + ' vs ' + BRAND);
-const typed = (await page.locator('#hero-typed').innerText()).trim();
+const typed = (await page.locator('#hero-line').innerText()).trim();
 check(
-  'typed line comes from site.config',
-  CONFIG_LINES.some((l) => l.startsWith(typed) && typed.length >= 3),
+  'hero line comes from site.config',
+  CONFIG_LINES.some((l) => l.startsWith(typed) && typed.length >= 2),
   JSON.stringify(typed),
 );
 
-// parallax
-const before = await page.evaluate(() => document.getElementById('world').toDataURL().slice(-2000));
-await page.evaluate(() => window.scrollTo(0, 700));
-await page.waitForTimeout(700);
-const after = await page.evaluate(() => document.getElementById('world').toDataURL().slice(-2000));
-check('world parallax reacts to scroll', before !== after);
+// typography is actually applied
+const type = await page.evaluate(() => {
+  const name = document.querySelector('.hero__name');
+  const bio = document.querySelector('.hero__bio');
+  return {
+    nameFont: name ? getComputedStyle(name).fontFamily : '',
+    nameSize: name ? parseFloat(getComputedStyle(name).fontSize) : 0,
+    bioFont: bio ? getComputedStyle(bio).fontFamily : '',
+    bodyFont: getComputedStyle(document.body).fontFamily,
+  };
+});
+check('display face is Fraunces', /Fraunces/i.test(type.nameFont), type.nameFont.split(',')[0]);
+check('body face is Newsreader', /Newsreader/i.test(type.bodyFont), type.bodyFont.split(',')[0]);
+check('hero name is display-sized', type.nameSize >= 38, type.nameSize + 'px');
+check('no pixel fonts remain', !/Press Start|Silkscreen|VT323/i.test(type.bodyFont + type.nameFont));
 
-await page.evaluate(() => window.scrollTo(0, 0));
-await page.waitForTimeout(400);
+// reveals
+await page.evaluate(() => window.scrollTo(0, 400));
+await page.waitForTimeout(900);
 const revealed = await page.evaluate(() => document.querySelectorAll('.reveal.in').length);
 check('scroll reveals activate', revealed > 0, revealed + ' revealed');
 
 const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 check('no horizontal overflow (1440)', overflow <= 1, overflow + 'px');
 
-// controls
+// theme + accent
+await page.evaluate(() => window.scrollTo(0, 0));
+await page.waitForTimeout(400);
 const themeBefore = await page.evaluate(() => document.documentElement.dataset.theme);
-const canvasBefore = await page.evaluate(() => document.getElementById('world').toDataURL().length);
+const canvasBefore = await page.evaluate(() => document.getElementById('atmosphere').toDataURL().length);
 await page.click('#ctl-theme');
-await page.waitForTimeout(600);
+await page.waitForTimeout(800);
 const themeAfter = await page.evaluate(() => document.documentElement.dataset.theme);
-const canvasAfter = await page.evaluate(() => document.getElementById('world').toDataURL().length);
+const canvasAfter = await page.evaluate(() => document.getElementById('atmosphere').toDataURL().length);
 check('theme toggle switches theme', themeBefore !== themeAfter, themeBefore + ' → ' + themeAfter);
-check('world palette follows theme', canvasBefore !== canvasAfter);
-await page.screenshot({ path: 'shots/home-day.png' });
+check('ink wash follows the theme', canvasBefore !== canvasAfter);
+await page.screenshot({ path: 'shots/home-dark.png' });
 
-const palBefore = await page.evaluate(() => document.documentElement.dataset.palette);
-await page.click('#ctl-palette');
+const accentBefore = await page.evaluate(() => document.documentElement.dataset.accent);
+await page.click('.swatch[data-accent="indigo"]');
 await page.waitForTimeout(350);
-const palAfter = await page.evaluate(() => document.documentElement.dataset.palette);
-check('palette control cycles', palBefore !== palAfter, palBefore + ' → ' + palAfter);
+const accentAfter = await page.evaluate(() => document.documentElement.dataset.accent);
+check('accent swatch switches ink', accentBefore !== accentAfter, accentBefore + ' → ' + accentAfter);
+check('swatch marks the active ink', await page.locator('.swatch[data-accent="indigo"].is-active').count() === 1);
 
-// help modal
+// help panel
 await page.keyboard.press('?');
 await page.waitForTimeout(350);
-check('? opens the help modal', !(await page.locator('#modal').isHidden().catch(() => true)));
+check('? opens the help panel', !(await page.locator('#modal').isHidden().catch(() => true)));
 await page.keyboard.press('Escape');
 await page.waitForTimeout(300);
-check('Esc closes the help modal', await page.locator('#modal').isHidden());
+check('Esc closes the help panel', await page.locator('#modal').isHidden());
 
-// blog: search + tag filter
+/* ── 3. archive ────────────────────────────────────────────────────── */
 await page.goto(base + '/blog', { waitUntil: 'load' });
 await page.waitForTimeout(900);
-const rowsAll = await page.evaluate(() => [...document.querySelectorAll('.post-row')].filter((e) => !e.hidden).length);
-check('blog lists at least one post', rowsAll >= 1, rowsAll + ' rows');
+const rowsAll = await page.evaluate(() => [...document.querySelectorAll('.entry')].filter((e) => !e.hidden).length);
+check('archive lists at least one post', rowsAll >= 1, rowsAll + ' entries');
+check('archive groups entries by year', (await page.locator('.index__year').count()) >= 1);
 await page.fill('#post-search', 'zzzz-no-match');
 await page.waitForTimeout(300);
-const rowsNone = await page.evaluate(() => [...document.querySelectorAll('.post-row')].filter((e) => !e.hidden).length);
+const rowsNone = await page.evaluate(() => [...document.querySelectorAll('.entry')].filter((e) => !e.hidden).length);
 const emptyShown = await page.evaluate(() => !document.getElementById('post-empty').hidden);
-check('search filters the list', rowsNone === 0 && emptyShown, rowsNone + ' rows, empty hint ' + emptyShown);
+check('search filters the index', rowsNone === 0 && emptyShown, rowsNone + ' entries, empty note ' + emptyShown);
 await page.fill('#post-search', '');
 await page.waitForTimeout(300);
 const tagBtns = await page.locator('.chip[data-tag]:not([data-tag=""])').count();
 if (tagBtns > 0) {
   await page.click('.chip[data-tag]:not([data-tag=""])');
   await page.waitForTimeout(300);
-  const rowsTag = await page.evaluate(() => [...document.querySelectorAll('.post-row')].filter((e) => !e.hidden).length);
-  check('tag filter narrows the list', rowsTag > 0 && rowsTag <= rowsAll, rowsTag + '/' + rowsAll);
+  const rowsTag = await page.evaluate(() => [...document.querySelectorAll('.entry')].filter((e) => !e.hidden).length);
+  check('tag filter narrows the index', rowsTag > 0 && rowsTag <= rowsAll, rowsTag + '/' + rowsAll);
 } else {
   check('tag filter present', false, 'no tag chips rendered');
 }
 
-// 404
+// 404 + client-side nav
 await page.goto(base + '/definitely-not-a-page', { waitUntil: 'load' });
-await page.waitForTimeout(1400);
+await page.waitForTimeout(1200);
 check('unknown route renders 404', (await page.locator('.empty__code').innerText().catch(() => '')).trim() === '404');
-
-// client-side navigation + konami
 await page.goto(base + '/', { waitUntil: 'load' });
-await page.waitForTimeout(1600);
+await page.waitForTimeout(1200);
 await page.click('a[data-nav="blog"]');
 await page.waitForTimeout(700);
 check('client-side nav updates the URL', page.url().endsWith('/blog'), page.url());
-for (const k of ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']) {
-  await page.keyboard.press(k);
-}
-await page.waitForTimeout(400);
-check('konami code activates party mode', (await page.evaluate(() => document.documentElement.dataset.party)) === 'on');
-// leave party mode again — otherwise it leaks into the contrast checks below
-for (const k of ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']) {
-  await page.keyboard.press(k);
-}
-await page.waitForTimeout(400);
-check(
-  'konami code toggles party mode back off',
-  (await page.evaluate(() => document.documentElement.dataset.party)) === 'off',
-  await page.evaluate(() => document.documentElement.dataset.party || 'unset'),
-);
 
-/* ── 3. contrast (WCAG AA) across every palette × theme ─────────────── */
-const PALETTES = ['dusk', 'gameboy', 'vapor', 'amber'];
-for (const theme of ['night', 'day']) {
-  for (const pal of PALETTES) {
+/* ── 4. contrast across every ink × theme ──────────────────────────── */
+const ACCENTS = ['vermillion', 'indigo', 'moss', 'ochre'];
+for (const theme of ['light', 'dark']) {
+  for (const accent of ACCENTS) {
     await page.evaluate(
-      ({ t, p }) => {
+      ({ t, a }) => {
         document.documentElement.dataset.theme = t;
-        document.documentElement.dataset.palette = p;
+        document.documentElement.dataset.accent = a;
       },
-      { t: theme, p: pal },
+      { t: theme, a: accent },
     );
-    await page.waitForTimeout(120);
+    await page.waitForTimeout(110);
     const c = await page.evaluate(() => {
       const probe = document.createElement('span');
       document.body.appendChild(probe);
@@ -248,34 +253,29 @@ for (const theme of ['night', 'day']) {
         return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
       };
       const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
-      const bg = parse('--bg');
+      const paper = parse('--paper');
       const out = {};
-      for (const name of ['--text', '--text-dim', '--text-mute', '--a1i', '--a2i', '--a3i', '--a4i', '--a5i', '--a6i']) {
-        out[name] = +ratio(parse(name), bg).toFixed(2);
+      for (const name of ['--ink', '--ink-2', '--ink-3', '--accent']) {
+        out[name] = +ratio(parse(name), paper).toFixed(2);
       }
       probe.remove();
       return out;
     });
-    const entries = Object.entries(c);
-    const worst = entries.reduce((a, b) => (b[1] < a[1] ? b : a));
-    check(
-      `contrast · ${pal} / ${theme}`,
-      worst[1] >= 4.5,
-      'min ' + worst[1] + ' (' + worst[0] + ')',
-    );
+    const worst = Object.entries(c).reduce((a, b) => (b[1] < a[1] ? b : a));
+    check(`contrast · ${accent} / ${theme}`, worst[1] >= 4.5, 'min ' + worst[1] + ' (' + worst[0] + ')');
   }
 }
 await page.evaluate(() => {
-  document.documentElement.dataset.theme = 'night';
-  document.documentElement.dataset.palette = 'dusk';
+  document.documentElement.dataset.theme = 'light';
+  document.documentElement.dataset.accent = 'vermillion';
 });
 
-/* ── 4. mobile ─────────────────────────────────────────────────────── */
+/* ── 5. mobile ─────────────────────────────────────────────────────── */
 const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 const mobileErrors = [];
 mobile.on('pageerror', (e) => mobileErrors.push(e.message));
 await mobile.goto(base + '/', { waitUntil: 'load' });
-await mobile.waitForTimeout(1800);
+await mobile.waitForTimeout(1600);
 const mOverflow = await mobile.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 check('no horizontal overflow (390)', mOverflow <= 1, mOverflow + 'px');
 await mobile.screenshot({ path: 'shots/mobile-home.png' });
@@ -294,6 +294,7 @@ console.log('\n══════════════ RESULTS ════�
 console.log(results.join('\n'));
 const failed = results.filter((r) => r.startsWith('FAIL'));
 console.log('\n' + (results.length - failed.length) + '/' + results.length + ' checks passed');
+console.log('font bytes transferred: ' + (fontBytes / 1024).toFixed(1) + ' KB — ' + [...fontUrls].join(', '));
 if (errors.length) {
   console.log('\n--- CONSOLE ERRORS (' + errors.length + ') ---');
   console.log([...new Set(errors)].slice(0, 20).join('\n'));

@@ -10,14 +10,10 @@ import css from 'highlight.js/lib/languages/css';
 import xml from 'highlight.js/lib/languages/xml';
 import markdown from 'highlight.js/lib/languages/markdown';
 import yaml from 'highlight.js/lib/languages/yaml';
-import rust from 'highlight.js/lib/languages/rust';
-import go from 'highlight.js/lib/languages/go';
-import sql from 'highlight.js/lib/languages/sql';
-import diff from 'highlight.js/lib/languages/diff';
 import { icon } from '../core/icons';
 import { esc } from '../core/dom';
 
-const LANGS = { javascript, typescript, python, bash, json, css, xml, markdown, yaml, rust, go, sql, diff };
+const LANGS = { javascript, typescript, python, bash, json, css, xml, markdown, yaml };
 for (const [name, def] of Object.entries(LANGS)) hljs.registerLanguage(name, def);
 hljs.registerAliases(['js', 'jsx', 'mjs'], { languageName: 'javascript' });
 hljs.registerAliases(['ts', 'tsx'], { languageName: 'typescript' });

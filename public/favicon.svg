@@ -1,12 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">
-  <rect width="16" height="16" fill="#0b0b14"/>
-  <rect x="2" y="2" width="12" height="12" fill="#1e1e3f"/>
-  <rect x="3" y="3" width="10" height="10" fill="#14142b"/>
-  <rect x="4" y="6" width="3" height="3" fill="#4ecdc4"/>
-  <rect x="9" y="6" width="3" height="3" fill="#4ecdc4"/>
-  <rect x="5" y="5" width="1" height="1" fill="#e8e6f0"/>
-  <rect x="10" y="5" width="1" height="1" fill="#e8e6f0"/>
-  <rect x="5" y="11" width="6" height="1" fill="#ffd23f"/>
-  <rect x="4" y="12" width="1" height="1" fill="#ffd23f"/>
-  <rect x="11" y="12" width="1" height="1" fill="#ffd23f"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" fill="#f7f4ed"/>
+  <path d="M9 9.5 L16 24 L23 9.5" fill="none" stroke="#191712" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M22.5 7.5 L26 4" stroke="#b0442c" stroke-width="2.2" stroke-linecap="round"/>
 </svg>

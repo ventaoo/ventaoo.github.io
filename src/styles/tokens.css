@@ -1,140 +1,81 @@
 /* ============================================================================
-   Design tokens.  Two axes:
-     data-theme   = night | day                          (structure / contrast)
-     data-palette = dusk | gameboy | vapor | amber       (colour story)
+   Tokens — `data-theme` = light | dark,  `data-accent` = ink colour
    ========================================================================= */
 
 :root {
-  /* pixel geometry */
-  --px: 4px;
-  --px-2: 6px;
+  /* ── type ────────────────────────────────────────────────────────────── */
+  --font-display: 'Fraunces Variable', 'Songti SC', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
+  --font-serif: 'Newsreader Variable', 'Songti SC', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
+  --font-sans: system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* type */
-  --font-display: 'Press Start 2P', 'Silkscreen', monospace;
-  --font-head: 'Silkscreen', 'Press Start 2P', monospace;
-  --font-body: 'VT323', ui-monospace, Menlo, monospace;
+  --fs-body: clamp(17px, 0.45vw + 15px, 19.5px);
+  --fs-sm: clamp(13.5px, 0.25vw + 12.5px, 15px);
+  --fs-label: 11.5px;
+  --fs-h1: clamp(38px, 7vw, 88px);
+  --fs-h2: clamp(21px, 1.7vw, 28px);
+  --fs-h3: clamp(17px, 1vw + 13px, 21px);
+  --fs-statement: clamp(21px, 2.5vw, 36px);
 
-  --fs-body: clamp(16px, 0.85vw + 12px, 19px);
-  --fs-sm: clamp(13px, 0.5vw + 11px, 15px);
-  --fs-name: clamp(26px, 5.4vw, 54px);
-  --fs-h2: clamp(18px, 1.9vw, 26px);
-  --fs-h3: clamp(16px, 1.2vw, 20px);
-  --fs-post: clamp(16px, 0.9vw + 12px, 19px);
+  /* ── measure & rhythm ────────────────────────────────────────────────── */
+  --measure: 34em;
+  --shell: 1060px;
+  --gutter: clamp(20px, 5vw, 56px);
+  --topbar-h: 62px;
 
-  /* motion */
-  --t-fast: 90ms;
-  --t-mid: 170ms;
-  --t-slow: 300ms;
-  --ease-step: steps(4, end);
+  /* ── motion ──────────────────────────────────────────────────────────── */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --t-fast: 180ms;
+  --t-mid: 340ms;
+  --t-slow: 700ms;
 
-  /* Accent "ink" variants: --aN is the vivid palette colour used for fills and
-     borders, --aNi is the same hue pushed toward --ink-tint so it is always
-     readable as TEXT on --bg. --ink-mix is how much of the raw accent to keep;
-     a palette with intrinsically dark colours (Game Boy) raises it so its text
-     does not disappear into a dark background. */
-  --ink-tint: #ffffff;
-  --ink-mix: 100%;
-  --a1i: color-mix(in srgb, var(--a1) var(--ink-mix), var(--ink-tint));
-  --a2i: color-mix(in srgb, var(--a2) var(--ink-mix), var(--ink-tint));
-  --a3i: color-mix(in srgb, var(--a3) var(--ink-mix), var(--ink-tint));
-  --a4i: color-mix(in srgb, var(--a4) var(--ink-mix), var(--ink-tint));
-  --a5i: color-mix(in srgb, var(--a5) var(--ink-mix), var(--ink-tint));
-  --a6i: color-mix(in srgb, var(--a6) var(--ink-mix), var(--ink-tint));
-  /* foreground for the mid-tone --line surface (light in both themes) */
-  --on-line: #f2f1ff;
-
-  /* layout */
-  --shell: 940px;
-  --gutter: clamp(18px, 5vw, 44px);
-  --topbar-h: 56px;
-
-  --z-world: 0;
+  /* ── layers ──────────────────────────────────────────────────────────── */
+  --z-atmos: 0;
+  --z-grain: 2;
   --z-content: 10;
   --z-topbar: 40;
   --z-toast: 60;
   --z-modal: 70;
-  --z-crt: 80;
-  --z-cursor: 90;
-  --z-boot: 100;
 }
 
-/* ── NIGHT (default) ─────────────────────────────────────────────────── */
+/* ── LIGHT — warm paper ──────────────────────────────────────────────── */
 :root,
-[data-theme='night'] {
-  --ink: #05050e;
-  --bg: #0a0a16;
-  --bg-2: #10101f;
-  --panel: rgba(18, 18, 40, 0.78);
-  --panel-solid: #12122a;
-  --panel-2: #1b1b3a;
-  --line: #3b3b78;
-  --line-2: #262650;
-  --text: #eae8fc;
-  --text-dim: #a7a4d4;
-  --text-mute: #8582bd;
-  --shadow: #04040c;
-  --glass: rgba(8, 8, 20, 0.55);
-  color-scheme: dark;
-}
-
-/* ── DAY ─────────────────────────────────────────────────────────────── */
-[data-theme='day'] {
-  --ink: #f7f8ff;
-  --bg: #d9e0fb;
-  --bg-2: #eaefff;
-  --panel: rgba(255, 255, 255, 0.84);
-  --panel-solid: #fbfbff;
-  --panel-2: #ecefff;
-  --line: #5f65ad;
-  --line-2: #b6bbe6;
-  --text: #14143a;
-  --text-dim: #3f4080;
-  --text-mute: #5a5d94;
-  --shadow: #8e95d6;
-  --glass: rgba(255, 255, 255, 0.62);
-
-  /* on a light background every accent is darkened instead */
-  --ink-tint: #0e1024;
-  --ink-mix: 32%;
+[data-theme='light'] {
+  --paper: #f7f4ed;
+  --paper-2: #efeade;
+  --paper-3: #e7e0d0;
+  --ink: #191712;
+  --ink-2: #4f4a3b;
+  --ink-3: #6f6858;
+  --rule: #ddd5c4;
+  --rule-soft: #e9e3d6;
+  --shade: rgba(25, 23, 18, 0.05);
   color-scheme: light;
 }
 
-/* ── PALETTES ────────────────────────────────────────────────────────── */
-:root,
-[data-palette='dusk'] {
-  --a1: #ffd23f; --a2: #ff5d73; --a3: #3ddad7; --a4: #a06cd5; --a5: #7ee081; --a6: #ff9f45;
-  --sky-a: #171735; --sky-b: #3b2450; --sky-c: #6b3a6e;
+/* ── DARK — ink ──────────────────────────────────────────────────────── */
+[data-theme='dark'] {
+  --paper: #14130f;
+  --paper-2: #1c1a15;
+  --paper-3: #25211a;
+  --ink: #ece6d8;
+  --ink-2: #b3ab97;
+  --ink-3: #8d8574;
+  --rule: #302c23;
+  --rule-soft: #262218;
+  --shade: rgba(0, 0, 0, 0.3);
   color-scheme: dark;
 }
-[data-palette='gameboy'] {
-  --a1: #9bbc0f; --a2: #8bac0f; --a3: #306230; --a4: #0f380f; --a5: #9bbc0f; --a6: #8bac0f;
-  --sky-a: #0f380f; --sky-b: #306230; --sky-c: #8bac0f;
-}
-[data-palette='vapor'] {
-  --a1: #ff71ce; --a2: #ff3864; --a3: #01cdfe; --a4: #b967ff; --a5: #05ffa1; --a6: #fffb96;
-  --sky-a: #1a0b2e; --sky-b: #4a1e6e; --sky-c: #b967ff;
-}
-[data-palette='amber'] {
-  --a1: #ffb000; --a2: #ff7b00; --a3: #ffd479; --a4: #cc8800; --a5: #ffc94d; --a6: #ff9500;
-  --sky-a: #120c00; --sky-b: #2e1f00; --sky-c: #5c3d00;
-}
 
-/* Game Boy's palette is intrinsically dark, so on the dark theme its text
-   variants are lifted much further toward white. */
-[data-theme='night'][data-palette='gameboy'] { --ink-tint: #ffffff; --ink-mix: 40%; }
+/* ── ACCENT INKS ─────────────────────────────────────────────────────── */
+:root,
+[data-accent='vermillion'] { --accent: #a83f28; --accent-ink: #ffffff; --accent-soft: rgba(168, 63, 40, 0.1); }
+[data-accent='indigo'] { --accent: #2c4557; --accent-ink: #ffffff; --accent-soft: rgba(44, 69, 87, 0.1); }
+[data-accent='moss'] { --accent: #46592f; --accent-ink: #ffffff; --accent-soft: rgba(70, 89, 47, 0.1); }
+[data-accent='ochre'] { --accent: #875c0f; --accent-ink: #ffffff; --accent-soft: rgba(135, 92, 15, 0.1); }
 
-/* daytime sky — the world canvas reads these */
-[data-theme='day'] { --sky-a: #5fb0ee; --sky-b: #a9d9f7; --sky-c: #ffe2b0; }
-[data-theme='day'][data-palette='gameboy'] { --sky-a: #7a9a1a; --sky-b: #a8c33f; --sky-c: #d7e79a; }
-[data-theme='day'][data-palette='vapor'] { --sky-a: #ff9ad5; --sky-b: #ffd0ee; --sky-c: #b6f2ff; }
-[data-theme='day'][data-palette='amber'] { --sky-a: #f2b24d; --sky-b: #ffd89a; --sky-c: #fff0cf; }
-
-/* ── PARTY MODE (konami) ─────────────────────────────────────────────── */
-/* Party mode is a joke, but the text still has to be readable — so the
-   accents stay brightened versions rather than raw RGB primaries. */
-[data-party='on'] {
-  --a1: #ff5c5c; --a2: #5cff5c; --a3: #5c8cff; --a4: #ffff5c; --a5: #ff5cff; --a6: #5cffff;
-  animation: party-hue 1.1s steps(12) infinite;
-}
-[data-theme='night'][data-party='on'] { --ink-tint: #ffffff; --ink-mix: 62%; }
-@keyframes party-hue { to { filter: hue-rotate(360deg); } }
+[data-theme='dark'][data-accent='vermillion'] { --accent: #e08a6c; --accent-ink: #1c120d; --accent-soft: rgba(224, 138, 108, 0.14); }
+[data-theme='dark'][data-accent='indigo'] { --accent: #8fb2c8; --accent-ink: #0e1a22; --accent-soft: rgba(143, 178, 200, 0.14); }
+[data-theme='dark'][data-accent='moss'] { --accent: #a4bd83; --accent-ink: #131a0c; --accent-soft: rgba(164, 189, 131, 0.14); }
+[data-theme='dark'][data-accent='ochre'] { --accent: #dcaa4e; --accent-ink: #1f1707; --accent-soft: rgba(220, 170, 78, 0.14); }

@@ -1,6 +1,5 @@
-/** History-API router: three routes, view mounting, teardown, glitch transition. */
+/** History-API router: three routes, view mounting, teardown. */
 import { $, $$, on } from './dom';
-import { chip } from './audio';
 import { bindReveals } from '../fx/reveal';
 import { bindParallax } from '../fx/parallax';
 import { hydrateIcons } from './icons';
@@ -65,11 +64,6 @@ function match(path: string): { handler: Handler; params: Record<string, string>
   return null;
 }
 
-function glitch(): void {
-  document.body.classList.add('glitching');
-  window.setTimeout(() => document.body.classList.remove('glitching'), 400);
-}
-
 export function render(target?: string): void {
   const url = new URL(location.href);
   const path = normalize(target ?? url.pathname);
@@ -106,9 +100,9 @@ function notFound(): View {
     title: `404 · ${site.name}`,
     html: `<div class="page"><div class="shell">
       <div class="empty">
-        <div class="empty__code">404</div>
-        <p class="empty__hint">这个坐标上没有东西。</p>
-        <a class="btn btn--primary" href="/" data-link>返回首页</a>
+        <p class="empty__code">404</p>
+        <p class="empty__hint">这个地址上没有东西。</p>
+        <a class="btn" href="/" data-link>返回首页</a>
       </div>
     </div></div>`,
   };
@@ -122,8 +116,6 @@ export function navigate(to: string, opts: { replace?: boolean } = {}): void {
   }
   if (opts.replace) history.replaceState({}, '', target);
   else history.pushState({}, '', target);
-  chip.warp();
-  glitch();
   render();
 }
 
@@ -151,17 +143,13 @@ export function startRouter(): void {
     navigate(url.pathname + url.search + url.hash);
   });
 
-  window.addEventListener('popstate', () => {
-    chip.back();
-    glitch();
-    render();
-  });
+  window.addEventListener('popstate', () => render());
 
   // GitHub Pages 404 shim: recover the intended path after the redirect.
   try {
-    const saved = sessionStorage.getItem('pv:redirect');
+    const saved = sessionStorage.getItem('vx:redirect');
     if (saved) {
-      sessionStorage.removeItem('pv:redirect');
+      sessionStorage.removeItem('vx:redirect');
       history.replaceState({}, '', saved);
     }
   } catch {

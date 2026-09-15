@@ -1,75 +1,26 @@
-// Pixel-art icons from `pixelarticons` (MIT), inlined as raw SVG so they
-// inherit `currentColor` and stay crisp at any pixel scale.
-import sun from 'pixelarticons/svg/sun.svg?raw';
-import moon from 'pixelarticons/svg/moon.svg?raw';
-import volume_3 from 'pixelarticons/svg/volume-3.svg?raw';
-import volume_x_solid from 'pixelarticons/svg/volume-x-solid.svg?raw';
-import menu from 'pixelarticons/svg/menu.svg?raw';
-import close from 'pixelarticons/svg/close.svg?raw';
-import chevron_down from 'pixelarticons/svg/chevron-down.svg?raw';
-import chevron_right from 'pixelarticons/svg/chevron-right.svg?raw';
-import arrow_bar_right from 'pixelarticons/svg/arrow-bar-right.svg?raw';
-import arrow_bar_left from 'pixelarticons/svg/arrow-bar-left.svg?raw';
-import github from 'pixelarticons/svg/github.svg?raw';
-import mail_open from 'pixelarticons/svg/mail-open.svg?raw';
-import rss from 'pixelarticons/svg/rss.svg?raw';
-import search from 'pixelarticons/svg/search.svg?raw';
-import clock from 'pixelarticons/svg/clock.svg?raw';
-import calendar_2 from 'pixelarticons/svg/calendar-2.svg?raw';
-import external_link from 'pixelarticons/svg/external-link.svg?raw';
-import copy from 'pixelarticons/svg/copy.svg?raw';
-import check from 'pixelarticons/svg/check.svg?raw';
-import book_open from 'pixelarticons/svg/book-open.svg?raw';
-import home from 'pixelarticons/svg/home.svg?raw';
-import sparkles from 'pixelarticons/svg/sparkles.svg?raw';
-import heart from 'pixelarticons/svg/heart.svg?raw';
-import info_box from 'pixelarticons/svg/info-box.svg?raw';
-import bug from 'pixelarticons/svg/bug.svg?raw';
-import link from 'pixelarticons/svg/link.svg?raw';
-import sliders from 'pixelarticons/svg/sliders.svg?raw';
-import zap from 'pixelarticons/svg/zap.svg?raw';
-import file_text from 'pixelarticons/svg/file-text.svg?raw';
-import star from 'pixelarticons/svg/star.svg?raw';
+/** A tiny hand-drawn icon set — hairline strokes, `currentColor`, no dependency. */
+
+const S = (body: string, size = 20) =>
+  `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" ` +
+  `stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${body}</svg>`;
 
 const REGISTRY: Record<string, string> = {
-  'sun': sun,
-  'moon': moon,
-  'volume-3': volume_3,
-  'volume-x-solid': volume_x_solid,
-  'menu': menu,
-  'close': close,
-  'chevron-down': chevron_down,
-  'chevron-right': chevron_right,
-  'arrow-bar-right': arrow_bar_right,
-  'arrow-bar-left': arrow_bar_left,
-  'github': github,
-  'mail-open': mail_open,
-  'rss': rss,
-  'search': search,
-  'clock': clock,
-  'calendar-2': calendar_2,
-  'external-link': external_link,
-  'copy': copy,
-  'check': check,
-  'book-open': book_open,
-  'home': home,
-  'sparkles': sparkles,
-  'heart': heart,
-  'info-box': info_box,
-  'bug': bug,
-  'link': link,
-  'sliders': sliders,
-  'zap': zap,
-  'file-text': file_text,
-  'star': star,
+  sun: '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>',
+  moon: '<path d="M20 14.2A8.4 8.4 0 1 1 9.8 4a6.8 6.8 0 0 0 10.2 10.2Z"/>',
+  menu: '<path d="M4 9h16M4 15h16"/>',
+  close: '<path d="M6 6l12 12M18 6L6 18"/>',
+  arrowRight: '<path d="M4 12h15M13.5 6.2 19.6 12l-6.1 5.8"/>',
+  arrowLeft: '<path d="M20 12H5M10.5 6.2 4.4 12l6.1 5.8"/>',
+  external: '<path d="M14 4h6v6M20 4l-8.5 8.5M18 14.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h4.5"/>',
+  search: '<circle cx="10.8" cy="10.8" r="6.2"/><path d="M15.4 15.4 20 20"/>',
+  copy: '<rect x="9" y="9" width="11" height="11" rx="1.4"/><path d="M15 5.6A1.6 1.6 0 0 0 13.4 4H5.6A1.6 1.6 0 0 0 4 5.6v7.8A1.6 1.6 0 0 0 5.6 15"/>',
+  check: '<path d="M4.5 12.6 9.5 17.5 19.5 6.8"/>',
+  rss: '<path d="M5 19h.01M4.8 11.4A8 8 0 0 1 12.6 19M4.8 5.6A14 14 0 0 1 18.4 19"/>',
 };
 
-/** Raw SVG markup for a pixel icon, sized and recoloured to `currentColor`. */
-export function icon(name: string, size = 16): string {
-  const svg = REGISTRY[name] ?? REGISTRY['info-box'];
-  return svg
-    .replace('<svg ', `<svg width="${size}" height="${size}" aria-hidden="true" focusable="false" `)
-    .replace(/fill="[^"]*"/g, 'fill="currentColor"');
+/** Raw SVG markup for an icon, drawn at `size` px and coloured by `currentColor`. */
+export function icon(name: string, size = 20): string {
+  return S(REGISTRY[name] ?? REGISTRY.external, size);
 }
 
 /** Replace every `[data-icon]` placeholder inside `root` with its SVG. */
@@ -78,6 +29,6 @@ export function hydrateIcons(root: ParentNode = document): void {
     const name = el.dataset.icon;
     if (!name || el.dataset.iconDone === name) return;
     el.dataset.iconDone = name;
-    el.innerHTML = icon(name, Number(el.dataset.iconSize ?? 16));
+    el.innerHTML = icon(name, Number(el.dataset.iconSize ?? 20));
   });
 }

@@ -2,8 +2,7 @@ import { defineConfig, type Plugin } from 'vite';
 import fs from 'node:fs';
 import path from 'node:path';
 import { marked } from 'marked';
-
-const SITE = 'https://ventaoo.github.io';
+import { site, SITE_URL } from './site.config';
 
 interface Post { slug: string; title: string; date: string; summary: string; tags: string[]; body: string }
 
@@ -34,7 +33,6 @@ function readPosts(): Post[] {
         body: fm ? raw.slice(fm[0].length) : raw,
       };
     })
-    .filter((p) => !/^draft:/m.test(p.title))
     .sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
@@ -48,7 +46,6 @@ const today = () => new Date().toISOString().slice(0, 10);
  * deep link with an HTTP 404, which stops search engines from indexing
  * anything but "/". So we emit a real `index.html` per route with its own
  * title, meta description, canonical and the article body inside <noscript>.
- * HTTP 200, correct previews, and something readable if JS never runs.
  */
 function renderShell(
   shell: string,
@@ -78,28 +75,34 @@ function renderShell(
   );
 }
 
+/** Fallback styling for the no-JS / crawler view — same paper palette. */
 const NOJS_CSS = `<style>
-  .nojs{max-width:720px;margin:0 auto;padding:80px 20px 64px;font-family:ui-monospace,Menlo,monospace;
-    line-height:1.7;color:#e9e7fb;background:#0a0a16}
-  .nojs a{color:#8ee9e6}
-  .nojs h1{font-size:24px;margin:0 0 8px}
-  .nojs h2{font-size:18px;margin:28px 0 10px;border-top:3px solid #3b3b78;padding-top:12px}
-  .nojs p,.nojs li{color:#c9c6e6}
-  .nojs ul{padding-left:20px}
-  .nojs code{background:#20204a;padding:1px 5px}
-  .nojs pre{background:#101024;border:3px solid #3b3b78;padding:12px;overflow-x:auto}
+  .nojs{max-width:680px;margin:0 auto;padding:88px 24px 64px;background:#f7f4ed;color:#4f4a3b;
+    font-family:Georgia,'Songti SC','Noto Serif CJK SC',serif;line-height:1.78;font-size:17px}
+  .nojs a{color:#a83f28}
+  .nojs h1{font-size:31px;font-weight:400;color:#191712;margin:0 0 6px;line-height:1.2}
+  .nojs h2{font-size:20px;font-weight:500;color:#191712;margin:34px 0 10px;padding-top:14px;
+    border-top:1px solid #ddd5c4}
+  .nojs h3{font-size:17px;color:#191712;margin:24px 0 8px}
+  .nojs p,.nojs li{color:#4f4a3b}
+  .nojs small,.nojs .dim{color:#6f6858}
+  .nojs ul,.nojs ol{padding-left:22px}
+  .nojs blockquote{margin:18px 0;padding-left:18px;border-left:2px solid #a83f28;font-style:italic}
+  .nojs code{background:#efeade;border:1px solid #e9e3d6;border-radius:3px;padding:1px 6px;font-size:14px}
+  .nojs pre{background:#efeade;border:1px solid #ddd5c4;border-radius:2px;padding:14px;overflow-x:auto}
+  .nojs pre code{background:none;border:0;padding:0}
 </style>`;
 
 function staticSitePlugin(): Plugin {
   return {
-    name: 'pixelverse-static',
+    name: 'vx-static',
     apply: 'build',
     closeBundle() {
       const dist = path.resolve(__dirname, 'dist');
       const shell = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
       const items = readPosts();
 
-      const url = (route: string) => SITE + (route === '/' ? '/' : `/${route}/`);
+      const url = (route: string) => SITE_URL + (route === '/' ? '/' : `/${route}/`);
       const page = (route: string, title: string, description: string, content: string, type = 'website') =>
         renderShell(shell, { title, description, content: NOJS_CSS + content, url: url(route), type });
 
@@ -109,7 +112,6 @@ function staticSitePlugin(): Plugin {
         fs.writeFileSync(path.join(dir, 'index.html'), html);
       };
 
-      // ── articles: real content in the HTML source ──
       for (const p of items) {
         const body = marked.parse(p.body, { async: false, gfm: true }) as string;
         const route = `blog/${p.slug}`;
@@ -117,46 +119,44 @@ function staticSitePlugin(): Plugin {
           route,
           page(
             route,
-            `${p.title} · VENTAOO`,
+            `${p.title} · ${site.name}`,
             p.summary,
             `<h1>${p.title}</h1><p><small>${p.date} · ${p.tags.join(' / ')}</small></p>${body}
-             <p><a href="/blog/">← 返回日志</a></p>`,
+             <p><a href="/blog/">← 返回${site.blog.title}</a></p>`,
             'article',
           ),
         );
       }
 
-      // ── the blog index ──
       write(
         'blog',
         page(
           'blog',
-          '日志 · VENTAOO',
-          `共 ${items.length} 篇文章：代码、实验与想法。`,
+          `${site.blog.title} · ${site.name}`,
+          site.blog.intro,
           items.length
-            ? `<h1>日志</h1><ul>${items
+            ? `<h1>${site.blog.title}</h1><ul>${items
                 .map((p) => `<li><a href="/blog/${p.slug}/">${p.title}</a> — <small>${p.date}</small><br>${p.summary}</li>`)
                 .join('')}</ul>`
-            : '<h1>日志</h1><p>还没有文章。</p>',
+            : `<h1>${site.blog.title}</h1><p>还没有文章。</p>`,
         ),
       );
 
-      // ── feed + sitemap ──
       const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>VENTAOO · 像素空间站</title>
-    <link>${SITE}/</link>
-    <description>像素风个人主页与博客：代码、实验与想法。</description>
+    <title>${xml(site.seo.title)}</title>
+    <link>${SITE_URL}/</link>
+    <description>${xml(site.seo.description)}</description>
     <language>zh-CN</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="${SITE}/rss.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml"/>
 ${items
   .map(
     (p) => `    <item>
       <title>${xml(p.title)}</title>
-      <link>${SITE}/blog/${p.slug}/</link>
-      <guid isPermaLink="true">${SITE}/blog/${p.slug}/</guid>
+      <link>${SITE_URL}/blog/${p.slug}/</link>
+      <guid isPermaLink="true">${SITE_URL}/blog/${p.slug}/</guid>
       <pubDate>${new Date(p.date + 'T00:00:00Z').toUTCString()}</pubDate>
       <description>${xml(p.summary)}</description>
 ${p.tags.map((t) => '      <category>' + xml(t) + '</category>').join('\n')}
@@ -173,7 +173,7 @@ ${p.tags.map((t) => '      <category>' + xml(t) + '</category>').join('\n')}
 ${urls
   .map(
     (u) =>
-      `  <url><loc>${SITE}${u}</loc><lastmod>${items.find((p) => u.includes(p.slug))?.date ?? today()}</lastmod><changefreq>${u === '/' ? 'weekly' : 'monthly'}</changefreq></url>`,
+      `  <url><loc>${SITE_URL}${u}</loc><lastmod>${items.find((p) => u.includes(p.slug))?.date ?? today()}</lastmod><changefreq>${u === '/' ? 'weekly' : 'monthly'}</changefreq></url>`,
   )
   .join('\n')}
 </urlset>
@@ -181,7 +181,7 @@ ${urls
 
       fs.writeFileSync(path.join(dist, 'rss.xml'), rss);
       fs.writeFileSync(path.join(dist, 'sitemap.xml'), sitemap);
-      fs.writeFileSync(path.join(dist, 'robots.txt'), 'User-agent: *\nAllow: /\n\nSitemap: ' + SITE + '/sitemap.xml\n');
+      fs.writeFileSync(path.join(dist, 'robots.txt'), 'User-agent: *\nAllow: /\n\nSitemap: ' + SITE_URL + '/sitemap.xml\n');
 
       this.info(`static: ${items.length + 1} route files · rss.xml · sitemap.xml · robots.txt`);
     },

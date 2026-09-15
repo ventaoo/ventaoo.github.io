@@ -1,89 +1,86 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="night" data-palette="dusk">
+<html lang="zh-CN" data-theme="light" data-accent="vermillion">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#0a0a16" />
-    <title>VENTAOO · 像素空间站</title>
-    <meta name="description" content="像素风个人主页与博客：代码、实验与想法。" />
+    <meta name="theme-color" content="#f7f4ed" />
+    <title>VENTAOO · 写作与造物</title>
+    <meta name="description" content="VENTAOO 的个人主页与博客：代码、实验与想法。" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="VENTAOO · 像素空间站" />
-    <meta property="og:description" content="像素风个人主页与博客：代码、实验与想法。" />
+    <meta property="og:title" content="VENTAOO · 写作与造物" />
+    <meta property="og:description" content="VENTAOO 的个人主页与博客：代码、实验与想法。" />
     <script>
       // Apply saved preferences before the first paint to avoid a flash.
       (function () {
         document.documentElement.classList.add('js');
         try {
-          var s = JSON.parse(localStorage.getItem('pv:settings') || '{}');
+          var s = JSON.parse(localStorage.getItem('vx:settings') || '{}');
           if (s.theme) document.documentElement.dataset.theme = s.theme;
-          if (s.palette) document.documentElement.dataset.palette = s.palette;
-          if (s.crt === false) document.documentElement.dataset.crt = 'off';
+          if (s.accent) document.documentElement.dataset.accent = s.accent;
         } catch (e) {}
       })();
     </script>
   </head>
   <body>
-    <!-- persistent pixel world -->
-    <canvas id="world" class="world" aria-hidden="true"></canvas>
-    <div class="world-tint" aria-hidden="true"></div>
+    <a class="skip" href="#view">跳到正文</a>
 
-    <!-- CRT overlay -->
-    <div class="crt" aria-hidden="true">
-      <div class="crt__scan"></div>
-      <div class="crt__vignette"></div>
-      <div class="crt__glow"></div>
-    </div>
+    <!-- slow drifting ink wash behind everything -->
+    <canvas id="atmosphere" class="atmosphere" aria-hidden="true"></canvas>
+    <div class="grain" aria-hidden="true"></div>
 
-    <!-- boot sequence -->
-    <div class="boot" id="boot" aria-hidden="true">
-      <div class="boot__inner">
-        <div class="boot__log" id="boot-log"></div>
-        <div class="boot__bar"><i id="boot-bar"></i></div>
-        <div class="boot__hint">点击跳过 · CLICK TO SKIP</div>
-      </div>
-    </div>
-
-    <!-- scroll progress -->
     <div class="progress" aria-hidden="true"><i id="scroll-fill"></i></div>
 
-    <header class="topbar" id="topbar">
-      <a class="brand" href="/" data-link>
-        <span class="brand__mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-        <span class="brand__text"><span id="brand-name">VENTAOO</span><em id="brand-suffix"></em></span>
-      </a>
+    <header class="masthead" id="masthead">
+      <div class="masthead__inner">
+        <a class="wordmark" href="/" data-link>
+          <span id="brand-name">VENTAOO</span><em id="brand-suffix"></em>
+        </a>
 
-      <nav class="nav" id="nav" aria-label="主导航">
-        <a href="/" data-link data-nav="home">首页</a>
-        <a href="/blog" data-link data-nav="blog">日志</a>
-      </nav>
+        <nav class="nav" id="nav" aria-label="主导航">
+          <a href="/" data-link data-nav="home">首页</a>
+          <a href="/blog" data-link data-nav="blog">日志</a>
+        </nav>
 
-      <div class="controls">
-        <button class="ctl" id="ctl-theme" title="切换昼夜 (T)" aria-label="切换昼夜"><span data-icon="moon"></span></button>
-        <button class="ctl" id="ctl-palette" title="换配色 (P)" aria-label="切换配色"><span data-icon="sliders"></span></button>
-        <button class="ctl" id="ctl-sound" title="音效 (M)" aria-label="切换音效"><span data-icon="volume-3"></span></button>
-        <button class="ctl ctl--menu" id="ctl-menu" title="菜单" aria-label="菜单"><span data-icon="menu"></span></button>
+        <div class="controls">
+          <div class="swatches" role="group" aria-label="强调色">
+            <button class="swatch" data-accent="vermillion" title="朱砂" aria-label="朱砂"></button>
+            <button class="swatch" data-accent="indigo" title="靛青" aria-label="靛青"></button>
+            <button class="swatch" data-accent="moss" title="苔绿" aria-label="苔绿"></button>
+            <button class="swatch" data-accent="ochre" title="赭石" aria-label="赭石"></button>
+          </div>
+          <button class="ctl" id="ctl-theme" title="切换深浅色 (T)" aria-label="切换深浅色">
+            <span data-icon="moon"></span>
+          </button>
+          <button class="ctl ctl--menu" id="ctl-menu" title="菜单" aria-label="菜单">
+            <span data-icon="menu"></span>
+          </button>
+        </div>
       </div>
     </header>
 
     <main id="view" class="view"></main>
 
-    <footer class="footer">
-      <div class="shell footer__inner">
-        <span>© <span id="year"></span> <span id="footer-name">VENTAOO</span></span>
-        <span class="footer__hint">按 <kbd>?</kbd> 查看快捷键</span>
-        <span class="footer__note" id="footer-note"></span>
+    <footer class="colophon">
+      <div class="shell colophon__inner">
+        <p class="colophon__line">
+          © <span id="year"></span> <span id="footer-name">VENTAOO</span> · <span id="footer-note"></span>
+        </p>
+        <p class="colophon__meta">
+          <span id="colophon-note"></span> · 按 <kbd>?</kbd> 查看快捷键
+        </p>
       </div>
     </footer>
 
-    <button class="to-top" id="btn-top" aria-label="回到顶部" title="回到顶部"><span data-icon="arrow-bar-left" data-icon-size="16"></span></button>
+    <button class="to-top" id="btn-top" aria-label="回到顶部" title="回到顶部">↑</button>
 
     <div class="toasts" id="toasts" aria-live="polite"></div>
-    <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 
     <div class="modal" id="modal" hidden>
-      <div class="modal__panel panel">
-        <button class="modal__close" id="modal-close" aria-label="关闭">✕</button>
+      <div class="modal__panel">
+        <button class="modal__close" id="modal-close" aria-label="关闭">
+          <span data-icon="close" data-icon-size="18"></span>
+        </button>
         <div id="modal-body"></div>
       </div>
     </div>

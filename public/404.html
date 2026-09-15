@@ -1,27 +1,32 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <title>Warping…</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>正在跳转…</title>
     <style>
-      html,body{margin:0;height:100%;background:#0b0b14;color:#4ecdc4;
-        font-family:ui-monospace,Menlo,Consolas,monospace;display:grid;place-items:center}
-      .b{text-align:center;font-size:14px;letter-spacing:2px}
-      .bar{margin-top:14px;width:220px;height:14px;border:3px solid #3d3d6b;padding:3px}
-      .bar i{display:block;height:100%;width:40%;background:#4ecdc4;animation:go 1s steps(6) infinite}
-      @keyframes go{0%{width:10%}100%{width:100%}}
+      html, body { margin: 0; height: 100%; background: #f7f4ed; color: #4f4a3b;
+        font-family: Georgia, 'Songti SC', 'Noto Serif CJK SC', serif;
+        display: grid; place-items: center; }
+      .b { text-align: center; line-height: 1.8; }
+      .b b { display: block; font-weight: 400; font-size: 26px; color: #191712; margin-bottom: 6px; }
+      .b span { font-size: 14px; color: #6f6858; }
+      .bar { margin: 18px auto 0; width: 180px; height: 1px; background: #ddd5c4; overflow: hidden; }
+      .bar i { display: block; height: 100%; width: 40%; background: #a83f28;
+        animation: go 1.1s cubic-bezier(.16,1,.3,1) infinite; }
+      @keyframes go { 0% { transform: translateX(-100%) } 100% { transform: translateX(350%) } }
     </style>
   </head>
   <body>
     <div class="b">
-      <div>404 · REROUTING SIGNAL</div>
+      <b>正在跳转</b>
+      <span>这个地址没有对应文件，正在回到首页。</span>
       <div class="bar"><i></i></div>
     </div>
     <script>
       (function () {
         var path = location.pathname + location.search + location.hash;
-        try { sessionStorage.setItem('pv:redirect', path); } catch (e) {}
+        try { sessionStorage.setItem('vx:redirect', path); } catch (e) {}
         location.replace('/');
       })();
     </script>

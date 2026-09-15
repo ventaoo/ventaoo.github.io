@@ -53,6 +53,8 @@
 - 代码块高亮 + 一键复制
 - 相关文章、上一篇 / 下一篇
 - 构建时生成 `rss.xml` / `sitemap.xml` / `robots.txt`
+- **每个路由都会生成真实的静态 HTML**（正确的 title / description / Open Graph，
+  以及 `<noscript>` 里的正文），所以深链接返回的是 HTTP 200 而不是 404 —— 搜索引擎能正常收录
 
 ## 技术栈
 

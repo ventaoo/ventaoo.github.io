@@ -49,8 +49,8 @@ h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
 }
 
-a { color: var(--a3); text-decoration: none; }
-a:hover { color: var(--a1); }
+a { color: var(--a3i); text-decoration: none; }
+a:hover { color: var(--a1i); }
 
 p { text-wrap: pretty; }
 

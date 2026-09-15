@@ -238,14 +238,20 @@ for (const theme of ['night', 'day']) {
     // them through a throwaway element to get a real rgb() triple.
     const probeEl = document.createElement('span');
     document.body.appendChild(probeEl);
+    const toRGB = (str) => {
+      const nums = (str.match(/-?[\d.]+(?:e-?\d+)?/gi) || []).map(Number);
+      // Chrome serialises color-mix() results as "color(srgb r g b)" with 0..1 parts
+      if (/^color\(/.test(str)) return [nums[0] * 255, nums[1] * 255, nums[2] * 255];
+      return nums.slice(0, 3);
+    };
     const parse = (name) => {
       probeEl.style.color = 'var(' + name + ')';
       const resolved = getComputedStyle(probeEl).color;
       probeEl.removeAttribute('style');
       probeEl.style.color = resolved;
-      return getComputedStyle(probeEl).color.match(/\d+/g).slice(0, 3).map(Number);
+      return toRGB(getComputedStyle(probeEl).color);
     };
-    const raw = (s) => s.match(/\d+/g).slice(0, 3).map(Number);
+    const raw = (s) => toRGB(s);
     const lum = ([r, g, b]) => {
       const f = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
       return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
@@ -254,13 +260,23 @@ for (const theme of ['night', 'day']) {
     const text = raw(cs.color);
     const bg = parse('--bg');
     const dim = parse('--text-dim');
-    const acc = parse('--a1');
+    const mute = parse('--text-mute');
+    const acc = parse('--a1i');
+    const accVivid = parse('--a1');
     probeEl.remove();
-    return { body: +ratio(text, bg).toFixed(2), dim: +ratio(dim, bg).toFixed(2), accent: +ratio(acc, bg).toFixed(2) };
+    return {
+      body: +ratio(text, bg).toFixed(2),
+      dim: +ratio(dim, bg).toFixed(2),
+      mute: +ratio(mute, bg).toFixed(2),
+      accent: +ratio(acc, bg).toFixed(2),
+      vivid: +ratio(accVivid, bg).toFixed(2),
+    };
   });
   check('contrast body text (' + theme + ')', contrast.body >= 7, 'ratio ' + contrast.body);
   check('contrast dim text (' + theme + ')', contrast.dim >= 4.5, 'ratio ' + contrast.dim);
-  check('contrast accent (' + theme + ')', contrast.accent >= 3, 'ratio ' + contrast.accent);
+  check('contrast muted text (' + theme + ')', contrast.mute >= 4.5, 'ratio ' + contrast.mute);
+  check('contrast accent-as-text (' + theme + ')', contrast.accent >= 4.5, 'ratio ' + contrast.accent);
+  check('vivid accent stays graphical (' + theme + ')', contrast.vivid >= 1, 'ratio ' + contrast.vivid);
 }
 
 // mobile layout

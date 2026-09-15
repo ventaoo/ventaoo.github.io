@@ -98,8 +98,8 @@ body.pixel-cursor input, body.pixel-cursor textarea { cursor: none; }
 }
 .marquee__track { display: inline-flex; gap: 28px; animation: marquee 26s linear infinite; font-family: var(--font-head); font-size: 13px; color: var(--text-dim); }
 .marquee:hover .marquee__track { animation-play-state: paused; }
-.marquee__track b { color: var(--a1); }
-.marquee__track i { color: var(--a2); font-style: normal; }
+.marquee__track b { color: var(--a1i); }
+.marquee__track i { color: var(--a2i); font-style: normal; }
 @keyframes marquee { to { transform: translateX(-50%) } }
 
 /* ── FLOAT / BOB ──────────────────────────────────────────────────────── */

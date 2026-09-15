@@ -89,9 +89,14 @@ npm run typecheck  # tsc --noEmit
 
 ```bash
 npm run preview &
-npm run verify     # 截图 + ASCII 构图图 + 28 项断言
+npm run verify     # 截图 + ASCII 构图图 + 32 项断言（交互 / 无障碍 / 布局）
 npm run shot       # 只截图，输出到 shots/
+npm run contrast   # 两个主题下所有文字与强调色的对比度实测
 ```
+
+断言覆盖：每个路由能渲染、像素世界确实在画、视差随滚动变化、滚动显现触发、
+终端命令有响应、标签筛选与搜索生效、404 兜底、科乐美秘技、客户端路由、
+横向不溢出（桌面 + 手机）、以及 WCAG AA 对比度。
 
 ## 目录结构
 

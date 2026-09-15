@@ -10,7 +10,8 @@
     "preview": "vite preview --port 4173 --strictPort",
     "typecheck": "tsc --noEmit",
     "shot": "node scripts/screenshot.mjs",
-    "verify": "node scripts/verify.mjs"
+    "verify": "node scripts/verify.mjs",
+    "contrast": "node scripts/contrast.mjs"
   },
   "dependencies": {
     "@fontsource/press-start-2p": "^5.3.0",

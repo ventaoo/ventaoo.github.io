@@ -28,6 +28,16 @@
   --t-slow: 340ms;
   --ease-step: steps(4, end);
 
+  /* ---- accent "ink" variants ------------------------------------------- *
+   * --aN is the vivid palette colour (fills, borders, glows).               *
+   * --aNi is the same hue tuned to stay readable as TEXT on --bg, which     *
+   * matters because the day theme has a light background.                   */
+  --a1i: var(--a1); --a2i: var(--a2); --a3i: var(--a3);
+  --a4i: var(--a4); --a5i: var(--a5); --a6i: var(--a6);
+  /* foreground for the --line surface (a mid-tone in BOTH themes, so it    *
+   * always wants light text on top)                                        */
+  --on-line: #f2f1ff;
+
   /* ---- layout ---------------------------------------------------------- */
   --shell: 1180px;
   --gutter: clamp(16px, 4vw, 48px);
@@ -58,7 +68,7 @@
   --line-2: #262650;
   --text: #eae8fc;
   --text-dim: #a7a4d4;
-  --text-mute: #6f6ca4;
+  --text-mute: #8582bd;
   --shadow: #04040c;
   --glass: rgba(8, 8, 20, 0.55);
   --grid-line: rgba(120, 120, 220, 0.07);
@@ -77,7 +87,7 @@
   --line-2: #b6bbe6;
   --text: #14143a;
   --text-dim: #3f4080;
-  --text-mute: #7376ac;
+  --text-mute: #5a5d94;
   --shadow: #8e95d6;
   --glass: rgba(255, 255, 255, 0.62);
   --grid-line: rgba(60, 60, 140, 0.07);
@@ -120,6 +130,16 @@
   --a5: #ffc94d; --a6: #ff9500;
   --sky-a: #120c00; --sky-b: #2e1f00; --sky-c: #5c3d00;
   --sun: #ffe0a0; --sun-glow: #ffb000; --star: #ffd479;
+}
+
+/* ── DAY THEME: darken every accent so it reads as text on a light bg ── */
+[data-theme='day'] {
+  --a1i: color-mix(in srgb, var(--a1) 38%, #101028);
+  --a2i: color-mix(in srgb, var(--a2) 55%, #2a0a12);
+  --a3i: color-mix(in srgb, var(--a3) 30%, #06202a);
+  --a4i: color-mix(in srgb, var(--a4) 55%, #1a0c2e);
+  --a5i: color-mix(in srgb, var(--a5) 32%, #10240f);
+  --a6i: color-mix(in srgb, var(--a6) 45%, #2a1400);
 }
 
 /* ── DAYTIME SKY (the world canvas reads these) ──────────────────────── */

@@ -1,53 +1,56 @@
 /* ============================================================================
-   PIXELVERSE — design tokens
-   Two axes:  data-theme = night | day      (structure & contrast)
-              data-palette = dusk | gameboy | vapor | amber   (colour story)
+   Design tokens.  Two axes:
+     data-theme   = night | day                          (structure / contrast)
+     data-palette = dusk | gameboy | vapor | amber       (colour story)
    ========================================================================= */
 
 :root {
-  /* ---- pixel geometry -------------------------------------------------- */
-  --px: 4px;            /* the atomic pixel unit for borders & shadows */
-  --px-2: 8px;
-  --radius: 0px;        /* pixels are never round */
+  /* pixel geometry */
+  --px: 4px;
+  --px-2: 6px;
 
-  /* ---- type ------------------------------------------------------------ */
+  /* type */
   --font-display: 'Press Start 2P', 'Silkscreen', monospace;
   --font-head: 'Silkscreen', 'Press Start 2P', monospace;
-  --font-body: 'VT323', 'Silkscreen', monospace;
-  --font-mono: 'VT323', ui-monospace, Menlo, Consolas, monospace;
+  --font-body: 'VT323', ui-monospace, Menlo, monospace;
 
-  --fs-body: clamp(17px, 1.05vw + 13px, 21px);
-  --fs-sm: clamp(14px, 0.6vw + 12px, 16px);
-  --fs-h1: clamp(28px, 5.2vw, 62px);
-  --fs-h2: clamp(20px, 2.4vw, 32px);
-  --fs-h3: clamp(17px, 1.4vw, 22px);
+  --fs-body: clamp(16px, 0.85vw + 12px, 19px);
+  --fs-sm: clamp(13px, 0.5vw + 11px, 15px);
+  --fs-name: clamp(26px, 5.4vw, 54px);
+  --fs-h2: clamp(18px, 1.9vw, 26px);
+  --fs-h3: clamp(16px, 1.2vw, 20px);
+  --fs-post: clamp(16px, 0.9vw + 12px, 19px);
 
-  /* ---- motion ---------------------------------------------------------- */
+  /* motion */
   --t-fast: 90ms;
-  --t-mid: 180ms;
-  --t-slow: 340ms;
+  --t-mid: 170ms;
+  --t-slow: 300ms;
   --ease-step: steps(4, end);
 
-  /* ---- accent "ink" variants ------------------------------------------- *
-   * --aN is the vivid palette colour (fills, borders, glows).               *
-   * --aNi is the same hue tuned to stay readable as TEXT on --bg, which     *
-   * matters because the day theme has a light background.                   */
-  --a1i: var(--a1); --a2i: var(--a2); --a3i: var(--a3);
-  --a4i: var(--a4); --a5i: var(--a5); --a6i: var(--a6);
-  /* foreground for the --line surface (a mid-tone in BOTH themes, so it    *
-   * always wants light text on top)                                        */
+  /* Accent "ink" variants: --aN is the vivid palette colour used for fills and
+     borders, --aNi is the same hue pushed toward --ink-tint so it is always
+     readable as TEXT on --bg. --ink-mix is how much of the raw accent to keep;
+     a palette with intrinsically dark colours (Game Boy) raises it so its text
+     does not disappear into a dark background. */
+  --ink-tint: #ffffff;
+  --ink-mix: 100%;
+  --a1i: color-mix(in srgb, var(--a1) var(--ink-mix), var(--ink-tint));
+  --a2i: color-mix(in srgb, var(--a2) var(--ink-mix), var(--ink-tint));
+  --a3i: color-mix(in srgb, var(--a3) var(--ink-mix), var(--ink-tint));
+  --a4i: color-mix(in srgb, var(--a4) var(--ink-mix), var(--ink-tint));
+  --a5i: color-mix(in srgb, var(--a5) var(--ink-mix), var(--ink-tint));
+  --a6i: color-mix(in srgb, var(--a6) var(--ink-mix), var(--ink-tint));
+  /* foreground for the mid-tone --line surface (light in both themes) */
   --on-line: #f2f1ff;
 
-  /* ---- layout ---------------------------------------------------------- */
-  --shell: 1180px;
-  --gutter: clamp(16px, 4vw, 48px);
-  --topbar-h: 60px;
+  /* layout */
+  --shell: 940px;
+  --gutter: clamp(18px, 5vw, 44px);
+  --topbar-h: 56px;
 
-  /* ---- z-index ladder --------------------------------------------------- */
   --z-world: 0;
   --z-content: 10;
   --z-topbar: 40;
-  --z-hud: 50;
   --z-toast: 60;
   --z-modal: 70;
   --z-crt: 80;
@@ -61,7 +64,7 @@
   --ink: #05050e;
   --bg: #0a0a16;
   --bg-2: #10101f;
-  --panel: rgba(18, 18, 40, 0.82);
+  --panel: rgba(18, 18, 40, 0.78);
   --panel-solid: #12122a;
   --panel-2: #1b1b3a;
   --line: #3b3b78;
@@ -71,7 +74,6 @@
   --text-mute: #8582bd;
   --shadow: #04040c;
   --glass: rgba(8, 8, 20, 0.55);
-  --grid-line: rgba(120, 120, 220, 0.07);
   color-scheme: dark;
 }
 
@@ -80,7 +82,7 @@
   --ink: #f7f8ff;
   --bg: #d9e0fb;
   --bg-2: #eaefff;
-  --panel: rgba(255, 255, 255, 0.86);
+  --panel: rgba(255, 255, 255, 0.84);
   --panel-solid: #fbfbff;
   --panel-2: #ecefff;
   --line: #5f65ad;
@@ -90,71 +92,49 @@
   --text-mute: #5a5d94;
   --shadow: #8e95d6;
   --glass: rgba(255, 255, 255, 0.62);
-  --grid-line: rgba(60, 60, 140, 0.07);
+
+  /* on a light background every accent is darkened instead */
+  --ink-tint: #0e1024;
+  --ink-mix: 32%;
   color-scheme: light;
 }
 
-/* ── PALETTE: DUSK (default) ─────────────────────────────────────────── */
+/* ── PALETTES ────────────────────────────────────────────────────────── */
 :root,
 [data-palette='dusk'] {
-  --a1: #ffd23f;   /* coin gold    */
-  --a2: #ff5d73;   /* damage coral */
-  --a3: #3ddad7;   /* mana cyan    */
-  --a4: #a06cd5;   /* arcane violet*/
-  --a5: #7ee081;   /* xp lime      */
-  --a6: #ff9f45;   /* ember orange */
+  --a1: #ffd23f; --a2: #ff5d73; --a3: #3ddad7; --a4: #a06cd5; --a5: #7ee081; --a6: #ff9f45;
   --sky-a: #171735; --sky-b: #3b2450; --sky-c: #6b3a6e;
-  --sun: #ffe9a8;  --sun-glow: #ffb347;
-  --star: #ffffff;
+  color-scheme: dark;
 }
-
-/* ── PALETTE: GAMEBOY ────────────────────────────────────────────────── */
 [data-palette='gameboy'] {
-  --a1: #9bbc0f; --a2: #8bac0f; --a3: #306230; --a4: #0f380f;
-  --a5: #9bbc0f; --a6: #8bac0f;
+  --a1: #9bbc0f; --a2: #8bac0f; --a3: #306230; --a4: #0f380f; --a5: #9bbc0f; --a6: #8bac0f;
   --sky-a: #0f380f; --sky-b: #306230; --sky-c: #8bac0f;
-  --sun: #e0f8a0; --sun-glow: #9bbc0f; --star: #e0f8a0;
 }
-
-/* ── PALETTE: VAPOR ──────────────────────────────────────────────────── */
 [data-palette='vapor'] {
-  --a1: #ff71ce; --a2: #ff3864; --a3: #01cdfe; --a4: #b967ff;
-  --a5: #05ffa1; --a6: #fffb96;
+  --a1: #ff71ce; --a2: #ff3864; --a3: #01cdfe; --a4: #b967ff; --a5: #05ffa1; --a6: #fffb96;
   --sky-a: #1a0b2e; --sky-b: #4a1e6e; --sky-c: #b967ff;
-  --sun: #fffb96; --sun-glow: #ff71ce; --star: #ffffff;
 }
-
-/* ── PALETTE: AMBER (terminal) ───────────────────────────────────────── */
 [data-palette='amber'] {
-  --a1: #ffb000; --a2: #ff7b00; --a3: #ffd479; --a4: #cc8800;
-  --a5: #ffc94d; --a6: #ff9500;
+  --a1: #ffb000; --a2: #ff7b00; --a3: #ffd479; --a4: #cc8800; --a5: #ffc94d; --a6: #ff9500;
   --sky-a: #120c00; --sky-b: #2e1f00; --sky-c: #5c3d00;
-  --sun: #ffe0a0; --sun-glow: #ffb000; --star: #ffd479;
 }
 
-/* ── DAY THEME: darken every accent so it reads as text on a light bg ── */
-[data-theme='day'] {
-  --a1i: color-mix(in srgb, var(--a1) 38%, #101028);
-  --a2i: color-mix(in srgb, var(--a2) 55%, #2a0a12);
-  --a3i: color-mix(in srgb, var(--a3) 30%, #06202a);
-  --a4i: color-mix(in srgb, var(--a4) 55%, #1a0c2e);
-  --a5i: color-mix(in srgb, var(--a5) 32%, #10240f);
-  --a6i: color-mix(in srgb, var(--a6) 45%, #2a1400);
-}
+/* Game Boy's palette is intrinsically dark, so on the dark theme its text
+   variants are lifted much further toward white. */
+[data-theme='night'][data-palette='gameboy'] { --ink-tint: #ffffff; --ink-mix: 40%; }
 
-/* ── DAYTIME SKY (the world canvas reads these) ──────────────────────── */
-[data-theme='day'] {
-  --sky-a: #5fb0ee; --sky-b: #a9d9f7; --sky-c: #ffe2b0;
-  --sun: #fff4c2; --sun-glow: #ffd166; --star: #ffffff;
-}
-[data-theme='day'][data-palette='gameboy'] { --sky-a: #7a9a1a; --sky-b: #a8c33f; --sky-c: #d7e79a; --sun: #f4ffd0; --sun-glow: #9bbc0f; }
-[data-theme='day'][data-palette='vapor'] { --sky-a: #ff9ad5; --sky-b: #ffd0ee; --sky-c: #b6f2ff; --sun: #fffb96; --sun-glow: #ff71ce; }
-[data-theme='day'][data-palette='amber'] { --sky-a: #f2b24d; --sky-b: #ffd89a; --sky-c: #fff0cf; --sun: #fff8e0; --sun-glow: #ffb000; }
+/* daytime sky — the world canvas reads these */
+[data-theme='day'] { --sky-a: #5fb0ee; --sky-b: #a9d9f7; --sky-c: #ffe2b0; }
+[data-theme='day'][data-palette='gameboy'] { --sky-a: #7a9a1a; --sky-b: #a8c33f; --sky-c: #d7e79a; }
+[data-theme='day'][data-palette='vapor'] { --sky-a: #ff9ad5; --sky-b: #ffd0ee; --sky-c: #b6f2ff; }
+[data-theme='day'][data-palette='amber'] { --sky-a: #f2b24d; --sky-b: #ffd89a; --sky-c: #fff0cf; }
 
-/* ── PARTY MODE (konami easter egg) ──────────────────────────────────── */
+/* ── PARTY MODE (konami) ─────────────────────────────────────────────── */
+/* Party mode is a joke, but the text still has to be readable — so the
+   accents stay brightened versions rather than raw RGB primaries. */
 [data-party='on'] {
-  --a1: #ff0000; --a2: #00ff00; --a3: #0000ff; --a4: #ffff00;
-  --a5: #ff00ff; --a6: #00ffff;
+  --a1: #ff5c5c; --a2: #5cff5c; --a3: #5c8cff; --a4: #ffff5c; --a5: #ff5cff; --a6: #5cffff;
   animation: party-hue 1.1s steps(12) infinite;
 }
+[data-theme='night'][data-party='on'] { --ink-tint: #ffffff; --ink-mix: 62%; }
 @keyframes party-hue { to { filter: hue-rotate(360deg); } }

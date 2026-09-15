@@ -1,18 +1,16 @@
-/** History-API router with view mounting, teardown and a one-frame glitch transition. */
+/** History-API router: three routes, view mounting, teardown, glitch transition. */
 import { $, $$, on } from './dom';
 import { chip } from './audio';
 import { bindReveals } from '../fx/reveal';
 import { bindParallax } from '../fx/parallax';
 import { hydrateIcons } from './icons';
-import { visitPage } from './gamification';
+import { site } from '../../site.config';
 
 export interface View {
   title: string;
   html: string;
-  /** Called after the HTML is in the DOM. May return a teardown function. */
+  /** Called once the markup is in the DOM; may return a teardown function. */
   mount?: (root: HTMLElement) => void | (() => void);
-  /** Called once the view has been painted and scrolled into place. */
-  after?: () => void;
 }
 
 export interface Ctx {
@@ -23,11 +21,11 @@ export interface Ctx {
 
 type Handler = (ctx: Ctx) => View;
 
-interface Route { pattern: string; keys: string[]; test: RegExp; handler: Handler; page: string }
+interface Route { keys: string[]; test: RegExp; handler: Handler; nav: string }
 
 const routes: Route[] = [];
 
-export function route(pattern: string, handler: Handler, page = ''): void {
+export function route(pattern: string, handler: Handler, nav = ''): void {
   const keys: string[] = [];
   const test = new RegExp(
     '^' +
@@ -36,11 +34,10 @@ export function route(pattern: string, handler: Handler, page = ''): void {
         .replace(/:([A-Za-z0-9_]+)/g, (_m, k: string) => {
           keys.push(k);
           return '([^/]+)';
-        })
-        .replace(/\*/g, '.*') +
+        }) +
       '/?$',
   );
-  routes.push({ pattern, keys, test, handler, page });
+  routes.push({ keys, test, handler, nav });
 }
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -55,26 +52,22 @@ export function normalize(pathname: string): string {
 }
 
 let teardown: (() => void) | null = null;
-let currentPage = '';
+let currentNav = '';
 
-function match(path: string): { handler: Handler; params: Record<string, string>; page: string } | null {
+function match(path: string): { handler: Handler; params: Record<string, string>; nav: string } | null {
   for (const r of routes) {
     const m = r.test.exec(path);
     if (!m) continue;
     const params: Record<string, string> = {};
     r.keys.forEach((k, i) => (params[k] = decodeURIComponent(m[i + 1] ?? '')));
-    return { handler: r.handler, params, page: r.page };
+    return { handler: r.handler, params, nav: r.nav };
   }
   return null;
 }
 
-function setActiveNav(page: string): void {
-  $$<HTMLAnchorElement>('[data-nav]').forEach((a) => a.classList.toggle('is-active', a.dataset.nav === page));
-}
-
 function glitch(): void {
   document.body.classList.add('glitching');
-  window.setTimeout(() => document.body.classList.remove('glitching'), 430);
+  window.setTimeout(() => document.body.classList.remove('glitching'), 400);
 }
 
 export function render(target?: string): void {
@@ -88,16 +81,15 @@ export function render(target?: string): void {
   teardown = null;
 
   const ctx: Ctx = { path, query: url.searchParams, params: found?.params ?? {} };
-  const view: View = found ? found.handler(ctx) : notFound(path);
+  const view: View = found ? found.handler(ctx) : notFound();
 
   viewEl.innerHTML = view.html;
   document.title = view.title;
 
-  const page = found?.page ?? '404';
-  if (page !== currentPage) {
-    currentPage = page;
-    setActiveNav(page);
-    if (page !== '404') visitPage(page);
+  const nav = found?.nav ?? '';
+  if (nav !== currentNav) {
+    currentNav = nav;
+    $$<HTMLAnchorElement>('[data-nav]').forEach((a) => a.classList.toggle('is-active', a.dataset.nav === nav));
   }
 
   hydrateIcons(viewEl);
@@ -106,51 +98,42 @@ export function render(target?: string): void {
   const result = view.mount?.(viewEl);
   teardown = typeof result === 'function' ? result : null;
 
-  // keep the HUD/footer counters honest
-  document.dispatchEvent(new CustomEvent('pv:view'));
-
-  requestAnimationFrame(() => {
-    view.after?.();
-    if (!ctx.query.has('keep-scroll')) window.scrollTo({ top: 0, behavior: 'auto' });
-  });
+  requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'auto' }));
 }
 
-function notFound(path: string): View {
+function notFound(): View {
   return {
-    title: '404 · 信号丢失 — VENTAOO',
-    html: `<div class="page"><div class="page__inner">
+    title: `404 · ${site.name}`,
+    html: `<div class="page"><div class="shell">
       <div class="empty">
         <div class="empty__code">404</div>
-        <div class="empty__msg">这个坐标上没有东西</div>
-        <p class="empty__hint">${path ? `找不到 <code>${path.replace(/[<>&]/g, '')}</code>` : '页面不存在'}</p>
-        <a class="btn btn--primary" href="/" data-link>返回基地</a>
+        <p class="empty__hint">这个坐标上没有东西。</p>
+        <a class="btn btn--primary" href="/" data-link>返回首页</a>
       </div>
     </div></div>`,
   };
 }
 
-export function navigate(to: string, opts: { replace?: boolean; silent?: boolean } = {}): void {
+export function navigate(to: string, opts: { replace?: boolean } = {}): void {
   const target = new URL(to, location.origin);
-  const same = normalize(target.pathname) === normalize(location.pathname) && target.search === location.search;
-  if (same) {
+  if (normalize(target.pathname) === normalize(location.pathname) && target.search === location.search) {
     render();
     return;
   }
   if (opts.replace) history.replaceState({}, '', target);
   else history.pushState({}, '', target);
-  if (!opts.silent) chip.warp();
+  chip.warp();
   glitch();
   render();
 }
 
 export function startRouter(): void {
-  // Intercept in-site links.
   on(document, 'click', (ev: MouseEvent) => {
     const el = (ev.target as Element | null)?.closest?.('a');
-    if (!el) return;
-    const href = el.getAttribute('href');
-    if (!href) return;
-    if (el.hasAttribute('target') || el.hasAttribute('download') || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button !== 0) return;
+    const href = el?.getAttribute('href');
+    if (!el || !href) return;
+    if (el.hasAttribute('target') || el.hasAttribute('download')) return;
+    if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button !== 0) return;
     if (href.startsWith('mailto:') || href.startsWith('tel:')) return;
     if (href.startsWith('#')) {
       const target = document.querySelector(href);
@@ -162,7 +145,8 @@ export function startRouter(): void {
     }
     const url = new URL(href, location.origin);
     if (url.origin !== location.origin) return;
-    if (url.pathname.startsWith('/assets/') || /\.(xml|txt|png|jpe?g|svg|webp|ico|json|pdf)$/i.test(url.pathname)) return;
+    if (/^\/assets\//.test(url.pathname)) return;
+    if (/\.(xml|txt|png|jpe?g|svg|webp|ico|json|pdf)$/i.test(url.pathname)) return;
     ev.preventDefault();
     navigate(url.pathname + url.search + url.hash);
   });
@@ -173,7 +157,7 @@ export function startRouter(): void {
     render();
   });
 
-  // GitHub Pages 404 shim: pick the intended path back up after the redirect.
+  // GitHub Pages 404 shim: recover the intended path after the redirect.
   try {
     const saved = sessionStorage.getItem('pv:redirect');
     if (saved) {

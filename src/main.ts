@@ -1,75 +1,56 @@
 /**
- * PIXELVERSE — entry point.
- * Boots the world renderer, wires the chrome, registers routes and starts the router.
+ * Entry point: boot the pixel world, wire the chrome, register the two routes.
  */
 import './styles/index.css';
 
-import { $, $$, on } from './core/dom';
-import { applyBootState, settings, setSetting, save, resetSave, subscribe } from './core/store';
+import { $, on } from './core/dom';
+import { applyBootState, settings } from './core/store';
 import { chip } from './core/audio';
-import { icon, hydrateIcons } from './core/icons';
+import { hydrateIcons } from './core/icons';
 import { initWorld } from './fx/world';
 import { initCursor } from './fx/cursor';
-import { route, startRouter, navigate } from './core/router';
-import { initShortcuts, showHelp, toggleTheme, cyclePalette } from './core/shortcuts';
-import { xpState, titleFor, ACHIEVEMENTS, unlock, addXp } from './core/gamification';
+import { route, startRouter } from './core/router';
+import { initShortcuts, toggleTheme, cyclePalette } from './core/shortcuts';
 import { toast } from './core/toast';
-import { drawAvatar, drawHudAvatar } from './core/avatar';
 import { homePage } from './pages/home';
 import { blogPage } from './pages/blog';
 import { postPage } from './pages/post';
-import { projectsPage } from './pages/projects';
-import { labPage } from './pages/lab';
-import { aboutPage } from './pages/about';
-import { posts } from './blog/posts';
 import { addTick } from './core/ticker';
+import { site, SITE_URL, LOCALE } from '../site.config';
 
-/* ────────────────────────────── boot sequence ───────────────────────────── */
-const BOOT_LINES = [
-  'PIXELVERSE BIOS v1.0.0 — (c) VENTAOO',
-  'CPU ..... 8-BIT @ 1.79 MHz ............ OK',
-  'MEM ..... 640K CONVENTIONAL ........... OK',
-  'VIDEO ... 320x200 / 16 COLORS ......... OK',
-  'AUDIO ... SQUARE / TRIANGLE / NOISE ... OK',
-  'MOUNT ... /dev/pixels ................. OK',
-  'LOAD .... WORLD.DAT ................... OK',
-  'SPAWN ... HERO, CAT, 9 PARALLAX LAYERS  OK',
-  '',
-  'SYSTEM READY.',
-];
+/* ────────────────────────────── boot ────────────────────────────── */
+const BOOT_LINES = ['PIXELVERSE BIOS v1.1', 'VIDEO 320x200 / 16 COLORS ... OK', 'AUDIO SQUARE / NOISE ....... OK', 'SYSTEM READY.'];
 
 function runBoot(): Promise<void> {
   return new Promise((resolve) => {
-    const boot = $('#boot');
+    const boot = $<HTMLElement>('#boot');
     const log = $('#boot-log');
-    const bar = $('#boot-bar') as HTMLElement | null;
-    const already = sessionStorage.getItem('pv:booted') === '1';
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const bar = $<HTMLElement>('#boot-bar');
+    const skipIt =
+      sessionStorage.getItem('pv:booted') === '1' || matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (!boot || already || reduced) {
-      boot?.classList.add('is-done');
-      window.setTimeout(() => boot?.remove(), 200);
+    if (!boot || skipIt) {
+      boot?.remove();
       resolve();
       return;
     }
     sessionStorage.setItem('pv:booted', '1');
 
     let i = 0;
-    let finished = false;
-
+    let done = false;
     const finish = () => {
-      if (finished) return;
-      finished = true;
+      if (done) return;
+      done = true;
       if (bar) bar.style.width = '100%';
       boot.classList.add('is-done');
-      window.setTimeout(() => boot.remove(), 460);
+      window.setTimeout(() => boot.remove(), 380);
       resolve();
     };
 
     const next = () => {
-      if (finished) return;
+      if (done) return;
       if (i >= BOOT_LINES.length) {
-        window.setTimeout(finish, 420);
+        window.setTimeout(finish, 260);
         return;
       }
       const line = document.createElement('div');
@@ -78,7 +59,7 @@ function runBoot(): Promise<void> {
       log?.appendChild(line);
       i++;
       if (bar) bar.style.width = Math.round((i / BOOT_LINES.length) * 100) + '%';
-      window.setTimeout(next, 78 + Math.random() * 70);
+      window.setTimeout(next, 90);
     };
 
     const skip = () => {
@@ -89,176 +70,114 @@ function runBoot(): Promise<void> {
     window.addEventListener('keydown', skip);
     boot.addEventListener('click', skip);
 
-    window.setTimeout(next, 180);
+    window.setTimeout(next, 120);
   });
 }
 
-/* ────────────────────────────── chrome wiring ───────────────────────────── */
+/* ────────────────────────────── chrome ────────────────────────────── */
 function syncControls(): void {
-  const theme = $('#ctl-theme .ctl__face');
+  const theme = $('#ctl-theme [data-icon]');
   if (theme) theme.dataset.icon = settings.theme === 'night' ? 'moon' : 'sun';
+  const sound = $('#ctl-sound [data-icon]');
+  if (sound) sound.dataset.icon = settings.sound ? 'volume-3' : 'volume-x-solid';
   $('#ctl-crt')?.classList.toggle('is-on', settings.crt);
   $('#ctl-sound')?.classList.toggle('is-on', settings.sound);
-  const soundFace = $('#ctl-sound .ctl__face');
-  if (soundFace) soundFace.dataset.icon = settings.sound ? 'volume-3' : 'volume-x-solid';
   hydrateIcons(document);
-}
-
-function renderHud(): void {
-  const { level, into, need } = xpState();
-  const fill = $('#hud-xp');
-  if (fill) fill.style.width = Math.round((into / need) * 100) + '%';
-  const text = $('#hud-xp-text');
-  if (text) text.textContent = `${into} / ${need} XP`;
-  const lvl = $('#hud-level');
-  if (lvl) lvl.textContent = String(level);
-  const ach = $('#hud-ach');
-  if (ach) ach.textContent = `${save.achievements.length}/${ACHIEVEMENTS.length}`;
-  const title = $('#hud-title');
-  if (title) title.textContent = titleFor(level);
-}
-
-function renderFooter(): void {
-  const set = (id: string, value: string) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = value;
-  };
-  set('stat-visited', String(save.visits));
-  set('stat-posts', String(posts.length));
-  set('stat-level', String(xpState().level));
-  set('year', String(new Date().getFullYear()));
 }
 
 function wireControls(): void {
   on($('#ctl-theme'), 'click', toggleTheme);
-  on($('#ctl-crt'), 'click', () => {
-    setSetting('crt', !settings.crt);
-    chip.select();
-    toast('显像管滤镜 ' + (settings.crt ? '开启' : '关闭'), settings.crt ? '感受那些扫描线' : '画面干净了');
-    syncControls();
-  });
+  on($('#ctl-palette'), 'click', cyclePalette);
   on($('#ctl-sound'), 'click', () => {
-    const on = chip.toggleSound();
-    toast('音效 ' + (on ? '开启' : '关闭'), on ? '按 M 也可以切换' : '世界安静了');
+    toast('音效 ' + (chip.toggleSound() ? '开启' : '关闭'), '按 M 也可以切换');
     syncControls();
   });
-  on($('#hud-toggle'), 'click', () => {
-    $('#hud')?.classList.toggle('is-collapsed');
-    chip.blip();
-  });
-  on($('#btn-reset'), 'click', () => {
-    resetSave();
-    renderHud();
-    renderFooter();
-    chip.back();
-    toast('存档已重置', '经验、成就与足迹都清空了');
-  });
+  on($('#btn-top'), 'click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  window.addEventListener('pv:sync-controls', syncControls);
+}
 
-  window.addEventListener('pv:toggle-theme', () => toggleTheme());
-  window.addEventListener('pv:sync-controls', () => syncControls());
-  document.addEventListener('pv:view', () => {
-    renderHud();
-    renderFooter();
-  });
-  document.addEventListener('keydown', (ev) => {
-    const el = ev.target as HTMLElement | null;
-    if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) return;
-    if (ev.key === '?') {
-      ev.preventDefault();
-      showHelp();
-    }
+function applyConfig(): void {
+  document.documentElement.lang = LOCALE;
+  document.title = site.seo.title;
+  const set = (id: string, text: string) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+  set('brand-name', site.name);
+  set('brand-suffix', site.suffix);
+  set('footer-name', site.name);
+  set('footer-note', site.footerNote);
+  set('year', String(new Date().getFullYear()));
+  document.querySelectorAll<HTMLAnchorElement>('a[data-site-link]').forEach((a) => {
+    a.href = SITE_URL;
   });
 }
 
-/* ────────────────────────────── scroll chrome ───────────────────────────── */
 function wireScroll(): void {
   let lastY = window.scrollY;
   const bar = $('#scroll-fill');
-
   addTick((_dt, _t, y) => {
-    const doc = document.documentElement;
-    const max = Math.max(1, doc.scrollHeight - innerHeight);
+    const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
     if (bar) bar.style.height = ((y / max) * 100).toFixed(2) + '%';
 
     const topbar = $('#topbar');
     if (topbar) {
-      const goingDown = y > lastY + 6;
-      const goingUp = y < lastY - 6;
-      if (y > 220 && goingDown) topbar.classList.add('is-hidden');
-      else if (goingUp || y < 120) topbar.classList.remove('is-hidden');
-      topbar.classList.toggle('is-stuck', y > 20);
+      const down = y > lastY + 6;
+      const up = y < lastY - 6;
+      if (y > 200 && down) topbar.classList.add('is-hidden');
+      else if (up || y < 100) topbar.classList.remove('is-hidden');
+      topbar.classList.toggle('is-stuck', y > 12);
     }
+    const toTop = $('#btn-top');
+    if (toTop) toTop.classList.toggle('is-on', y > 700);
     lastY = y;
   });
 }
 
-/* ────────────────────────────── routes ───────────────────────────── */
 function registerRoutes(): void {
   route('/', () => homePage(), 'home');
   route('/index.html', () => homePage(), 'home');
   route('/blog', (ctx) => blogPage(ctx), 'blog');
   route('/blog/:slug', (ctx) => postPage(ctx), 'blog');
-  route('/projects', () => projectsPage(), 'projects');
-  route('/lab', () => labPage(), 'lab');
-  route('/about', () => aboutPage(), 'about');
 }
 
-/* ────────────────────────────── go ───────────────────────────── */
+/* ────────────────────────────── go ────────────────────────────── */
 async function main(): Promise<void> {
   applyBootState();
+  applyConfig();
   hydrateIcons(document);
   syncControls();
-  renderHud();
-  renderFooter();
-
   wireControls();
   wireScroll();
   registerRoutes();
   initShortcuts();
 
-  const bootPromise = runBoot();
-
+  const boot = runBoot();
   try {
     initWorld();
   } catch (err) {
-    console.error('[main] world failed', err);
+    console.error('[main] world failed to start', err);
   }
   initCursor();
-
-  await bootPromise;
-
+  await boot;
   startRouter();
 
-  const unlockAudio = () => {
+  // browsers only allow audio after a real interaction
+  const unlock = () => {
     chip.unlock();
     if (settings.music) chip.startMusic();
-    window.removeEventListener('pointerdown', unlockAudio);
-    window.removeEventListener('keydown', unlockAudio);
+    window.removeEventListener('pointerdown', unlock);
+    window.removeEventListener('keydown', unlock);
   };
-  window.addEventListener('pointerdown', unlockAudio);
-  window.addEventListener('keydown', unlockAudio);
+  window.addEventListener('pointerdown', unlock);
+  window.addEventListener('keydown', unlock);
 
-  if (!save.achievements.includes('boot')) {
-    window.setTimeout(() => {
-      unlock('boot');
-      addXp(10, true);
-      toast('欢迎来到像素空间站', '滚动可以赚经验，去发现 8 个成就吧', 'ach', 6000);
-    }, 900);
+  // a nudge toward the hidden shortcuts, once per session
+  if (!sessionStorage.getItem('pv:hinted')) {
+    sessionStorage.setItem('pv:hinted', '1');
+    window.setTimeout(() => toast('按 ? 查看快捷键', '按 P 换配色 · 点太阳切换昼夜', 4200), 1400);
   }
 
-  subscribe(() => {
-    renderHud();
-    renderFooter();
-  });
-
-  window.addEventListener('resize', renderFooter);
-
-  void $$;
-  void icon;
-  void navigate;
-  void cyclePalette;
-  void drawAvatar;
-  void drawHudAvatar;
 }
 
 void main();

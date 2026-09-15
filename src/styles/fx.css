@@ -1,0 +1,123 @@
+/* ============================================================================
+   Effects: CRT, reveals, cursor, transitions
+   ========================================================================= */
+
+/* ── CRT OVERLAY ──────────────────────────────────────────────────────── */
+.crt { position: fixed; inset: 0; z-index: var(--z-crt); pointer-events: none; }
+.crt__scan {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(180deg,
+    color-mix(in srgb, #000 22%, transparent) 0 1px,
+    transparent 1px 3px);
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+.crt__vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(120% 100% at 50% 50%, transparent 42%, rgba(0, 0, 0, 0.55) 100%);
+}
+.crt__glow {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--a3) 7%, transparent), transparent 30%);
+  animation: crt-flicker 5.5s steps(3) infinite;
+}
+@keyframes crt-flicker { 0%,96%,100% { opacity: 0.25 } 97% { opacity: 0.55 } }
+[data-crt='off'] .crt { display: none; }
+
+/* a one-frame glitch whenever the route changes */
+.glitching .view { animation: glitch 420ms steps(2) 1; }
+@keyframes glitch {
+  0%   { transform: translate(0); clip-path: inset(0 0 0 0); }
+  15%  { transform: translate(-6px, 2px); clip-path: inset(12% 0 46% 0); }
+  30%  { transform: translate(5px, -3px); clip-path: inset(58% 0 8% 0); }
+  45%  { transform: translate(-3px, 0); clip-path: inset(0 0 0 0); }
+  60%  { transform: translate(3px, 1px); }
+  100% { transform: translate(0); }
+}
+
+/* ── SCROLL REVEALS ───────────────────────────────────────────────────── */
+/* Progressive enhancement: without JS nothing is ever hidden.                */
+/* IMPORTANT — the hidden state must not clip the element's box: an           */
+/* IntersectionObserver reports a zero-area (fully clipped) target as "not    */
+/* intersecting", which would deadlock the reveal. So the pixel wipe is a     */
+/* one-shot *animation* fired on `.in`, never part of the resting state.       */
+html.js .reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 300ms steps(4), transform 520ms var(--ease-step);
+  will-change: opacity, transform;
+}
+html.js .reveal.in { opacity: 1; transform: none; animation: pv-wipe 620ms steps(7) 1; }
+
+html.js .reveal--left { transform: translateX(-24px); }
+html.js .reveal--right { transform: translateX(24px); }
+html.js .reveal--zoom { transform: scale(0.94); }
+html.js .reveal--zoom.in { transform: none; }
+html.js .reveal--mosaic { filter: contrast(0.2); transition: opacity 300ms steps(4), filter 700ms steps(8); }
+html.js .reveal--mosaic.in { filter: none; }
+
+@keyframes pv-wipe {
+  0% { clip-path: inset(0 0 94% 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+/* ── PIXEL CURSOR ─────────────────────────────────────────────────────── */
+.pcursor, .pcursor-dot { position: fixed; top: 0; left: 0; z-index: var(--z-cursor); pointer-events: none; }
+.pcursor {
+  width: 22px; height: 22px;
+  transform: translate(-2px, -2px);
+  transition: width 120ms steps(3), height 120ms steps(3), opacity 200ms;
+  mix-blend-mode: difference;
+}
+.pcursor::before, .pcursor::after {
+  content: ''; position: absolute; background: #fff;
+}
+.pcursor::before { left: 0; top: 8px; width: 22px; height: 2px; }
+.pcursor::after { top: 0; left: 8px; width: 2px; height: 22px; }
+.pcursor.is-hot::before { top: 0; height: 22px; animation: spin-x 900ms steps(8) infinite; }
+.pcursor.is-hot::after { left: 18px; }
+.pcursor.is-hot { width: 22px; height: 22px; }
+@keyframes spin-x { 50% { transform: rotate(90deg) } }
+.pcursor-dot {
+  width: 6px; height: 6px; background: var(--a1);
+  transform: translate(-3px, -3px);
+  transition: transform 160ms var(--ease-step), background 160ms;
+}
+.pcursor-dot.is-hot { transform: translate(-3px, -3px) scale(2.4); background: var(--a2); }
+body.pixel-cursor, body.pixel-cursor a, body.pixel-cursor button,
+body.pixel-cursor input, body.pixel-cursor textarea { cursor: none; }
+@media (hover: none), (max-width: 900px) { .pcursor, .pcursor-dot { display: none } }
+
+/* ── MARQUEE ──────────────────────────────────────────────────────────── */
+.marquee {
+  overflow: hidden; white-space: nowrap;
+  border-top: var(--px) solid var(--line);
+  border-bottom: var(--px) solid var(--line);
+  background: color-mix(in srgb, var(--a1) 12%, transparent);
+  padding: 8px 0;
+}
+.marquee__track { display: inline-flex; gap: 28px; animation: marquee 26s linear infinite; font-family: var(--font-head); font-size: 13px; color: var(--text-dim); }
+.marquee:hover .marquee__track { animation-play-state: paused; }
+.marquee__track b { color: var(--a1); }
+.marquee__track i { color: var(--a2); font-style: normal; }
+@keyframes marquee { to { transform: translateX(-50%) } }
+
+/* ── FLOAT / BOB ──────────────────────────────────────────────────────── */
+.bob { animation: bob 3.2s steps(4) infinite; }
+@keyframes bob { 50% { transform: translateY(-8px) } }
+
+.blink-slow { animation: blink-slow 1.8s steps(1) infinite; }
+@keyframes blink-slow { 50% { opacity: 0.35 } }
+
+/* ── GLOW TEXT ────────────────────────────────────────────────────────── */
+.glow {
+  text-shadow:
+    0 0 0 var(--a1),
+    2px 2px 0 color-mix(in srgb, var(--a2) 70%, transparent),
+    4px 4px 0 color-mix(in srgb, var(--a4) 45%, transparent);
+}
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--a3);
+  text-stroke: 2px var(--a3);
+}

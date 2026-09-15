@@ -1,0 +1,140 @@
+/* ============================================================================
+   PIXELVERSE — design tokens
+   Two axes:  data-theme = night | day      (structure & contrast)
+              data-palette = dusk | gameboy | vapor | amber   (colour story)
+   ========================================================================= */
+
+:root {
+  /* ---- pixel geometry -------------------------------------------------- */
+  --px: 4px;            /* the atomic pixel unit for borders & shadows */
+  --px-2: 8px;
+  --radius: 0px;        /* pixels are never round */
+
+  /* ---- type ------------------------------------------------------------ */
+  --font-display: 'Press Start 2P', 'Silkscreen', monospace;
+  --font-head: 'Silkscreen', 'Press Start 2P', monospace;
+  --font-body: 'VT323', 'Silkscreen', monospace;
+  --font-mono: 'VT323', ui-monospace, Menlo, Consolas, monospace;
+
+  --fs-body: clamp(17px, 1.05vw + 13px, 21px);
+  --fs-sm: clamp(14px, 0.6vw + 12px, 16px);
+  --fs-h1: clamp(28px, 5.2vw, 62px);
+  --fs-h2: clamp(20px, 2.4vw, 32px);
+  --fs-h3: clamp(17px, 1.4vw, 22px);
+
+  /* ---- motion ---------------------------------------------------------- */
+  --t-fast: 90ms;
+  --t-mid: 180ms;
+  --t-slow: 340ms;
+  --ease-step: steps(4, end);
+
+  /* ---- layout ---------------------------------------------------------- */
+  --shell: 1180px;
+  --gutter: clamp(16px, 4vw, 48px);
+  --topbar-h: 60px;
+
+  /* ---- z-index ladder --------------------------------------------------- */
+  --z-world: 0;
+  --z-content: 10;
+  --z-topbar: 40;
+  --z-hud: 50;
+  --z-toast: 60;
+  --z-modal: 70;
+  --z-crt: 80;
+  --z-cursor: 90;
+  --z-boot: 100;
+}
+
+/* ── NIGHT (default) ─────────────────────────────────────────────────── */
+:root,
+[data-theme='night'] {
+  --ink: #05050e;
+  --bg: #0a0a16;
+  --bg-2: #10101f;
+  --panel: rgba(18, 18, 40, 0.82);
+  --panel-solid: #12122a;
+  --panel-2: #1b1b3a;
+  --line: #3b3b78;
+  --line-2: #262650;
+  --text: #eae8fc;
+  --text-dim: #a7a4d4;
+  --text-mute: #6f6ca4;
+  --shadow: #04040c;
+  --glass: rgba(8, 8, 20, 0.55);
+  --grid-line: rgba(120, 120, 220, 0.07);
+  color-scheme: dark;
+}
+
+/* ── DAY ─────────────────────────────────────────────────────────────── */
+[data-theme='day'] {
+  --ink: #f7f8ff;
+  --bg: #d9e0fb;
+  --bg-2: #eaefff;
+  --panel: rgba(255, 255, 255, 0.86);
+  --panel-solid: #fbfbff;
+  --panel-2: #ecefff;
+  --line: #5f65ad;
+  --line-2: #b6bbe6;
+  --text: #14143a;
+  --text-dim: #3f4080;
+  --text-mute: #7376ac;
+  --shadow: #8e95d6;
+  --glass: rgba(255, 255, 255, 0.62);
+  --grid-line: rgba(60, 60, 140, 0.07);
+  color-scheme: light;
+}
+
+/* ── PALETTE: DUSK (default) ─────────────────────────────────────────── */
+:root,
+[data-palette='dusk'] {
+  --a1: #ffd23f;   /* coin gold    */
+  --a2: #ff5d73;   /* damage coral */
+  --a3: #3ddad7;   /* mana cyan    */
+  --a4: #a06cd5;   /* arcane violet*/
+  --a5: #7ee081;   /* xp lime      */
+  --a6: #ff9f45;   /* ember orange */
+  --sky-a: #171735; --sky-b: #3b2450; --sky-c: #6b3a6e;
+  --sun: #ffe9a8;  --sun-glow: #ffb347;
+  --star: #ffffff;
+}
+
+/* ── PALETTE: GAMEBOY ────────────────────────────────────────────────── */
+[data-palette='gameboy'] {
+  --a1: #9bbc0f; --a2: #8bac0f; --a3: #306230; --a4: #0f380f;
+  --a5: #9bbc0f; --a6: #8bac0f;
+  --sky-a: #0f380f; --sky-b: #306230; --sky-c: #8bac0f;
+  --sun: #e0f8a0; --sun-glow: #9bbc0f; --star: #e0f8a0;
+}
+
+/* ── PALETTE: VAPOR ──────────────────────────────────────────────────── */
+[data-palette='vapor'] {
+  --a1: #ff71ce; --a2: #ff3864; --a3: #01cdfe; --a4: #b967ff;
+  --a5: #05ffa1; --a6: #fffb96;
+  --sky-a: #1a0b2e; --sky-b: #4a1e6e; --sky-c: #b967ff;
+  --sun: #fffb96; --sun-glow: #ff71ce; --star: #ffffff;
+}
+
+/* ── PALETTE: AMBER (terminal) ───────────────────────────────────────── */
+[data-palette='amber'] {
+  --a1: #ffb000; --a2: #ff7b00; --a3: #ffd479; --a4: #cc8800;
+  --a5: #ffc94d; --a6: #ff9500;
+  --sky-a: #120c00; --sky-b: #2e1f00; --sky-c: #5c3d00;
+  --sun: #ffe0a0; --sun-glow: #ffb000; --star: #ffd479;
+}
+
+/* ── DAYTIME SKY (the world canvas reads these) ──────────────────────── */
+[data-theme='day'] {
+  --sky-a: #5fb0ee; --sky-b: #a9d9f7; --sky-c: #ffe2b0;
+  --sun: #fff4c2; --sun-glow: #ffd166; --star: #ffffff;
+}
+[data-theme='day'][data-palette='gameboy'] { --sky-a: #7a9a1a; --sky-b: #a8c33f; --sky-c: #d7e79a; --sun: #f4ffd0; --sun-glow: #9bbc0f; }
+[data-theme='day'][data-palette='vapor'] { --sky-a: #ff9ad5; --sky-b: #ffd0ee; --sky-c: #b6f2ff; --sun: #fffb96; --sun-glow: #ff71ce; }
+[data-theme='day'][data-palette='amber'] { --sky-a: #f2b24d; --sky-b: #ffd89a; --sky-c: #fff0cf; --sun: #fff8e0; --sun-glow: #ffb000; }
+
+/* ── PARTY MODE (konami easter egg) ──────────────────────────────────── */
+[data-party='on'] {
+  --a1: #ff0000; --a2: #00ff00; --a3: #0000ff; --a4: #ffff00;
+  --a5: #ff00ff; --a6: #00ffff;
+  animation: party-hue 1.1s steps(12) infinite;
+}
+@keyframes party-hue { to { filter: hue-rotate(360deg); } }

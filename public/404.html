@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Warping…</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      html,body{margin:0;height:100%;background:#0b0b14;color:#4ecdc4;
+        font-family:ui-monospace,Menlo,Consolas,monospace;display:grid;place-items:center}
+      .b{text-align:center;font-size:14px;letter-spacing:2px}
+      .bar{margin-top:14px;width:220px;height:14px;border:3px solid #3d3d6b;padding:3px}
+      .bar i{display:block;height:100%;width:40%;background:#4ecdc4;animation:go 1s steps(6) infinite}
+      @keyframes go{0%{width:10%}100%{width:100%}}
+    </style>
+  </head>
+  <body>
+    <div class="b">
+      <div>404 · REROUTING SIGNAL</div>
+      <div class="bar"><i></i></div>
+    </div>
+    <script>
+      (function () {
+        var path = location.pathname + location.search + location.hash;
+        try { sessionStorage.setItem('pv:redirect', path); } catch (e) {}
+        location.replace('/');
+      })();
+    </script>
+  </body>
+</html>

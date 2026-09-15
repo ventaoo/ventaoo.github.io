@@ -60,7 +60,10 @@ const attr = (s: string) => s.replace(/"/g, '&quot;').replace(/</g, '&lt;');
  * actual content — HTTP 200, correct previews, and something readable if JS
  * never runs. The client router replaces #view on load either way.
  */
-function renderShell(shell: string, opts: { title: string; description: string; content: string }): string {
+function renderShell(
+  shell: string,
+  opts: { title: string; description: string; content: string; url: string; type?: string },
+): string {
   let html = shell;
   html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${attr(opts.title)}</title>`);
   html = html.replace(
@@ -74,6 +77,10 @@ function renderShell(shell: string, opts: { title: string; description: string; 
   html = html.replace(
     /<meta property="og:description" content="[^"]*" \/>/,
     `<meta property="og:description" content="${attr(opts.description)}" />`,
+  );
+  html = html.replace(
+    /<meta property="og:type" content="[^"]*" \/>/,
+    `<meta property="og:type" content="${opts.type ?? 'website'}" />\n    <meta property="og:url" content="${opts.url}" />\n    <link rel="canonical" href="${opts.url}" />`,
   );
   return html.replace(
     '<main id="view" class="view"></main>',
@@ -106,19 +113,31 @@ function staticSitePlugin(): Plugin {
         fs.mkdirSync(dir, { recursive: true });
         fs.writeFileSync(path.join(dir, 'index.html'), html);
       };
-      const page = (title: string, description: string, content: string) =>
-        renderShell(shell, { title, description, content: NOJS_CSS + content });
+      // GitHub Pages answers the trailing-slash URL with 200 and 301s the bare
+      // path, so the canonical form is the one with the slash (root excepted).
+      const url = (route: string) => SITE + (route === '/' ? '/' : `/${route}/`);
+      const page = (route: string, title: string, description: string, content: string, type = 'website') =>
+        renderShell(shell, {
+          title,
+          description,
+          content: NOJS_CSS + content,
+          url: url(route),
+          type,
+        });
 
       // ── article pages: real content in the HTML source ──
       for (const p of items) {
         const body = marked.parse(p.body, { async: false, gfm: true }) as string;
+        const route = `blog/${p.slug}`;
         write(
-          `blog/${p.slug}`,
+          route,
           page(
+            route,
             `${p.title} · VENTAOO`,
             p.summary,
             `<h1>${p.title}</h1><p><small>${p.date} · ${p.tags.join(' / ')}</small></p>${body}
-             <p><a href="/blog">← 返回日志归档</a></p>`,
+             <p><a href="/blog/">← 返回日志归档</a></p>`,
+            'article',
           ),
         );
       }
@@ -127,6 +146,7 @@ function staticSitePlugin(): Plugin {
       write(
         'blog',
         page(
+          'blog',
           '日志归档 · VENTAOO',
           `共 ${items.length} 篇日志：像素艺术、Canvas 渲染、Web Audio、视差滚动与命令行工具。`,
           `<h1>日志归档</h1><ul>${items
@@ -149,6 +169,7 @@ function staticSitePlugin(): Plugin {
       write(
         'projects',
         page(
+          'projects',
           '项目 · VENTAOO',
           '开源项目：3D Gaussian 水印、命令行工具、模型实验。',
           `<h1>项目档案</h1><ul>${projectList
@@ -160,6 +181,7 @@ function staticSitePlugin(): Plugin {
       write(
         'about',
         page(
+          'about',
           '关于 · VENTAOO',
           '关于 VENTAOO：杭州，写代码、做实验、拆解问题。这个站点是手工搭建的像素世界。',
           `<h1>关于我</h1><p>我是 VENTAOO，现在在杭州。白天写代码解决问题，晚上写代码制造问题。</p>
@@ -171,6 +193,7 @@ function staticSitePlugin(): Plugin {
       write(
         'lab',
         page(
+          'lab',
           '实验室 · VENTAOO',
           '四个跑在原生 Canvas 上的小实验：粒子沙盒、生命游戏、波形可视化、等距地形。',
           `<h1>实验室</h1><p>四个跑在原生 Canvas 上的小玩具，全部可交互：粒子沙盒、生命游戏、波形可视化、等距地形。</p>`,
@@ -204,13 +227,13 @@ ${p.tags.map((t) => '      <category>' + xml(t) + '</category>').join('\n')}
 </rss>
 `;
 
-      const urls = ['/', '/blog', '/projects', '/lab', '/about', ...items.map((p) => '/blog/' + p.slug)];
+      const urls = ['/', '/blog/', '/projects/', '/lab/', '/about/', ...items.map((p) => '/blog/' + p.slug + '/')];
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
   .map(
     (u) =>
-      `  <url><loc>${SITE}${u}</loc>${u === '/' ? '' : `<lastmod>${items.find((p) => u.endsWith(p.slug))?.date ?? new Date().toISOString().slice(0, 10)}</lastmod>`}<changefreq>${u === '/' ? 'weekly' : 'monthly'}</changefreq></url>`,
+      `  <url><loc>${SITE}${u === '/' ? '/' : u}</loc>${u === '/' ? '' : `<lastmod>${items.find((p) => u.includes(p.slug))?.date ?? new Date().toISOString().slice(0, 10)}</lastmod>`}<changefreq>${u === '/' ? 'weekly' : 'monthly'}</changefreq></url>`,
   )
   .join('\n')}
 </urlset>

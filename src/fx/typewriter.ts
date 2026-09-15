@@ -1,63 +1,43 @@
 /**
- * Types a phrase out, holds it, then backspaces and moves on — the same rhythm
- * a person uses when they are thinking about what to say next.
+ * Cross-fades one phrase into the next. A fade reads as calm and intentional;
+ * character-by-character typing reads as a machine warming up.
  */
 import { reducedMotion } from '../core/ticker';
 
 export interface RotateOptions {
-  typeMs?: number;
   holdMs?: number;
-  eraseMs?: number;
+  gapMs?: number;
 }
 
 export function rotateLines(el: HTMLElement, phrases: string[], opts: RotateOptions = {}): () => void {
-  const { typeMs = 78, holdMs = 2600, eraseMs = 26 } = opts;
+  const { holdMs = 4600, gapMs = 1100 } = opts;
 
   if (!phrases.length) {
     el.textContent = '';
     return () => {};
   }
-  if (reducedMotion || phrases.length === 1) {
-    el.textContent = phrases[0];
-    return () => {};
-  }
+  el.textContent = phrases[0];
 
-  let phrase = 0;
-  let char = 0;
-  let erasing = false;
+  if (reducedMotion || phrases.length === 1) return () => {};
+
+  let index = 0;
   let timer: number | undefined;
   let dead = false;
 
-  const step = () => {
+  const swap = () => {
     if (dead) return;
-    const text = phrases[phrase];
-
-    if (!erasing) {
-      char++;
-      el.textContent = text.slice(0, char);
-      if (char >= text.length) {
-        erasing = true;
-        timer = window.setTimeout(step, holdMs);
-        return;
-      }
-      timer = window.setTimeout(step, typeMs + Math.random() * 70);
-      return;
-    }
-
-    char -= 2;
-    if (char <= 0) {
-      el.textContent = '';
-      erasing = false;
-      char = 0;
-      phrase = (phrase + 1) % phrases.length;
-      timer = window.setTimeout(step, 420);
-      return;
-    }
-    el.textContent = text.slice(0, char);
-    timer = window.setTimeout(step, eraseMs);
+    index = (index + 1) % phrases.length;
+    el.textContent = phrases[index];
+    // restart the entrance animation without a reflow-free hack
+    el.classList.remove('line-swap');
+    void el.offsetWidth;
+    el.classList.add('line-swap');
+    timer = window.setTimeout(swap, holdMs);
   };
 
-  timer = window.setTimeout(step, 520);
+  el.classList.add('line-swap');
+  timer = window.setTimeout(swap, holdMs + 600);
+
   return () => {
     dead = true;
     clearTimeout(timer);

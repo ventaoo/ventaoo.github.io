@@ -7,28 +7,28 @@
    the reveal deadlocks. */
 html.js .reveal {
   opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 760ms var(--ease-soft), transform 900ms var(--ease);
+  transform: translateY(22px);
+  transition: opacity 900ms var(--ease-out), transform 1000ms var(--ease-out);
 }
 html.js .reveal.in { opacity: 1; transform: none; }
 
-/* the statement line swaps with a soft cross-fade rather than a hard cut */
-.line-fade { animation: line-in 620ms var(--ease) both; }
+/* the statement line cross-fades rather than typing itself out */
+.line-swap { animation: line-in 900ms var(--ease-out) both; }
 @keyframes line-in {
-  from { opacity: 0; transform: translateY(6px); filter: blur(2px); }
+  from { opacity: 0; transform: translateY(14px); filter: blur(4px); }
   to { opacity: 1; transform: none; filter: none; }
+}
+
+/* ── route transition ────────────────────────────────────────────────── */
+.view { animation: view-in 680ms var(--ease-out) both; }
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
 }
 
 /* ── focus ───────────────────────────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 2px;
-}
-
-/* ── route transition ────────────────────────────────────────────────── */
-.view { animation: view-in 560ms var(--ease) both; }
-@keyframes view-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: none; }
+  border-radius: 4px;
 }

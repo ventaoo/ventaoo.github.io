@@ -1,9 +1,9 @@
 /**
  * The background: a slow ink wash.
  *
- * Two drifting colour fields plus a few hair-thin ink curves, drawn at device
- * resolution (no pixel grid anywhere). It breathes rather than animates —
- * roughly 30 fps, tiny amplitudes — so it reads as paper texture, not motion.
+ * Three drifting colour fields and a handful of hair-thin ink curves, drawn at
+ * device resolution. It breathes rather than animates — roughly 30 fps, tiny
+ * amplitudes — and leans gently upward as you scroll.
  */
 import { addTick, reducedMotion } from '../core/ticker';
 import { cssVar, hex2rgb, mulberry32, type RGB } from '../core/dom';
@@ -19,8 +19,9 @@ class Atmosphere {
   private t = 0;
   private acc = 0;
   private curves: Curve[] = [];
-  private accent: RGB = [168, 63, 40];
-  private ink: RGB = [25, 23, 18];
+  private accent: RGB = [176, 68, 42];
+  private ink: RGB = [29, 26, 21];
+  private dark = false;
   private key = '';
 
   constructor(canvas: HTMLCanvasElement) {
@@ -36,7 +37,8 @@ class Atmosphere {
   private readPalette(): void {
     this.accent = hex2rgb(cssVar('--accent'));
     this.ink = hex2rgb(cssVar('--ink'));
-    this.key = (document.documentElement.dataset.theme ?? 'light') + '/' + (document.documentElement.dataset.accent ?? 'vermillion');
+    this.dark = document.documentElement.dataset.theme === 'dark';
+    this.key = (document.documentElement.dataset.theme ?? 'light') + '/' + (document.documentElement.dataset.ink ?? 'vermillion');
   }
 
   private resize(): void {
@@ -49,19 +51,19 @@ class Atmosphere {
     this.canvas.style.height = this.h + 'px';
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
 
-    const rnd = mulberry32(0xa11ce);
-    this.curves = Array.from({ length: 5 }, (_, i) => ({
-      base: this.h * (0.24 + i * 0.14),
-      amp: this.h * (0.02 + rnd() * 0.045),
-      len: 900 + rnd() * 1500,
-      speed: 0.012 + rnd() * 0.026,
+    const rnd = mulberry32(0xc0ffee);
+    this.curves = Array.from({ length: 7 }, (_, i) => ({
+      base: this.h * (0.16 + i * 0.115),
+      amp: this.h * (0.018 + rnd() * 0.05),
+      len: 800 + rnd() * 1700,
+      speed: 0.01 + rnd() * 0.024,
       phase: rnd() * Math.PI * 2,
-      alpha: 0.05 + rnd() * 0.045,
+      alpha: (this.dark ? 0.07 : 0.055) + rnd() * 0.05,
     }));
-    this.draw(0, true);
+    this.draw(0, 0, true);
   }
 
-  /** A soft radial field, drawn as one gradient — cheap and smooth. */
+  /** A soft radial field — one gradient, cheap and perfectly smooth. */
   private wash(x: number, y: number, r: number, c: RGB, alpha: number): void {
     const g = this.ctx.createRadialGradient(x, y, 0, x, y, r);
     g.addColorStop(0, `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${alpha})`);
@@ -70,61 +72,72 @@ class Atmosphere {
     this.ctx.fillRect(x - r, y - r, r * 2, r * 2);
   }
 
-  private draw(dt: number, force = false): void {
+  private draw(dt: number, scrollY: number, force = false): void {
     const root = document.documentElement;
-    const key = (root.dataset.theme ?? 'light') + '/' + (root.dataset.accent ?? 'vermillion');
+    const key = (root.dataset.theme ?? 'light') + '/' + (root.dataset.ink ?? 'vermillion');
     if (key !== this.key) this.readPalette();
     if (!force) this.t += dt;
 
     const { ctx, w, h } = this;
     ctx.clearRect(0, 0, w, h);
 
+    const a = this.dark ? 1.5 : 1;
     const drift = this.t * 0.00004;
+
     this.wash(
-      w * (0.72 + Math.sin(drift * 1.7) * 0.06),
-      h * (0.18 + Math.cos(drift * 1.3) * 0.05),
-      Math.max(w, h) * 0.55,
+      w * (0.74 + Math.sin(drift * 1.7) * 0.07),
+      h * (0.14 + Math.cos(drift * 1.3) * 0.05) - scrollY * 0.06,
+      Math.max(w, h) * 0.58,
       this.accent,
-      0.06,
+      0.075 * a,
     );
     this.wash(
-      w * (0.18 + Math.cos(drift * 1.1) * 0.07),
-      h * (0.76 + Math.sin(drift * 0.9) * 0.05),
-      Math.max(w, h) * 0.5,
+      w * (0.16 + Math.cos(drift * 1.1) * 0.08),
+      h * (0.78 + Math.sin(drift * 0.9) * 0.05) - scrollY * 0.03,
+      Math.max(w, h) * 0.52,
       this.ink,
-      0.045,
+      0.05 * a,
+    );
+    this.wash(
+      w * (0.5 + Math.sin(drift * 0.7 + 2) * 0.16),
+      h * (0.46 + Math.cos(drift * 0.6) * 0.12) - scrollY * 0.1,
+      Math.max(w, h) * 0.42,
+      this.accent,
+      0.035 * a,
     );
 
-    // hair-thin ink curves
+    // hair-thin ink curves, leaning upward with the scroll
     ctx.lineWidth = 1;
     ctx.lineCap = 'round';
     const step = 14;
+    const lift = Math.min(scrollY * 0.055, h * 0.5);
     for (const c of this.curves) {
       ctx.beginPath();
       for (let x = -step; x <= w + step; x += step) {
         const u = x / c.len;
         const y =
-          c.base +
+          c.base -
+          lift +
           Math.sin(u * 6.283 + this.t * c.speed * 0.001 + c.phase) * c.amp +
-          Math.sin(u * 15.7 + this.t * c.speed * 0.0006 + c.phase * 1.7) * c.amp * 0.34;
+          Math.sin(u * 15.7 + this.t * c.speed * 0.0006 + c.phase * 1.7) * c.amp * 0.32;
         if (x <= -step) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
-      ctx.strokeStyle = `rgba(${this.ink[0] | 0},${this.ink[1] | 0},${this.ink[2] | 0},${c.alpha})`;
+      ctx.strokeStyle = `rgba(${this.ink[0] | 0},${this.ink[1] | 0},${this.ink[2] | 0},${c.alpha * a})`;
       ctx.stroke();
     }
   }
 
   start(): void {
     if (reducedMotion) {
-      this.draw(0, true);
-      window.addEventListener('scroll', () => this.draw(0, true), { passive: true });
+      this.draw(0, window.scrollY, true);
+      window.addEventListener('scroll', () => this.draw(0, window.scrollY, true), { passive: true });
       return;
     }
-    addTick((dt) => {
+    addTick((dt, _t, scrollY) => {
       this.acc += dt;
       if (this.acc < 32) return; // ~30 fps is plenty for something this slow
-      this.draw(this.acc);
+      this.draw(this.acc, scrollY);
       this.acc = 0;
     });
   }

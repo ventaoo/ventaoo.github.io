@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="light" data-accent="vermillion">
+<html lang="zh-CN" data-theme="light" data-ink="vermillion">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#f7f4ed" />
+    <meta name="theme-color" content="#faf7f1" />
     <title>VENTAOO · 写作与造物</title>
     <meta name="description" content="VENTAOO 的个人主页与博客：代码、实验与想法。" />
     <meta property="og:type" content="website" />
@@ -17,7 +17,7 @@
         try {
           var s = JSON.parse(localStorage.getItem('vx:settings') || '{}');
           if (s.theme) document.documentElement.dataset.theme = s.theme;
-          if (s.accent) document.documentElement.dataset.accent = s.accent;
+          if (s.accent) document.documentElement.dataset.ink = s.accent;
         } catch (e) {}
       })();
     </script>
@@ -25,8 +25,9 @@
   <body>
     <a class="skip" href="#view">跳到正文</a>
 
-    <!-- slow drifting ink wash behind everything -->
+    <!-- a slow ink wash and a warm shaft of light -->
     <canvas id="atmosphere" class="atmosphere" aria-hidden="true"></canvas>
+    <div class="glow" aria-hidden="true"></div>
     <div class="grain" aria-hidden="true"></div>
 
     <div class="progress" aria-hidden="true"><i id="scroll-fill"></i></div>
@@ -43,17 +44,17 @@
         </nav>
 
         <div class="controls">
-          <div class="swatches" role="group" aria-label="强调色">
-            <button class="swatch" data-accent="vermillion" title="朱砂" aria-label="朱砂"></button>
-            <button class="swatch" data-accent="indigo" title="靛青" aria-label="靛青"></button>
-            <button class="swatch" data-accent="moss" title="苔绿" aria-label="苔绿"></button>
-            <button class="swatch" data-accent="ochre" title="赭石" aria-label="赭石"></button>
+          <div class="swatches" role="group" aria-label="墨色">
+            <button class="swatch" data-swatch="vermillion" title="朱砂" aria-label="朱砂"></button>
+            <button class="swatch" data-swatch="indigo" title="靛青" aria-label="靛青"></button>
+            <button class="swatch" data-swatch="moss" title="苔绿" aria-label="苔绿"></button>
+            <button class="swatch" data-swatch="ochre" title="赭石" aria-label="赭石"></button>
           </div>
           <button class="ctl" id="ctl-theme" title="切换深浅色 (T)" aria-label="切换深浅色">
-            <span data-icon="moon"></span>
+            <span data-icon="moon" data-icon-size="19"></span>
           </button>
           <button class="ctl ctl--menu" id="ctl-menu" title="菜单" aria-label="菜单">
-            <span data-icon="menu"></span>
+            <span data-icon="menu" data-icon-size="20"></span>
           </button>
         </div>
       </div>
@@ -63,9 +64,7 @@
 
     <footer class="colophon">
       <div class="shell colophon__inner">
-        <p class="colophon__line">
-          © <span id="year"></span> <span id="footer-name">VENTAOO</span> · <span id="footer-note"></span>
-        </p>
+        <p>© <span id="year"></span> <span id="footer-name">VENTAOO</span> · <span id="footer-note"></span></p>
         <p class="colophon__meta">
           <span id="colophon-note"></span> · 按 <kbd>?</kbd> 查看快捷键
         </p>

@@ -139,7 +139,7 @@ check(
 // typography is actually applied
 const type = await page.evaluate(() => {
   const name = document.querySelector('.hero__name');
-  const bio = document.querySelector('.hero__bio');
+  const bio = document.querySelector('.hero__lead');
   return {
     nameFont: name ? getComputedStyle(name).fontFamily : '',
     nameSize: name ? parseFloat(getComputedStyle(name).fontSize) : 0,
@@ -147,10 +147,10 @@ const type = await page.evaluate(() => {
     bodyFont: getComputedStyle(document.body).fontFamily,
   };
 });
-check('display face is Fraunces', /Fraunces/i.test(type.nameFont), type.nameFont.split(',')[0]);
-check('body face is Newsreader', /Newsreader/i.test(type.bodyFont), type.bodyFont.split(',')[0]);
+check('display face is Cormorant Garamond', /Cormorant/i.test(type.nameFont), type.nameFont.split(',')[0]);
+check('body face is EB Garamond', /EB Garamond/i.test(type.bodyFont), type.bodyFont.split(',')[0]);
 check('hero name is display-sized', type.nameSize >= 38, type.nameSize + 'px');
-check('no pixel fonts remain', !/Press Start|Silkscreen|VT323/i.test(type.bodyFont + type.nameFont));
+check('no legacy fonts remain', !/Fraunces|Newsreader|Press Start|VT323/i.test(type.bodyFont + type.nameFont));
 
 // reveals
 await page.evaluate(() => window.scrollTo(0, 400));
@@ -174,12 +174,12 @@ check('theme toggle switches theme', themeBefore !== themeAfter, themeBefore + '
 check('ink wash follows the theme', canvasBefore !== canvasAfter);
 await page.screenshot({ path: 'shots/home-dark.png' });
 
-const accentBefore = await page.evaluate(() => document.documentElement.dataset.accent);
-await page.click('.swatch[data-accent="indigo"]');
+const accentBefore = await page.evaluate(() => document.documentElement.dataset.ink);
+await page.click('.swatch[data-swatch="indigo"]');
 await page.waitForTimeout(350);
-const accentAfter = await page.evaluate(() => document.documentElement.dataset.accent);
+const accentAfter = await page.evaluate(() => document.documentElement.dataset.ink);
 check('accent swatch switches ink', accentBefore !== accentAfter, accentBefore + ' → ' + accentAfter);
-check('swatch marks the active ink', await page.locator('.swatch[data-accent="indigo"].is-active').count() === 1);
+check('swatch marks the active ink', await page.locator('.swatch[data-swatch="indigo"].is-active').count() === 1);
 
 // help panel
 await page.keyboard.press('?');
@@ -229,7 +229,7 @@ for (const theme of ['light', 'dark']) {
     await page.evaluate(
       ({ t, a }) => {
         document.documentElement.dataset.theme = t;
-        document.documentElement.dataset.accent = a;
+        document.documentElement.dataset.ink = a;
       },
       { t: theme, a: accent },
     );
@@ -253,7 +253,7 @@ for (const theme of ['light', 'dark']) {
         return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
       };
       const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
-      const paper = parse('--paper');
+      const paper = parse('--bg');
       const out = {};
       for (const name of ['--ink', '--ink-2', '--ink-3', '--accent']) {
         out[name] = +ratio(parse(name), paper).toFixed(2);
@@ -267,7 +267,7 @@ for (const theme of ['light', 'dark']) {
 }
 await page.evaluate(() => {
   document.documentElement.dataset.theme = 'light';
-  document.documentElement.dataset.accent = 'vermillion';
+  document.documentElement.dataset.ink = 'vermillion';
 });
 
 /* ── 5. mobile ─────────────────────────────────────────────────────── */

@@ -5,187 +5,186 @@
 /* ── reading progress ────────────────────────────────────────────────── */
 .progress {
   position: fixed; top: 0; left: 0; right: 0; z-index: var(--z-topbar);
-  height: 2px;
-  pointer-events: none;
+  height: 2px; pointer-events: none;
 }
 .progress > i {
   display: block; height: 100%; width: 0;
   background: var(--accent);
-  transform-origin: left;
+  transition: width 90ms linear;
 }
 
 /* ── masthead ────────────────────────────────────────────────────────── */
 .masthead {
   position: fixed; top: 0; left: 0; right: 0;
   height: var(--topbar-h);
-  background: color-mix(in srgb, var(--paper) 84%, transparent);
-  backdrop-filter: blur(14px) saturate(1.1);
-  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
   border-bottom: 1px solid transparent;
-  transition: transform var(--t-slow) var(--ease),
+  transition: transform var(--t-slow) var(--ease-out),
               border-color var(--t-mid) linear,
               background var(--t-mid) linear;
 }
 .masthead.is-hidden { transform: translateY(-100%); }
-.masthead.is-stuck { border-bottom-color: var(--rule); }
+.masthead.is-stuck { border-bottom-color: var(--rule-2); }
 
 .masthead__inner {
   width: min(100% - (var(--gutter) * 2), var(--shell));
   height: 100%; margin-inline: auto;
-  display: flex; align-items: center; gap: 1.5em;
+  display: flex; align-items: center; gap: 2em;
 }
 
 .wordmark {
-  display: inline-flex; align-items: baseline; gap: .1em;
+  display: inline-flex; align-items: baseline;
   font-family: var(--font-display);
-  font-size: 1.02rem;
+  font-size: 1.55rem;
   font-weight: 600;
-  letter-spacing: .02em;
+  letter-spacing: .01em;
+  line-height: 1;
   color: var(--ink);
   flex-shrink: 0;
+  transition: color var(--t-fast) linear;
 }
 .wordmark em { font-style: normal; color: var(--accent); }
-.wordmark::after {
-  content: '';
-  width: .34em; height: .34em;
-  margin-left: .42em;
-  background: var(--accent);
-  border-radius: 50%;
-  align-self: center;
-  transition: transform var(--t-mid) var(--ease);
-}
-.wordmark:hover::after { transform: scale(1.7); }
+.wordmark:hover { color: var(--accent); }
 
-.nav { display: flex; align-items: center; gap: 1.5em; margin-left: auto; }
+.nav { display: flex; align-items: center; gap: 1.9em; margin-left: auto; }
 .nav a {
   position: relative;
-  font-family: var(--font-sans); font-size: var(--fs-label);
-  letter-spacing: .15em; text-transform: uppercase;
+  font-family: var(--font-text);
+  font-size: .84rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
   color: var(--ink-3);
-  padding-bottom: 2px;
+  padding: .3em 0;
   transition: color var(--t-fast) linear;
 }
 .nav a::after {
   content: '';
-  position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+  position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
   background: currentColor;
   transform: scaleX(0); transform-origin: left;
-  transition: transform var(--t-mid) var(--ease);
+  transition: transform var(--t-mid) var(--ease-out);
 }
 .nav a:hover { color: var(--ink); }
 .nav a:hover::after, .nav a.is-active::after { transform: scaleX(1); }
 .nav a.is-active { color: var(--accent); }
 
-.controls { display: flex; align-items: center; gap: .9em; flex-shrink: 0; }
+.controls { display: flex; align-items: center; gap: 1.1em; flex-shrink: 0; }
 
-.swatches { display: flex; align-items: center; gap: .42em; }
+.swatches { display: flex; align-items: center; gap: .5em; }
 .swatch {
-  width: 12px; height: 12px;
+  position: relative;
+  width: 14px; height: 14px;
   border-radius: 50%;
-  border: 1px solid transparent;
   background: var(--ink-3);
-  transition: transform var(--t-mid) var(--ease), box-shadow var(--t-mid) var(--ease), background var(--t-fast) linear;
+  transition: transform var(--t-mid) var(--ease-out);
 }
-.swatch[data-accent='vermillion'] { background: #a83f28; }
-.swatch[data-accent='indigo'] { background: #2c4557; }
-.swatch[data-accent='moss'] { background: #46592f; }
-.swatch[data-accent='ochre'] { background: #875c0f; }
-[data-theme='dark'] .swatch[data-accent='vermillion'] { background: #e08a6c; }
-[data-theme='dark'] .swatch[data-accent='indigo'] { background: #8fb2c8; }
-[data-theme='dark'] .swatch[data-accent='moss'] { background: #a4bd83; }
-[data-theme='dark'] .swatch[data-accent='ochre'] { background: #dcaa4e; }
-.swatch:hover { transform: scale(1.25); }
-.swatch.is-active { box-shadow: 0 0 0 1.5px var(--paper), 0 0 0 2.5px currentColor; }
-.swatch[data-accent='vermillion'].is-active { color: #a83f28; }
-.swatch[data-accent='indigo'].is-active { color: #2c4557; }
-.swatch[data-accent='moss'].is-active { color: #46592f; }
-.swatch[data-accent='ochre'].is-active { color: #875c0f; }
+.swatch::after {
+  content: '';
+  position: absolute; inset: -4px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(.6);
+  transition: opacity var(--t-mid) var(--ease-out), transform var(--t-mid) var(--ease-out);
+}
+.swatch[data-swatch='vermillion'] { background: #b0442a; color: #b0442a; }
+.swatch[data-swatch='indigo'] { background: #2d4a5e; color: #2d4a5e; }
+.swatch[data-swatch='moss'] { background: #4a5c33; color: #4a5c33; }
+.swatch[data-swatch='ochre'] { background: #8b5e12; color: #8b5e12; }
+[data-theme='dark'] .swatch[data-swatch='vermillion'] { background: #e28a6a; color: #e28a6a; }
+[data-theme='dark'] .swatch[data-swatch='indigo'] { background: #92b6cc; color: #92b6cc; }
+[data-theme='dark'] .swatch[data-swatch='moss'] { background: #a8c084; color: #a8c084; }
+[data-theme='dark'] .swatch[data-swatch='ochre'] { background: #deab50; color: #deab50; }
+.swatch:hover { transform: scale(1.2); }
+.swatch.is-active::after { opacity: .9; transform: scale(1); }
 
 .ctl {
   display: grid; place-items: center;
-  width: 32px; height: 32px;
+  width: 34px; height: 34px;
   color: var(--ink-3);
   border-radius: 50%;
-  transition: color var(--t-fast) linear, background var(--t-fast) linear;
+  transition: color var(--t-fast) linear, background var(--t-fast) linear, transform var(--t-mid) var(--ease-out);
 }
-.ctl:hover { color: var(--ink); background: var(--paper-2); }
+.ctl:hover { color: var(--ink); background: var(--bg-2); transform: rotate(-18deg); }
 .ctl--menu { display: none; }
 
 /* ── colophon ────────────────────────────────────────────────────────── */
 .colophon {
-  margin-top: clamp(64px, 12vw, 150px);
-  padding: 2.2em 0 2.6em;
-  border-top: 1px solid var(--rule);
+  margin-top: clamp(80px, 14vw, 180px);
+  padding: 2.6em 0 3em;
+  border-top: 1px solid var(--rule-2);
 }
 .colophon__inner {
-  display: flex; flex-wrap: wrap; gap: .6em 2em;
+  display: flex; flex-wrap: wrap; gap: .7em 2.4em;
   justify-content: space-between; align-items: baseline;
   font-size: var(--fs-sm); color: var(--ink-3);
 }
-.colophon__meta { display: inline-flex; align-items: center; gap: .5em; flex-wrap: wrap; }
+.colophon__meta { display: inline-flex; align-items: center; gap: .55em; flex-wrap: wrap; }
 
 /* ── back to top ─────────────────────────────────────────────────────── */
 .to-top {
-  position: fixed; right: 26px; bottom: 26px; z-index: var(--z-topbar);
+  position: fixed; right: 30px; bottom: 30px; z-index: var(--z-topbar);
   display: grid; place-items: center;
-  width: 40px; height: 40px;
-  font-size: 15px; color: var(--ink-2);
-  background: var(--paper);
+  width: 44px; height: 44px;
+  font-family: var(--font-text); font-size: 17px;
+  color: var(--ink-2);
+  background: var(--bg);
   border: 1px solid var(--rule);
   border-radius: 50%;
-  box-shadow: 0 6px 20px -10px var(--shade);
-  opacity: 0; visibility: hidden; transform: translateY(8px);
-  transition: all var(--t-mid) var(--ease);
+  box-shadow: 0 10px 30px -14px var(--shade);
+  opacity: 0; visibility: hidden; transform: translateY(12px) scale(.9);
+  transition: all var(--t-mid) var(--ease-out);
 }
 .to-top.is-on { opacity: 1; visibility: visible; transform: none; }
 .to-top:hover { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
 
 /* ── toasts ──────────────────────────────────────────────────────────── */
 .toasts {
-  position: fixed; right: 26px; bottom: 82px;
+  position: fixed; right: 30px; bottom: 92px;
   display: flex; flex-direction: column-reverse; gap: .6em;
-  max-width: min(300px, 78vw);
+  max-width: min(310px, 78vw);
   pointer-events: none;
 }
 .toast {
-  padding: .8em 1.05em;
+  padding: .85em 1.15em;
   font-size: var(--fs-sm);
   color: var(--ink-2);
-  background: var(--paper);
+  background: var(--bg);
   border: 1px solid var(--rule);
-  border-left: 3px solid var(--accent);
-  box-shadow: 0 16px 40px -22px var(--shade);
-  animation: toast-in 420ms var(--ease) both;
+  border-radius: 10px;
+  box-shadow: 0 20px 45px -26px var(--shade);
+  animation: toast-in 520ms var(--ease-out) both;
   pointer-events: auto;
 }
-.toast.is-out { animation: toast-out 300ms var(--ease-soft) both; }
-.toast__t { color: var(--ink); font-weight: 500; }
-.toast__d { color: var(--ink-3); font-size: .92em; margin-top: .1em; }
-@keyframes toast-in { from { transform: translateY(10px); opacity: 0 } }
-@keyframes toast-out { to { transform: translateY(6px); opacity: 0 } }
+.toast.is-out { animation: toast-out 340ms var(--ease-out) both; }
+.toast__t { color: var(--ink); font-size: 1.02em; }
+.toast__d { color: var(--ink-3); font-size: .94em; }
+@keyframes toast-in { from { transform: translateY(14px) scale(.97); opacity: 0 } }
+@keyframes toast-out { to { transform: translateY(8px) scale(.98); opacity: 0 } }
 
 /* ── responsive ──────────────────────────────────────────────────────── */
-@media (max-width: 760px) {
+@media (max-width: 800px) {
   .nav {
     position: fixed; inset: var(--topbar-h) 0 auto 0;
     flex-direction: column; align-items: stretch; gap: 0;
-    margin: 0; padding: .6em var(--gutter) 1.2em;
-    background: var(--paper);
-    border-bottom: 1px solid var(--rule);
-    /* The closed panel is translated up, but its box would still sit over the
-       masthead and swallow clicks on the menu button — so take it out of hit
-       testing and the tab order entirely while it is closed. */
-    transform: translateY(-120%);
+    margin: 0; padding: .8em var(--gutter) 1.4em;
+    background: var(--bg);
+    border-bottom: 1px solid var(--rule-2);
+    box-shadow: 0 24px 40px -30px var(--shade);
+    transform: translateY(-118%);
     visibility: hidden;
     pointer-events: none;
-    transition: transform var(--t-slow) var(--ease), visibility var(--t-slow);
+    transition: transform var(--t-slow) var(--ease-out), visibility var(--t-slow);
   }
   .nav.is-open { transform: translateY(0); visibility: visible; pointer-events: auto; }
-  .nav a { padding: .85em 0; font-size: 13px; border-bottom: 1px solid var(--rule-soft); }
+  .nav a { padding: .95em 0; font-size: .95rem; border-bottom: 1px solid var(--rule-2); }
   .nav a::after { display: none; }
   .ctl--menu { display: grid; }
   .swatches { display: none; }
-  .toasts { right: 14px; bottom: 74px; }
-  .to-top { right: 14px; bottom: 14px; }
+  .toasts { right: 16px; bottom: 84px; }
+  .to-top { right: 16px; bottom: 16px; }
   .colophon__inner { justify-content: flex-start; }
 }

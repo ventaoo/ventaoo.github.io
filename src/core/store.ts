@@ -48,9 +48,9 @@ export function setSetting<K extends keyof Settings>(key: K, value: Settings[K])
   if (key === 'theme') {
     document.documentElement.dataset.theme = value as string;
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', value === 'dark' ? '#14130f' : '#f7f4ed');
+    if (meta) meta.setAttribute('content', value === 'dark' ? '#131210' : '#faf7f1');
   }
-  if (key === 'accent') document.documentElement.dataset.accent = value as string;
+  if (key === 'accent') document.documentElement.dataset.ink = value as string;
   listeners.forEach((l) => l());
 }
 
@@ -58,5 +58,5 @@ export function setSetting<K extends keyof Settings>(key: K, value: Settings[K])
 export function applyBootState(): void {
   const root = document.documentElement;
   root.dataset.theme = settings.theme;
-  root.dataset.accent = settings.accent;
+  root.dataset.ink = settings.accent;
 }

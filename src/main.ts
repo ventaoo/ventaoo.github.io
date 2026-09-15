@@ -20,7 +20,7 @@ import { site, LOCALE } from '../site.config';
 function syncControls(): void {
   const face = $('#ctl-theme [data-icon]');
   if (face) face.dataset.icon = settings.theme === 'dark' ? 'sun' : 'moon';
-  $$<HTMLElement>('.swatch').forEach((s) => s.classList.toggle('is-active', s.dataset.accent === settings.accent));
+  $$<HTMLElement>('.swatch').forEach((s) => s.classList.toggle('is-active', s.dataset.swatch === settings.accent));
   hydrateIcons(document);
 }
 
@@ -29,7 +29,7 @@ function wireControls(): void {
 
   $$<HTMLButtonElement>('.swatch').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const accent = btn.dataset.accent as Accent | undefined;
+      const accent = btn.dataset.swatch as Accent | undefined;
       if (!accent || !ACCENTS.includes(accent)) return;
       setSetting('accent', accent);
       toast('强调色 · ' + ACCENT_LABEL[accent]);

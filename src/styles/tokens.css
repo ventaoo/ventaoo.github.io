@@ -1,34 +1,35 @@
 /* ============================================================================
-   Tokens — `data-theme` = light | dark,  `data-accent` = ink colour
+   Tokens — `data-theme` = light | dark,  `data-ink` = pigment
    ========================================================================= */
 
 :root {
   /* ── type ────────────────────────────────────────────────────────────── */
-  --font-display: 'Fraunces Variable', 'Songti SC', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
-  --font-serif: 'Newsreader Variable', 'Songti SC', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
-  --font-sans: system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-display: 'Cormorant Garamond Variable', 'Songti SC', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
+  --font-text: 'EB Garamond Variable', 'Songti SC', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --fs-body: clamp(17px, 0.45vw + 15px, 19.5px);
-  --fs-sm: clamp(13.5px, 0.25vw + 12.5px, 15px);
-  --fs-label: 11.5px;
-  --fs-h1: clamp(38px, 7vw, 88px);
-  --fs-h2: clamp(21px, 1.7vw, 28px);
-  --fs-h3: clamp(17px, 1vw + 13px, 21px);
-  --fs-statement: clamp(21px, 2.5vw, 36px);
+  --fs-name: clamp(54px, 12vw, 152px);
+  --fs-h1: clamp(36px, 5.6vw, 64px);
+  --fs-h2: clamp(25px, 2.3vw, 34px);
+  --fs-h3: clamp(19px, 1.1vw, 23px);
+  --fs-statement: clamp(24px, 3.1vw, 44px);
+  --fs-lead: clamp(19px, 0.7vw + 17px, 23px);
+  --fs-body: clamp(17.5px, 0.35vw + 16.5px, 19.5px);
+  --fs-sm: clamp(14px, 0.25vw + 13.4px, 15.5px);
+  --fs-label: clamp(11.5px, 0.2vw + 11px, 12.5px);
 
   /* ── measure & rhythm ────────────────────────────────────────────────── */
-  --measure: 34em;
-  --shell: 1060px;
-  --gutter: clamp(20px, 5vw, 56px);
-  --topbar-h: 62px;
+  --measure: 33em;
+  --shell: 1100px;
+  --gutter: clamp(22px, 6vw, 64px);
+  --topbar-h: 68px;
 
   /* ── motion ──────────────────────────────────────────────────────────── */
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
-  --t-fast: 180ms;
-  --t-mid: 340ms;
-  --t-slow: 700ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 200ms;
+  --t-mid: 380ms;
+  --t-slow: 760ms;
 
   /* ── layers ──────────────────────────────────────────────────────────── */
   --z-atmos: 0;
@@ -39,43 +40,45 @@
   --z-modal: 70;
 }
 
-/* ── LIGHT — warm paper ──────────────────────────────────────────────── */
+/* ── LIGHT — morning light on paper ──────────────────────────────────── */
 :root,
 [data-theme='light'] {
-  --paper: #f7f4ed;
-  --paper-2: #efeade;
-  --paper-3: #e7e0d0;
-  --ink: #191712;
-  --ink-2: #4f4a3b;
-  --ink-3: #6f6858;
-  --rule: #ddd5c4;
-  --rule-soft: #e9e3d6;
-  --shade: rgba(25, 23, 18, 0.05);
+  --bg: #faf7f1;
+  --bg-2: #f3ede2;
+  --bg-3: #eae2d2;
+  --ink: #1d1a15;
+  --ink-2: #4a4536;
+  --ink-3: #736b5a;
+  --rule: #e4dccb;
+  --rule-2: #efe9dd;
+  --glow: rgba(255, 236, 205, 0.5);
+  --shade: rgba(60, 48, 30, 0.09);
   color-scheme: light;
 }
 
-/* ── DARK — ink ──────────────────────────────────────────────────────── */
+/* ── DARK — ink at night ─────────────────────────────────────────────── */
 [data-theme='dark'] {
-  --paper: #14130f;
-  --paper-2: #1c1a15;
-  --paper-3: #25211a;
-  --ink: #ece6d8;
-  --ink-2: #b3ab97;
+  --bg: #131210;
+  --bg-2: #1b1917;
+  --bg-3: #242019;
+  --ink: #ece5d7;
+  --ink-2: #b5ac9a;
   --ink-3: #8d8574;
-  --rule: #302c23;
-  --rule-soft: #262218;
-  --shade: rgba(0, 0, 0, 0.3);
+  --rule: #2d2921;
+  --rule-2: #221f1a;
+  --glow: rgba(120, 90, 50, 0.14);
+  --shade: rgba(0, 0, 0, 0.45);
   color-scheme: dark;
 }
 
-/* ── ACCENT INKS ─────────────────────────────────────────────────────── */
+/* ── PIGMENTS ────────────────────────────────────────────────────────── */
 :root,
-[data-accent='vermillion'] { --accent: #a83f28; --accent-ink: #ffffff; --accent-soft: rgba(168, 63, 40, 0.1); }
-[data-accent='indigo'] { --accent: #2c4557; --accent-ink: #ffffff; --accent-soft: rgba(44, 69, 87, 0.1); }
-[data-accent='moss'] { --accent: #46592f; --accent-ink: #ffffff; --accent-soft: rgba(70, 89, 47, 0.1); }
-[data-accent='ochre'] { --accent: #875c0f; --accent-ink: #ffffff; --accent-soft: rgba(135, 92, 15, 0.1); }
+[data-ink='vermillion'] { --accent: #b0442a; --accent-ink: #fffaf4; --accent-soft: rgba(176, 68, 42, 0.13); }
+[data-ink='indigo'] { --accent: #2d4a5e; --accent-ink: #f6fafc; --accent-soft: rgba(45, 74, 94, 0.13); }
+[data-ink='moss'] { --accent: #4a5c33; --accent-ink: #f8fbf3; --accent-soft: rgba(74, 92, 51, 0.13); }
+[data-ink='ochre'] { --accent: #8b5e12; --accent-ink: #fffaf0; --accent-soft: rgba(139, 94, 18, 0.13); }
 
-[data-theme='dark'][data-accent='vermillion'] { --accent: #e08a6c; --accent-ink: #1c120d; --accent-soft: rgba(224, 138, 108, 0.14); }
-[data-theme='dark'][data-accent='indigo'] { --accent: #8fb2c8; --accent-ink: #0e1a22; --accent-soft: rgba(143, 178, 200, 0.14); }
-[data-theme='dark'][data-accent='moss'] { --accent: #a4bd83; --accent-ink: #131a0c; --accent-soft: rgba(164, 189, 131, 0.14); }
-[data-theme='dark'][data-accent='ochre'] { --accent: #dcaa4e; --accent-ink: #1f1707; --accent-soft: rgba(220, 170, 78, 0.14); }
+[data-theme='dark'][data-ink='vermillion'] { --accent: #e28a6a; --accent-ink: #1b120d; --accent-soft: rgba(226, 138, 106, 0.16); }
+[data-theme='dark'][data-ink='indigo'] { --accent: #92b6cc; --accent-ink: #0d171e; --accent-soft: rgba(146, 182, 204, 0.16); }
+[data-theme='dark'][data-ink='moss'] { --accent: #a8c084; --accent-ink: #131a0c; --accent-soft: rgba(168, 192, 132, 0.16); }
+[data-theme='dark'][data-ink='ochre'] { --accent: #deab50; --accent-ink: #1d1607; --accent-soft: rgba(222, 171, 80, 0.16); }

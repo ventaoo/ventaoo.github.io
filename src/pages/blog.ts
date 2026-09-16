@@ -15,7 +15,7 @@ export function blogPage(ctx: Ctx): View {
     html: `
     <div class="page">
       <header class="page-head">
-        <div class="shell page-head__grid">
+        <div class="shell mag">
           <h1 class="page-head__title reveal">${esc(site.blog.title)}</h1>
           <p class="page-head__sub reveal" data-reveal-delay="80">
             ${esc(site.blog.intro)}

@@ -3,42 +3,23 @@
  */
 import './styles/index.css';
 
-import { $, $$, on } from './core/dom';
-import { applyBootState, settings, setSetting, subscribe, SCHEMES, SCHEME_LABEL, type Scheme } from './core/store';
+import { $, on } from './core/dom';
+import { applyBootState, settings, subscribe } from './core/store';
 import { hydrateIcons } from './core/icons';
 import { route, startRouter } from './core/router';
-import { initShortcuts, toggleTheme, cycleScheme } from './core/shortcuts';
-import { toast } from './core/toast';
+import { initShortcuts, toggleTheme } from './core/shortcuts';
 import { homePage } from './pages/home';
 import { blogPage } from './pages/blog';
 import { postPage } from './pages/post';
 import { addTick } from './core/ticker';
 import { site, LOCALE } from '../site.config';
 
-/* ── chrome ──────────────────────────────────────────────────────────── */
 function syncControls(): void {
   const face = $('#ctl-theme [data-icon]');
   if (face) face.dataset.icon = settings.theme === 'dark' ? 'sun' : 'moon';
-  $$<HTMLElement>('.scheme').forEach((s) => s.classList.toggle('is-active', s.dataset.scheme === settings.scheme));
   hydrateIcons(document);
 }
 
-function wireControls(): void {
-  on($('#ctl-theme'), 'click', toggleTheme);
-
-  $$<HTMLButtonElement>('.scheme').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const scheme = btn.dataset.scheme as Scheme | undefined;
-      if (!scheme || !SCHEMES.includes(scheme)) return;
-      setSetting('scheme', scheme);
-      toast('配色 · ' + SCHEME_LABEL[scheme]);
-    });
-  });
-
-  on($('#btn-top'), 'click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-}
-
-/** Fill every config-driven slot in the static shell. */
 function applyConfig(): void {
   document.documentElement.lang = LOCALE;
   document.title = site.seo.title;
@@ -55,12 +36,10 @@ function applyConfig(): void {
   set('year', String(new Date().getFullYear()));
 }
 
-/** The running head shows where you are. */
 const RUNNING_HEAD: Record<string, string> = { home: '首页', blog: '日志' };
 function setRunningHead(section: string, title?: string): void {
   const el = document.getElementById('runninghead');
-  if (!el) return;
-  el.textContent = title ? title : (RUNNING_HEAD[section] ?? section);
+  if (el) el.textContent = title || RUNNING_HEAD[section] || section;
 }
 
 function wireScroll(): void {
@@ -74,41 +53,37 @@ function wireScroll(): void {
 }
 
 function registerRoutes(): void {
-  route('/', () => {
+  const home = () => {
     setRunningHead('home');
     return homePage();
-  }, 'home');
-  route('/index.html', () => {
-    setRunningHead('home');
-    return homePage();
-  }, 'home');
+  };
+  route('/', home, 'home');
+  route('/index.html', home, 'home');
   route('/blog', (ctx) => {
     setRunningHead('blog');
     return blogPage(ctx);
   }, 'blog');
   route('/blog/:slug', (ctx) => {
     const view = postPage(ctx);
-    const el = document.createElement('div');
-    el.innerHTML = view.html;
-    setRunningHead('blog', el.querySelector('.post-head__title')?.textContent ?? '日志');
+    const probe = document.createElement('div');
+    probe.innerHTML = view.html;
+    setRunningHead('blog', probe.querySelector('.post-head__title')?.textContent ?? '日志');
     return view;
   }, 'blog');
 }
 
-/* ── go ──────────────────────────────────────────────────────────────── */
 function main(): void {
   applyBootState();
   applyConfig();
   hydrateIcons(document);
   syncControls();
-  wireControls();
+  on($('#ctl-theme'), 'click', toggleTheme);
+  on($('#btn-top'), 'click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   subscribe(syncControls);
   wireScroll();
   registerRoutes();
   initShortcuts();
   startRouter();
-
-  void cycleScheme;
 }
 
 main();

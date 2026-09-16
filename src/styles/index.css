@@ -1,7 +1,6 @@
-@import '@fontsource-variable/archivo/standard.css';
-@import '@fontsource-variable/archivo/standard-italic.css';
-@import '@fontsource-variable/inter/wght.css';
-@import '@fontsource-variable/inter/wght-italic.css';
+@import '@fontsource-variable/space-grotesk/wght.css';
+@import '@fontsource-variable/eb-garamond/wght.css';
+@import '@fontsource-variable/eb-garamond/wght-italic.css';
 @import '@fontsource-variable/jetbrains-mono/wght.css';
 
 @import './tokens.css';

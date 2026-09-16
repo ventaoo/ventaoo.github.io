@@ -1,6 +1,6 @@
 # VENTAOO · 写作与造物
 
-> 一个以排版为主的个人主页 + 博客。纸与墨的配色、一款怪诞体、一层缓慢漂移的墨晕背景 —— 没有框架，没有图片素材。
+> 一个杂志式排版的个人主页 + 博客。宣纸白与墨，朱砂 / 赭石 / 黛青三种颜料，Space Grotesk 配宋体。
 
 **线上地址：<https://ventaoo.github.io/>**
 
@@ -10,48 +10,62 @@
 
 | 路由 | 内容 |
 | --- | --- |
-| `/` | 主页：地点／年份、名字、几句话（config 驱动）、简介、联系方式、近作 |
 | `/blog` | 日志归档：按年份分组、搜索、标签筛选 |
-| `/blog/<slug>` | 文章页：边栏目录、代码高亮与复制、上一篇 / 下一篇 |
+| `/blog/<slug>` | 文章：栏外目录、代码高亮与复制、上一篇 / 下一篇 |
+| `/` | 主页：自述、联系方式、照片、近作 |
 
 ## 改文案只需要动一个文件
 
 **`site.config.ts`** 是整站文案的唯一来源：
 
-`@ts
+```ts
 export const site = {
   name: 'VENTAOO',
-  suffix: '',
   status: '杭州 · 二〇二六',
 
-  // ★ 主页轮播的几句话（交叉淡入）
+  // ★ 主页那句自述（轮流淡入）
   lines: [
-    '把想法编译成像素。',
+    '把想到的东西做出来。',
     '白天写代码解决问题，晚上写代码制造问题。',
   ],
 
   bio: '我是 VENTAOO，现在在杭州……',
 
   links: [
-    { label: 'GitHub', href: 'https://github.com/ventaoo' },
-    { label: 'Email', href: 'mailto:ventaoczu@gmail.com' },
-    { label: 'RSS', href: '/rss.xml' },
+    { label: 'GitHub', value: 'github.com/ventaoo', href: 'https://github.com/ventaoo' },
+    { label: 'Email', value: 'ventaoczu@gmail.com', href: 'mailto:ventaoczu@gmail.com' },
+    { label: 'RSS', value: '/rss.xml', href: '/rss.xml' },
   ],
 
-  blog: { title: '日志', intro: '……', latestOnHome: 3 },
+  blog: { title: '日志', intro: '……', latestOnHome: 6 },
   seo: { title: '…', description: '…' },
   footerNote: '写作与造物',
-  colophon: 'Cormorant & Inter 排版',
+  colophon: 'Space Grotesk & EB Garamond 排版',
 } as const;
-`@
+```
 
-改完刷新即可，不需要碰任何组件代码。
+## 放照片
+
+把图片丢进 `public/images/`，然后在同一个文件的 `photos` 里登记：
+
+```ts
+export const photos: Photo[] = [
+  { src: '/images/valley.jpg', alt: '山谷与河', caption: '山谷' },
+  { src: '/images/window.jpg', alt: '窗边的光', caption: '窗' },
+];
+```
+
+**版式是自动的**：第 1 张横跨 7 列（3:2），第 2 张窄栏竖构图（4:5）并向下错开，
+第 3 张方形（1:1）向右缩进，第 4 张宽幅（16:10）收尾，之后循环。你只管按顺序排。
+数组留空就整个区块隐藏。
+
+> 仓库里现在放了六张**占位图**（来自 [Lorem Picsum](https://picsum.photos/) 的 Unsplash 照片），换成你自己的即可。
 
 ## 写文章
 
 在 `content/posts/` 放一个 `.md` 文件：
 
-`@markdown
+```markdown
 ---
 title: 文章标题
 date: 2026-09-15
@@ -60,120 +74,119 @@ summary: 一句话摘要，显示在归档和 RSS 里。
 ---
 
 正文……
-`@
+```
 
-文件名就是 URL。仓库里目前**只有一篇** `hello-world.md` 作示例，删掉它就能从零开始。
+文件名就是 URL。仓库里目前只有一篇 `hello-world.md` 作示例。
 
 ## 设计
 
-### 纸与墨
+### 纸与颜料
 
-默认是暖白纸色配深墨，另有一个"墨色"深色模式。右上角四个墨点是四种传统颜料，点一下整站的强调色就换了：
+| | 浅色 | 深色 | 用在哪 |
+| --- | --- | --- | --- |
+| 宣纸 | `#f6f3ea` | `#141311` | 底色 |
+| 墨 | `#1b1916` | `#ebe4d5` | 正文与标题 |
+| 朱砂 | `#a8341f` | `#d9704f` | 链接、强调、小节前的短线 |
+| 黛青 | `#34525e` | `#7fa3b0` | 编号 |
+| 赭石 | `#8f6520` | `#c9a05a` | 标签 |
 
-| | 朱砂 | 靛青 | 苔绿 | 赭石 |
-| --- | --- | --- | --- | --- |
-| 纸色 | `#b0442a` | `#2d4a5e` | `#4a5c33` | `#8b5e12` |
-| 墨色 | `#e28a6a` | `#92b6cc` | `#a8c084` | `#deab50` |
+### 字体
 
-### 排版
+- **Space Grotesk** 做标题、自述、导航和所有小标签 —— 一款有性格的怪诞体，大字号下有味道
+- **EB Garamond** 做正文的拉丁文，和宋体同属老衬线，混排不打架
+- **中文全部落到系统的宋体**（Songti SC / Noto Serif CJK），书卷气来自这里
+- **JetBrains Mono** 只用在代码和编号上
 
-排版是唯一的装饰：
+字号只有七级，台阶拉得很开：`76 / 58 / 30 / 20 / 17.5 / 15 / 10.5`。
 
-- **Archivo** 做名字、标题和那句自述 —— 高对比度的加拉蒙，字号一大就非常好看
-- **Inter** 做正文，同源的加拉蒙，长文耐读
-- 中文自动落到系统的宋体（Songti SC / Noto Serif CJK），和拉丁衬线是同一家族的质感
-- 正文宽度锁在 33em、1.86 倍行高；中文段落用**两字首行缩进**（标题后的首段不缩进）
-- 全大写字距标签、渐隐的发丝分隔线、边栏目录跟随滚动
+### 版面
 
-### 背景与动效
+不是一列到底，也不是死板的网格：
 
-**背景**是一块全分辨率 Canvas：三团极慢漂移的色晕加七条发丝般的墨线，约 30fps，随滚动缓缓上移，上面叠一层 SVG 纸张颗粒和一道顶部暖光。它只是"呼吸"，不动声色。
+- 12 列网格，但元素落在**不对齐的区间**上 —— 自述占 1–8 列，联系方式挂在右侧 10–12 列，
+  下面的介绍缩到 1–5 列的窄栏，并且**故意向下错开基线和自述错开**
+- 照片按不规则节奏排（见上），**没有两张是对齐的**
+- 文章正文缩进到第 2 列，栏外目录在第 10–12 列
+- 页眉下面是一条 **running head**，左边显示当前栏目，右边是坐标
 
-**动效**统一用 `cubic-bezier(.22,1,.36,1)`：
+### 细节
 
-- 滚动显现是 900ms 的位移加淡入，按顺序错开
-- 路由切换是整体上浮淡入
-- 首页那句话是**交叉淡入**，不是逐字打印
-- 列表行悬停时整行在合成层上右移，并从左侧滑出一道墨线
-- 文字链接悬停像马克笔一样扫过一层底色
-- 首页的头部会随滚动缓缓上移并淡出
+所有间距来自一套 4px 的刻度（`--s1` 到 `--s10`），没有临时数字。
+线条统一 1px，只有最强的分隔用 2px。编号用等宽数字对齐。
+中文启用了 `palt` 特性收紧标点。字号越大字距越紧，小标签则拉开到 .16em。
 
 ## 技术栈
 
-Vite 7 + TypeScript，**没有 UI 框架**。运行时依赖只有三个：
+Vite 7 + TypeScript，**没有 UI 框架**。运行时依赖三个：
 
 | 库 | 用途 |
 | --- | --- |
-| [@fontsource-variable](https://fontsource.org/) | Archivo / Inter / JetBrains Mono 自托管 |
+| [@fontsource-variable](https://fontsource.org/) | 字体自托管 |
 | [marked](https://marked.js.org/) | Markdown 解析 |
 | [highlight.js](https://highlightjs.org/) | 代码高亮 |
-
-动画共用一个 `requestAnimationFrame` 调度器（`src/core/ticker.ts`）。
 
 ### 体积
 
 | | |
 | --- | --- |
-| 首次加载字体 | **约 205 KB**（只取 latin 子集；中文走系统字体，不下载字库） |
-| CSS | 39 KB |
-| JS | 130 KB |
+| 首屏字体 | **约 151 KB**（只取 latin 子集；中文走系统字库，不下载） |
+| CSS | 35 KB |
+| JS | 127 KB |
 
 ## 本地开发
 
-`@bash
+```bash
 npm install
 npm run dev        # http://127.0.0.1:5173
 npm run build      # 输出到 dist/
 npm run preview    # 预览构建结果（端口 4173）
 npm run typecheck  # tsc --noEmit
-`@
+```
 
 ### 回归验证
 
-`@bash
+```bash
 npm run preview &
-npm run verify     # 截图 + ASCII 构图图 + 35 项断言
+npm run verify     # 截图 + ASCII 构图图 + 39 项断言
 npm run shot       # 只截图，输出到 shots/
-`@
+```
 
-断言覆盖：每个路由渲染、墨晕背景确实在画且会随时间变化、字体确实是 Archivo / Inter、
-config 文案确实生效、滚动显现、深浅色切换、四个墨点切换、帮助面板、归档搜索与标签筛选、
-按年份分组、404、客户端路由、桌面与手机无横向溢出、
-**8 种墨色 × 深浅组合下全部文字色通过 WCAG AA**，以及首次加载的字体字节数。
+断言覆盖：每个路由渲染、字体确实是 Space Grotesk / EB Garamond、中文确实落到宋体、
+字号台阶分明、12 列网格且左右不对称、**六张照片全部加载且宽度和位置都不对齐**、
+config 文案确实生效、文案里没有遗留的旧关键词、配色选择器确实移除了、
+滚动显现、深浅色、帮助面板、归档搜索与标签筛选、文章正文缩进与栏外目录、
+404、客户端路由、桌面与手机无横向溢出、浅深两套配色下全部文字通过 WCAG AA。
 
 ## 目录结构
 
-`@
-site.config.ts        ← 全站文案
+```
+site.config.ts        ← 全站文案 + 照片清单
 content/posts/        ← Markdown 文章
+public/images/        ← 照片
 src/
-  main.ts             启动、chrome 接线、路由注册
-  core/               dom / 调度器 / 偏好存储 / 路由 / 快捷键 / 图标
-  fx/                 墨晕画布 / 指针与滚动微动 / 显现 / 句子轮播
-  blog/               Markdown 渲染 + 文章集合 + 归档行
+  core/               dom / 调度器 / 偏好 / 路由 / 快捷键 / 图标
+  fx/                 句子轮播 / 微动 / 显现
+  blog/               Markdown 渲染 + 文章集合 + 归档表
   pages/              home / blog / post
   styles/             tokens · base · components · chrome · pages · blog · fx
 scripts/              截图与验证工具
-`@
+```
 
 ## 快捷键
 
 | 键 | 作用 |
 | --- | --- |
 | `T` | 切换深色 / 浅色 |
-| `A` | 换一种强调色 |
 | `G` `B` | 跳到日志 |
 | `/` | 在日志页聚焦搜索框 |
 | `?` | 快捷键面板 |
 
 ## 部署
 
-推送到 `main` 即自动部署到 GitHub Pages（`.github/workflows/deploy.yml`）。
-
-构建时会为每个路由生成真实的静态 HTML（正确的 title / description / canonical / Open Graph，
-以及 `<noscript>` 里的正文），所以深链接返回 HTTP 200 而不是 404，搜索引擎能正常收录；
-同时生成 `rss.xml` / `sitemap.xml` / `robots.txt`。
+推送到 `main` 即自动部署到 GitHub Pages。构建时会为每个路由生成真实的静态 HTML
+（正确的 title / description / canonical / Open Graph 以及 `<noscript>` 里的正文），
+所以深链接返回 HTTP 200；同时生成 `rss.xml` / `sitemap.xml` / `robots.txt`。
 
 ## 许可
 
-代码以 [MIT](LICENSE) 发布。文章内容版权归作者所有。
+代码以 [MIT](LICENSE) 发布。文章内容版权归作者所有。占位照片来自 Unsplash（Lorem Picsum）。

@@ -1,33 +1,37 @@
 /* ============================================================================
-   Tokens — International Typographic Style
-   `data-theme` = light | dark     `data-scheme` = colour system
+   Tokens — 宣纸 · 墨 · 朱砂 · 赭石 · 黛青
+   Unequal columns, generous margins, hard hairlines.
    ========================================================================= */
 
 :root {
-  /* ── type: one grotesque, one neutral text face, one mono ────────────── */
-  --font-display: 'Archivo Variable', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', system-ui, sans-serif;
-  --font-text: 'Inter Variable', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', system-ui, sans-serif;
+  /* ── type ────────────────────────────────────────────────────────────── */
+  --font-display: 'Space Grotesk Variable', 'Songti SC', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
+  --font-text: 'EB Garamond Variable', 'Songti SC', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* scale contrast is the whole point — tiny labels against very large type */
-  --fs-mega: clamp(38px, 7.2vw, 104px);
-  --fs-h1: clamp(30px, 4.2vw, 54px);
-  --fs-h2: clamp(19px, 1.7vw, 26px);
-  --fs-h3: clamp(16px, 0.9vw, 19px);
-  --fs-lead: clamp(17px, 0.6vw + 15.5px, 20px);
-  --fs-body: clamp(16px, 0.3vw + 15px, 17.5px);
+  /* Seven clear steps. Nothing in between. */
+  --fs-mega: clamp(30px, 5.4vw, 76px);
+  --fs-h1: clamp(30px, 4.4vw, 58px);
+  --fs-h2: clamp(21px, 1.9vw, 30px);
+  --fs-h3: clamp(17px, 0.9vw, 20px);
+  --fs-lead: clamp(17px, 0.5vw + 16px, 20px);
+  --fs-body: clamp(16px, 0.25vw + 15.2px, 17.5px);
   --fs-sm: clamp(13.5px, 0.2vw + 13px, 15px);
-  --fs-label: 11.5px;
+  --fs-label: 10.5px;
 
-  /* ── the grid ────────────────────────────────────────────────────────── */
-  --shell: 1240px;
-  --gutter: clamp(18px, 4vw, 52px);
-  --gap: clamp(14px, 1.5vw, 26px);
-  --topbar-h: 56px;
-  --subbar-h: 34px;
+  /* ── spacing scale — every gap comes from here ───────────────────────── */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px; --s5: 24px;
+  --s6: 32px; --s7: 48px; --s8: 64px; --s9: 96px; --s10: 136px;
 
-  /* ── motion: short, linear-ish, never bouncy ─────────────────────────── */
-  --ease: cubic-bezier(0.2, 0, 0.15, 1);
+  /* ── the page ────────────────────────────────────────────────────────── */
+  --shell: 1320px;
+  --gutter: clamp(20px, 4.5vw, 64px);
+  --gap: clamp(16px, 1.8vw, 32px);
+  --topbar-h: 58px;
+  --subbar-h: 32px;
+
+  /* ── motion — short, calm, no bounce ─────────────────────────────────── */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
   --t-fast: 140ms;
   --t-mid: 260ms;
   --t-slow: 520ms;
@@ -38,45 +42,44 @@
   --z-modal: 70;
 }
 
-/* ── LIGHT ───────────────────────────────────────────────────────────── */
+/* ── 宣纸 · paper ────────────────────────────────────────────────────── */
 :root,
 [data-theme='light'] {
-  --paper: #f5f4f1;
-  --paper-2: #eceae5;
-  --ink: #111111;
-  --ink-2: #4a4a48;
-  --ink-3: #6f6f6b;
-  --rule: #d8d6d0;
-  --rule-strong: #111111;
-  --shade: rgba(0, 0, 0, 0.08);
+  --paper: #f6f3ea;
+  --paper-2: #ece7d9;
+  --ink: #1b1916;
+  --ink-2: #4c473c;
+  --ink-3: #6f6857;
+  --rule: #dcd5c4;
+  --rule-strong: #1b1916;
+  --wash: rgba(168, 52, 31, 0.05);
   color-scheme: light;
 }
 
-/* ── DARK ────────────────────────────────────────────────────────────── */
+/* ── 夜 · ink ────────────────────────────────────────────────────────── */
 [data-theme='dark'] {
-  --paper: #111214;
-  --paper-2: #1a1c1f;
-  --ink: #f0efec;
-  --ink-2: #b4b3ae;
-  --ink-3: #8b8a85;
-  --rule: #2c2e32;
-  --rule-strong: #f0efec;
-  --shade: rgba(0, 0, 0, 0.5);
+  --paper: #141311;
+  --paper-2: #1d1b17;
+  --ink: #ebe4d5;
+  --ink-2: #b3aa99;
+  --ink-3: #918878;
+  --rule: #2d2a24;
+  --rule-strong: #ebe4d5;
+  --wash: rgba(217, 112, 79, 0.08);
   color-scheme: dark;
 }
 
-/* ── COLOUR SYSTEMS: three roles, never more ─────────────────────────────
-   c1 = links and emphasis · c2 = section numbers and labels · c3 = tags    */
+/* ── three pigments, three jobs ──────────────────────────────────────── */
 :root,
-[data-scheme='signal'] {
-  --c1: #c8281a; --c2: #1a3fd0; --c3: #2f7d32;
-  --c1-ink: #ffffff;
+[data-theme='light'] {
+  --c1: #a8341f;   /* 朱砂 — links and emphasis */
+  --c2: #34525e;   /* 黛青 — numbers and labels */
+  --c3: #8f6520;   /* 赭石 — tags */
+  --c1-ink: #fdf8f2;
 }
-[data-scheme='riso'] { --c1: #c2185b; --c2: #2b4cf2; --c3: #8a5600; --c1-ink: #ffffff; }
-[data-scheme='mono'] { --c1: #111111; --c2: #5a5a5a; --c3: #c8281a; --c1-ink: #ffffff; }
-[data-scheme='earth'] { --c1: #b4472a; --c2: #2f5d50; --c3: #8a6216; --c1-ink: #ffffff; }
-
-[data-theme='dark'][data-scheme='signal'] { --c1: #ff6b52; --c2: #7d97ff; --c3: #6fbf73; --c1-ink: #14100e; }
-[data-theme='dark'][data-scheme='riso'] { --c1: #ff7aa8; --c2: #8ba4ff; --c3: #e0b055; --c1-ink: #17110f; }
-[data-theme='dark'][data-scheme='mono'] { --c1: #f0efec; --c2: #9a9a95; --c3: #ff6b52; --c1-ink: #111111; }
-[data-theme='dark'][data-scheme='earth'] { --c1: #e08a68; --c2: #7fb3a2; --c3: #d5aa5c; --c1-ink: #17110d; }
+[data-theme='dark'] {
+  --c1: #d9704f;
+  --c2: #7fa3b0;
+  --c3: #c9a05a;
+  --c1-ink: #1a1310;
+}

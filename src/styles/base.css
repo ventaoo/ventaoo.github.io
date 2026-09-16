@@ -1,5 +1,5 @@
 /* ============================================================================
-   Reset · type · the 12-column grid
+   Reset · type · the magazine grid
    ========================================================================= */
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -8,7 +8,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--topbar-h) + 44px);
+  scroll-padding-top: calc(var(--topbar-h) + var(--subbar-h) + var(--s5));
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -25,9 +25,10 @@ body {
   color: var(--ink);
   font-family: var(--font-text);
   font-size: var(--fs-body);
-  line-height: 1.62;
-  font-feature-settings: 'kern' 1, 'liga' 1, 'cv05' 1;
+  line-height: 1.72;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'palt' 1;
   overflow-x: hidden;
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background var(--t-mid) var(--ease), color var(--t-mid) var(--ease);
@@ -35,13 +36,16 @@ body {
 
 ::selection { background: var(--c1); color: var(--c1-ink); }
 
-/* ── headings: the grotesque, tight and confident ────────────────────── */
+/* ── headings ────────────────────────────────────────────────────────── */
+/* Latin wants negative tracking; Chinese does not — 0 sits between them and
+   the 'palt' feature tightens CJK punctuation on its own. */
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 1.06;
-  letter-spacing: -0.022em;
+  font-weight: 500;
+  line-height: 1.14;
+  letter-spacing: -0.005em;
   text-wrap: balance;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'palt' 1;
 }
 
 p { text-wrap: pretty; }
@@ -55,8 +59,10 @@ button { background: none; border: 0; cursor: pointer; }
 
 kbd {
   font-family: var(--font-mono); font-size: .78em;
-  padding: .15em .45em; color: var(--ink);
-  background: var(--paper-2); border: 1px solid var(--rule);
+  padding: .15em .45em;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
 }
 
 code, pre { font-family: var(--font-mono); font-feature-settings: 'liga' 0; }
@@ -67,26 +73,38 @@ code, pre { font-family: var(--font-mono); font-feature-settings: 'liga' 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--ink-3); }
 * { scrollbar-color: var(--rule) var(--paper); scrollbar-width: thin; }
 
-/* ── the grid ────────────────────────────────────────────────────────── */
+/* ── layout ──────────────────────────────────────────────────────────── */
 .shell {
   width: min(100% - (var(--gutter) * 2), var(--shell));
   margin-inline: auto;
 }
-.grid {
+
+/* an image that escapes the shell to the viewport edges */
+.bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+/* the magazine grid: 12 columns, but items land on irregular ranges and are
+   deliberately pushed off each other's baselines */
+.mag {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--gap);
+  column-gap: var(--gap);
+  row-gap: var(--s6);
 }
+.push-sm { margin-top: var(--s5); }
+.push-md { margin-top: var(--s7); }
+.push-lg { margin-top: var(--s9); }
 
 /* ── shared type devices ─────────────────────────────────────────────── */
 .page { padding-top: calc(var(--topbar-h) + var(--subbar-h)); }
 
-/* the connective tissue: tiny, tracked-out, monospaced, uppercase */
 .label {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: var(--fs-label);
   font-weight: 500;
-  letter-spacing: .12em;
+  letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--ink-3);
   font-feature-settings: 'tnum' 1;
@@ -94,29 +112,39 @@ code, pre { font-family: var(--font-mono); font-feature-settings: 'liga' 0; }
 .label--c2 { color: var(--c2); }
 .label--c1 { color: var(--c1); }
 
-/* an index number — the signature device of the style */
 .num {
   font-family: var(--font-mono);
   font-size: var(--fs-label);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
+  letter-spacing: .06em;
   color: var(--c2);
+}
+
+/* a short rule that leads a heading in, instead of a full-width divider */
+.tick {
+  display: block;
+  width: var(--s6);
+  height: 2px;
+  background: var(--c1);
 }
 
 .rule { height: 1px; background: var(--rule); }
 .rule--strong { height: 2px; background: var(--rule-strong); }
 
 .muted { color: var(--ink-3); }
+
 .skip {
-  position: fixed; top: -70px; left: 16px; z-index: 200;
+  position: fixed; top: -70px; left: var(--s4); z-index: 200;
   padding: .6em 1em;
   font-family: var(--font-mono); font-size: var(--fs-label);
-  text-transform: uppercase; letter-spacing: .1em;
+  letter-spacing: .12em; text-transform: uppercase;
   color: var(--c1-ink); background: var(--c1);
   transition: top var(--t-mid) var(--ease);
 }
-.skip:focus { top: 12px; }
+.skip:focus { top: var(--s3); }
 
 @media (max-width: 900px) {
-  .grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .mag { grid-template-columns: repeat(6, minmax(0, 1fr)); row-gap: var(--s5); }
+  .push-md, .push-lg { margin-top: var(--s5); }
 }

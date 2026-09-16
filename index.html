@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="light" data-scheme="signal">
+<html lang="zh-CN" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#f5f4f1" />
+    <meta name="theme-color" content="#f6f3ea" />
     <title>VENTAOO · 写作与造物</title>
     <meta name="description" content="VENTAOO 的个人主页与博客：代码、实验与想法。" />
     <meta property="og:type" content="website" />
@@ -14,9 +14,8 @@
       (function () {
         document.documentElement.classList.add('js');
         try {
-          var s = JSON.parse(localStorage.getItem('gx:settings') || '{}');
+          var s = JSON.parse(localStorage.getItem('mx:settings') || '{}');
           if (s.theme) document.documentElement.dataset.theme = s.theme;
-          if (s.scheme) document.documentElement.dataset.scheme = s.scheme;
         } catch (e) {}
       })();
     </script>
@@ -37,12 +36,6 @@
         </nav>
 
         <div class="controls">
-          <div class="schemes" role="group" aria-label="配色系统">
-            <button class="scheme" data-scheme="signal" title="信号" aria-label="信号配色"></button>
-            <button class="scheme" data-scheme="riso" title="丝网印" aria-label="丝网印配色"></button>
-            <button class="scheme" data-scheme="mono" title="单色" aria-label="单色配色"></button>
-            <button class="scheme" data-scheme="earth" title="土色" aria-label="土色配色"></button>
-          </div>
           <button class="ctl" id="ctl-theme" title="切换深浅 (T)" aria-label="切换深浅色">
             <span data-icon="moon" data-icon-size="17"></span>
           </button>
@@ -52,7 +45,6 @@
         </div>
       </div>
 
-      <!-- running head -->
       <div class="masthead__sub">
         <span class="label" id="runninghead">首页</span>
         <span class="label" id="runningmeta"></span>

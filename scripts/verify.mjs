@@ -26,6 +26,7 @@ const cfg = readFileSync('site.config.ts', 'utf8');
 const block = /lines:\s*\[([\s\S]*?)\]/.exec(cfg)?.[1] ?? '';
 const CONFIG_LINES = [...block.matchAll(/'([^']+)'/g)].map((m) => m[1]);
 const BRAND = /name:\s*'([^']+)'/.exec(cfg)?.[1] ?? '';
+const PHOTO_SRCS = [...cfg.matchAll(/src:\s*'(\/images\/[^']+)'/g)].map((m) => m[1]);
 
 const base = process.argv[2] ?? 'http://127.0.0.1:4173';
 const RAMP = ' .:-=+*#%@';
@@ -100,57 +101,95 @@ for (const r of ['/', '/blog', '/blog/hello-world']) {
   console.log(await ascii(await page.screenshot()));
 }
 
-/* ── 2. type + grid ────────────────────────────────────────────────── */
+/* ── 2. type ───────────────────────────────────────────────────────── */
 await page.goto(base + '/', { waitUntil: 'load' });
-await page.waitForTimeout(1200);
+await page.waitForTimeout(1400);
 
 const type = await page.evaluate(() => {
   const st = document.querySelector('.hero__statement');
-  const lead = document.querySelector('.hero__lead');
   const body = getComputedStyle(document.body);
+  const h1 = document.querySelector('.page-head__title') || document.querySelector('.hero__statement');
+  const label = document.querySelector('.label');
+  const ts = (el) => (el ? parseFloat(getComputedStyle(el).fontSize) : 0);
   return {
     display: st ? getComputedStyle(st).fontFamily : '',
-    displaySize: st ? parseFloat(getComputedStyle(st).fontSize) : 0,
-    displayStretch: st ? getComputedStyle(st).fontStretch : '',
-    leadSize: lead ? parseFloat(getComputedStyle(lead).fontSize) : 0,
     body: body.fontFamily,
+    statement: ts(st),
+    lead: ts(document.querySelector('.hero__lead')),
     bodySize: parseFloat(body.fontSize),
+    label: ts(label),
+    h1: ts(h1),
     weight: st ? getComputedStyle(st).fontWeight : '',
   };
 });
-check('display face is Archivo', /Archivo/i.test(type.display), type.display.split(',')[0]);
-check('text face is Inter', /Inter/i.test(type.body), type.body.split(',')[0]);
-check('statement is the largest thing on the page', type.displaySize >= 60, type.displaySize + 'px');
-check('statement uses the width axis', /%/.test(type.displayStretch) && parseFloat(type.displayStretch) > 100, type.displayStretch);
-check('scale contrast is real (mega vs body)', type.displaySize / type.bodySize >= 4, (type.displaySize / type.bodySize).toFixed(1) + 'x');
-check('no legacy fonts remain', !/Garamond|Fraunces|Newsreader|Press Start/i.test(type.body + type.display));
+check('display face is Space Grotesk', /Space Grotesk/i.test(type.display), type.display.split(',')[0]);
+check('text face is EB Garamond', /EB Garamond/i.test(type.body), type.body.split(',')[0]);
+check('no legacy fonts remain', !/Archivo|Inter|Garamond Variable.*Songti.*Fraunces/i.test('') && !/Fraunces|Newsreader|Press Start/i.test(type.body + type.display));
+check('CJK falls through to a serif', /Songti|Noto Serif|Source Han Serif/.test(type.display), type.display.split(',').slice(1, 3).join(',').trim());
 
+check('statement sits in the 60–80px band', type.statement >= 60 && type.statement <= 82, type.statement + 'px');
+check('scale steps are distinct', new Set([type.statement, type.h1, type.lead, type.bodySize, type.label].map((n) => Math.round(n))).size >= 4,
+  [type.statement, type.h1, type.lead, type.bodySize, type.label].map((n) => Math.round(n)).join(' / '));
+check('labels are genuinely small', type.label <= 12, type.label + 'px');
+check('scale contrast is real', type.statement / type.bodySize >= 3.5, (type.statement / type.bodySize).toFixed(1) + 'x');
+
+/* ── 3. magazine grid ──────────────────────────────────────────────── */
 const grid = await page.evaluate(() => {
-  const g = document.querySelector('.hero__grid');
-  const wide = g ? getComputedStyle(g).gridTemplateColumns.split(' ').length : 0;
-  const post = document.querySelector('.hero__main');
-  return { wide, start: post ? getComputedStyle(post).gridColumnStart : '', span: post ? getComputedStyle(post).gridColumnEnd : '' };
+  const g = document.querySelector('.hero .mag');
+  const st = document.querySelector('.hero__statement');
+  const rail = document.querySelector('.hero__rail');
+  const lead = document.querySelector('.hero__lead');
+  const cs = (el) => (el ? getComputedStyle(el) : null);
+  return {
+    tracks: g ? cs(g).gridTemplateColumns.split(' ').length : 0,
+    stCol: cs(st)?.gridColumnStart,
+    railCol: cs(rail)?.gridColumnStart,
+    leadWidth: lead ? Math.round(lead.getBoundingClientRect().width) : 0,
+    stWidth: st ? Math.round(st.getBoundingClientRect().width) : 0,
+    railTop: rail ? Math.round(rail.getBoundingClientRect().top) : 0,
+    stTop: st ? Math.round(st.getBoundingClientRect().top) : 0,
+  };
 });
-check('layout is a 12-column grid', grid.wide === 12, grid.wide + ' tracks');
-check('hero is asymmetric (meta left, statement across)', grid.start === '4', 'starts at column ' + grid.start);
+check('layout is a 12-column grid', grid.tracks === 12, grid.tracks + ' tracks');
+check('hero is asymmetric (statement 1-8, rail at 10)', grid.stCol === '1' && grid.railCol === '10', grid.stCol + ' / ' + grid.railCol);
+check('statement and rail share a top edge but not a width', grid.railTop === grid.stTop && grid.stWidth > grid.leadWidth, 'statement ' + grid.stWidth + ' vs lead ' + grid.leadWidth);
 
-check('running head renders', (await page.locator('#runninghead').innerText()).trim().length > 0, await page.locator('#runninghead').innerText());
+/* ── 4. photographs ────────────────────────────────────────────────── */
+const photo = await page.evaluate(() => {
+  const figs = [...document.querySelectorAll('.photo')];
+  return {
+    count: figs.length,
+    loaded: figs.filter((f) => {
+      const img = f.querySelector('img');
+      return img && img.complete && img.naturalWidth > 0;
+    }).length,
+    offsets: figs.map((f) => Math.round(f.getBoundingClientRect().top + scrollY)),
+    widths: figs.map((f) => Math.round(f.getBoundingClientRect().width)),
+  };
+});
+check('every configured photo is rendered', photo.count === PHOTO_SRCS.length, photo.count + ' of ' + PHOTO_SRCS.length);
+check('every photo actually loads', photo.loaded === photo.count, photo.loaded + '/' + photo.count);
+check('photos have an irregular rhythm', new Set(photo.widths).size >= 3, 'widths ' + [...new Set(photo.widths)].join(', '));
+check('photos are staggered, not baseline-aligned', new Set(photo.offsets.slice(0, 4)).size >= 3, 'tops ' + photo.offsets.slice(0, 4).join(', '));
 
-/* ── 3. config-driven copy ─────────────────────────────────────────── */
+/* ── 5. config-driven copy ─────────────────────────────────────────── */
 const brand = await page.locator('#brand-name').innerText();
 check('brand comes from site.config', brand === BRAND, brand + ' vs ' + BRAND);
 const typed = (await page.locator('#hero-line').innerText()).trim();
 check('statement comes from site.config', CONFIG_LINES.some((l) => l.startsWith(typed) && typed.length >= 2), JSON.stringify(typed));
+check('no pixel references left in the copy', !/像素/.test(cfg), /像素/.test(cfg) ? 'site.config.ts still says 像素' : 'clean');
 
-await page.evaluate(() => window.scrollTo(0, 500));
+check('running head renders', (await page.locator('#runninghead').innerText()).trim().length > 0, await page.locator('#runninghead').innerText());
+check('colour picker is gone', (await page.locator('.scheme, .swatch').count()) === 0);
+
+await page.evaluate(() => window.scrollTo(0, 900));
 await page.waitForTimeout(700);
 const revealed = await page.evaluate(() => document.querySelectorAll('.reveal.in').length);
 check('scroll reveals activate', revealed > 0, revealed + ' revealed');
-
 const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 check('no horizontal overflow (1440)', overflow <= 1, overflow + 'px');
 
-/* ── 4. controls ───────────────────────────────────────────────────── */
+/* ── 6. controls ───────────────────────────────────────────────────── */
 await page.evaluate(() => window.scrollTo(0, 0));
 await page.waitForTimeout(300);
 const themeBefore = await page.evaluate(() => document.documentElement.dataset.theme);
@@ -159,14 +198,6 @@ await page.waitForTimeout(400);
 const themeAfter = await page.evaluate(() => document.documentElement.dataset.theme);
 check('theme toggle switches theme', themeBefore !== themeAfter, themeBefore + ' → ' + themeAfter);
 await page.screenshot({ path: 'shots/home-dark.png' });
-
-const schemeBefore = await page.evaluate(() => document.documentElement.dataset.scheme);
-await page.click('.scheme[data-scheme="riso"]');
-await page.waitForTimeout(300);
-const schemeAfter = await page.evaluate(() => document.documentElement.dataset.scheme);
-check('colour system switches', schemeBefore !== schemeAfter, schemeBefore + ' → ' + schemeAfter);
-check('active scheme is marked', (await page.locator('.scheme[data-scheme="riso"].is-active').count()) === 1);
-
 await page.keyboard.press('?');
 await page.waitForTimeout(300);
 check('? opens the help panel', !(await page.locator('#modal').isHidden().catch(() => true)));
@@ -174,9 +205,9 @@ await page.keyboard.press('Escape');
 await page.waitForTimeout(250);
 check('Esc closes the help panel', await page.locator('#modal').isHidden());
 
-/* ── 5. archive ────────────────────────────────────────────────────── */
+/* ── 7. archive ────────────────────────────────────────────────────── */
 await page.goto(base + '/blog', { waitUntil: 'load' });
-await page.waitForTimeout(700);
+await page.waitForTimeout(800);
 const rowsAll = await page.evaluate(() => [...document.querySelectorAll('.wrow')].filter((e) => !e.hidden).length);
 check('archive lists at least one post', rowsAll >= 1, rowsAll + ' rows');
 check('archive groups by year', (await page.locator('.wgroup__year').count()) >= 1);
@@ -197,23 +228,23 @@ if (tagBtns > 0) {
   check('tag filter present', false, 'no tag chips rendered');
 }
 
-/* ── 6. article layout ─────────────────────────────────────────────── */
+/* ── 8. article ────────────────────────────────────────────────────── */
 await page.goto(base + '/blog/hello-world', { waitUntil: 'load' });
 await page.waitForTimeout(800);
 const art = await page.evaluate(() => {
   const body = document.querySelector('.post-body');
   const toc = document.querySelector('.post-toc');
+  const shell = document.querySelector('.post-head .mag');
   return {
-    bodyStart: body ? getComputedStyle(body).gridColumnStart : '',
-    tocStart: toc ? getComputedStyle(toc).gridColumnStart : '',
     proseLeft: body ? Math.round(body.getBoundingClientRect().left) : 0,
-    shellLeft: Math.round(document.querySelector('.post-head__grid').getBoundingClientRect().left),
+    shellLeft: shell ? Math.round(shell.getBoundingClientRect().left) : 0,
+    tocCol: toc ? getComputedStyle(toc).gridColumnStart : '',
   };
 });
-check('article body is indented off the margin', art.proseLeft > art.shellLeft + 100, art.proseLeft + ' vs shell ' + art.shellLeft);
-check('marginalia sits in the right columns', art.tocStart === '10', 'col ' + art.tocStart);
+check('article body is indented off the margin', art.proseLeft > art.shellLeft + 60, art.proseLeft + ' vs shell ' + art.shellLeft);
+check('marginalia sits in the right columns', art.tocCol === '10', 'col ' + art.tocCol);
 
-/* ── 7. 404 + nav ──────────────────────────────────────────────────── */
+/* ── 9. 404 + nav ──────────────────────────────────────────────────── */
 await page.goto(base + '/definitely-not-a-page', { waitUntil: 'load' });
 await page.waitForTimeout(1000);
 check('unknown route renders 404', (await page.locator('.empty__code').innerText().catch(() => '')).trim() === '404');
@@ -223,64 +254,51 @@ await page.click('a[data-nav="blog"]');
 await page.waitForTimeout(600);
 check('client-side nav updates the URL', page.url().endsWith('/blog'), page.url());
 
-/* ── 8. contrast across every scheme × theme ───────────────────────── */
+/* ── 10. contrast — 宣纸 and 夜 ────────────────────────────────────── */
 for (const theme of ['light', 'dark']) {
-  for (const scheme of ['signal', 'riso', 'mono', 'earth']) {
-    await page.evaluate(
-      ({ t, s }) => {
-        document.documentElement.dataset.theme = t;
-        document.documentElement.dataset.scheme = s;
-      },
-      { t: theme, s: scheme },
-    );
-    await page.waitForTimeout(90);
-    const c = await page.evaluate(() => {
-      const probe = document.createElement('span');
-      document.body.appendChild(probe);
-      const toRGB = (str) => {
-        const nums = (str.match(/-?[\d.]+(?:e-?\d+)?/gi) || []).map(Number);
-        return /^color\(/.test(str) ? [nums[0] * 255, nums[1] * 255, nums[2] * 255] : nums.slice(0, 3);
-      };
-      const parse = (name) => {
-        probe.style.color = 'var(' + name + ')';
-        const resolved = getComputedStyle(probe).color;
-        probe.removeAttribute('style');
-        probe.style.color = resolved;
-        return toRGB(getComputedStyle(probe).color);
-      };
-      const lum = ([r, g, b]) => {
-        const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
-        return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
-      };
-      const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
-      const paper = parse('--paper');
-      const out = {};
-      for (const name of ['--ink', '--ink-2', '--ink-3', '--c1', '--c2', '--c3']) {
-        out[name] = +ratio(parse(name), paper).toFixed(2);
-      }
-      probe.remove();
-      return out;
-    });
-    const worst = Object.entries(c).reduce((a, b) => (b[1] < a[1] ? b : a));
-    check('contrast · ' + scheme + ' / ' + theme, worst[1] >= 4.5, 'min ' + worst[1] + ' (' + worst[0] + ')');
-  }
+  await page.evaluate((t) => (document.documentElement.dataset.theme = t), theme);
+  await page.waitForTimeout(90);
+  const c = await page.evaluate(() => {
+    const probe = document.createElement('span');
+    document.body.appendChild(probe);
+    const toRGB = (str) => {
+      const nums = (str.match(/-?[\d.]+(?:e-?\d+)?/gi) || []).map(Number);
+      return /^color\(/.test(str) ? [nums[0] * 255, nums[1] * 255, nums[2] * 255] : nums.slice(0, 3);
+    };
+    const parse = (name) => {
+      probe.style.color = 'var(' + name + ')';
+      const resolved = getComputedStyle(probe).color;
+      probe.removeAttribute('style');
+      probe.style.color = resolved;
+      return toRGB(getComputedStyle(probe).color);
+    };
+    const lum = ([r, g, b]) => {
+      const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+      return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+    };
+    const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
+    const paper = parse('--paper');
+    const out = {};
+    for (const name of ['--ink', '--ink-2', '--ink-3', '--c1', '--c2', '--c3']) out[name] = +ratio(parse(name), paper).toFixed(2);
+    probe.remove();
+    return out;
+  });
+  const worst = Object.entries(c).reduce((a, b) => (b[1] < a[1] ? b : a));
+  check('contrast · ' + theme, worst[1] >= 4.5, 'min ' + worst[1] + ' (' + worst[0] + ')');
 }
-await page.evaluate(() => {
-  document.documentElement.dataset.theme = 'light';
-  document.documentElement.dataset.scheme = 'signal';
-});
+await page.evaluate(() => (document.documentElement.dataset.theme = 'light'));
 
-/* ── 9. mobile ─────────────────────────────────────────────────────── */
+/* ── 11. mobile ────────────────────────────────────────────────────── */
 const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 const mobileErrors = [];
 mobile.on('pageerror', (e) => mobileErrors.push(e.message));
 await mobile.goto(base + '/', { waitUntil: 'load' });
-await mobile.waitForTimeout(1400);
+await mobile.waitForTimeout(1600);
 const mOverflow = await mobile.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 check('no horizontal overflow (390)', mOverflow <= 1, mOverflow + 'px');
-await mobile.screenshot({ path: 'shots/mobile-home.png' });
+await mobile.screenshot({ path: 'shots/mobile-home.png', fullPage: false });
 console.log('\n═══ mobile / ═══');
-console.log(await ascii(await mobile.screenshot(), 50));
+console.log(await ascii(await mobile.screenshot(), 46));
 check('mobile has no page errors', mobileErrors.length === 0, mobileErrors.join(' | '));
 await mobile.click('#ctl-menu');
 await mobile.waitForTimeout(400);

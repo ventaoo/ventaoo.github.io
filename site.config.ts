@@ -18,16 +18,16 @@ export const site = {
   /* ── ★ 主页那句自述（轮流淡入，直接改这里）─────────────────────────── */
 
   lines: [
-    '把想法编译成像素。',
+    '把想到的东西做出来。',
     '白天写代码解决问题，晚上写代码制造问题。',
     '喜欢把复杂的东西做简单，把简单的东西做有趣。',
-    '正在构建一个小小的宇宙。',
+    '慢慢攒一个属于自己的地方。',
   ],
 
   /** 自述下面的一段介绍 */
   bio: '我是 VENTAOO，现在在杭州。这里是我的数字花园 —— 记录做过的项目、踩过的坑，以及那些值得写下来的想法。',
 
-  /* ── 联系方式（显示在主页左侧栏，想删哪个就整行删掉）──────────────── */
+  /* ── 联系方式（显示在自述右侧，想删哪个就整行删掉）────────────────── */
 
   links: [
     { label: 'GitHub', value: 'github.com/ventaoo', href: 'https://github.com/ventaoo' },
@@ -54,24 +54,31 @@ export const site = {
   },
 
   footerNote: '写作与造物',
-  colophon: 'Archivo & Inter 排版',
+  colophon: 'Space Grotesk & EB Garamond 排版',
 } as const;
 
 /* ── 照片 ───────────────────────────────────────────────────────────────
    把图片放进 public/images/，然后在这里登记。留空数组就不显示这个区块。
 
-     { src: '/images/desk.jpg', caption: '书桌', alt: '一张书桌', span: 6 },
+   版式是自动的：第 1 张横跨 7 列，第 2 张窄栏竖构图并向下错开，
+   第 3 张方形缩进，第 4 张宽幅收尾，之后循环。你只要按顺序排就行。
 
-   span 是它占几列（12 列网格），可选 4 / 6 / 8 / 12。                        */
+   现在这六张是占位图（来自 Lorem Picsum），换成你自己的照片即可。       */
 
 export interface Photo {
   src: string;
-  caption?: string;
   alt?: string;
-  span?: 4 | 6 | 8 | 12;
+  caption?: string;
 }
 
-export const photos: Photo[] = [];
+export const photos: Photo[] = [
+  { src: '/images/valley.jpg', alt: '山谷与河', caption: '山谷' },
+  { src: '/images/window.jpg', alt: '窗边的光', caption: '窗' },
+  { src: '/images/paper.jpg', alt: '纸与纹理', caption: '纸' },
+  { src: '/images/ridge.jpg', alt: '山脊', caption: '山脊' },
+  { src: '/images/stone.jpg', alt: '岩石与水流', caption: '石' },
+  { src: '/images/desk.jpg', alt: '桌面一角', caption: '桌面' },
+];
 
 /** 站点部署地址（用于 RSS / sitemap / canonical） */
 export const SITE_URL = 'https://ventaoo.github.io';

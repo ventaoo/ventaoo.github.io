@@ -7,21 +7,20 @@
    the reveal deadlocks. */
 html.js .reveal {
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(14px);
   transition: opacity var(--t-slow) var(--ease), transform var(--t-slow) var(--ease);
 }
 html.js .reveal.in { opacity: 1; transform: none; }
 
-/* the statement swaps with a plain cross-fade — no blur, no bounce */
-.line-swap { animation: line-in 420ms var(--ease) both; }
+.line-swap { animation: line-in 460ms var(--ease) both; }
 @keyframes line-in {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: none; }
 }
 
-.view { animation: view-in 380ms var(--ease) both; }
+.view { animation: view-in 400ms var(--ease) both; }
 @keyframes view-in {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: none; }
 }
 

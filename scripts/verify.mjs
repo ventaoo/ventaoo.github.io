@@ -20,7 +20,6 @@ const cfg = readFileSync('site.config.ts', 'utf8');
 const introBlock = /intro:\s*\[([\s\S]*?)\n  \]/.exec(cfg)?.[1] || "";
 const CONFIG_INTRO = [...introBlock.matchAll(/'([^']+)'/g)].map((m) => m[1]);
 const BRAND = /name:\s*'([^']+)'/.exec(cfg)?.[1] || "";
-const PHOTO_SRCS = [...cfg.matchAll(/src:\s*'(\/images\/[^']+)'/g)].map((m) => m[1]);
 
 const base = process.argv[2] || 'http://127.0.0.1:4173';
 const RAMP = ' .:-=+*#%@';
@@ -80,6 +79,7 @@ async function ascii(buffer, cols) {
   }, { b64: buffer.toString("base64"), cols, ramp: RAMP });
 }
 
+const HOME_LIMIT = Number((/latestOnHome:\s*(\d+)/.exec(cfg) || [])[1] || 0);
 const results = [];
 const check = (name, ok, detail) => {
   results.push((ok ? "PASS " : "FAIL ") + name + (detail ? " - " + detail : ""));
@@ -87,7 +87,7 @@ const check = (name, ok, detail) => {
 };
 
 /* 1. every route */
-for (const r of ["/", "/blog", "/photos", "/blog/hello-world"]) {
+for (const r of ["/", "/blog", "/blog/hello-world"]) {
   await page.goto(base + r, { waitUntil: "load" });
   await page.waitForTimeout(1600);
   console.log("\n=== " + r + " ===");
@@ -125,46 +125,16 @@ const intro = await page.evaluate(() => {
 check("intro paragraph count matches site.config", intro.count === CONFIG_INTRO.length, intro.count + " of " + CONFIG_INTRO.length);
 check("intro text comes from site.config", intro.texts.every((t, i) => t === CONFIG_INTRO[i]), String(intro.texts[0] || "").slice(0, 22));
 check("every intro paragraph is the same size", new Set(intro.sizes).size === 1, intro.sizes.join(" / ") + "px");
-
-/* 4. photographs live on their own page and nowhere else */
-const homeImgs = await page.locator("img").count();
-check("the home page shows no images", homeImgs === 0, homeImgs + " found");
-await page.goto(base + "/blog", { waitUntil: "load" });
-await page.waitForTimeout(700);
-const blogImgs = await page.locator("img").count();
-check("the archive shows no images", blogImgs === 0, blogImgs + " found");
-
-await page.goto(base + "/photos", { waitUntil: "load" });
-await page.waitForTimeout(900);
-await page.evaluate(async () => {
-  for (let y = 0; y <= document.body.scrollHeight; y += window.innerHeight) {
-    window.scrollTo(0, y);
-    await new Promise((r) => setTimeout(r, 260));
-  }
-  window.scrollTo(0, 0);
-});
-await page.waitForTimeout(900);
-const gallery = await page.evaluate(() => {
-  const figs = Array.from(document.querySelectorAll(".gallery__fig"));
-  const loaded = figs.filter((f) => { const i = f.querySelector("img"); return i && i.complete && i.naturalWidth > 0; });
-  const uniq = (a) => Array.from(new Set(a));
-  return {
-    count: figs.length,
-    loaded: loaded.length,
-    widths: uniq(figs.map((f) => Math.round(f.getBoundingClientRect().width))),
-    tops: uniq(figs.slice(0, 4).map((f) => Math.round(f.getBoundingClientRect().top + scrollY))),
-  };
-});
-check("the photo page renders every configured photo", gallery.count === PHOTO_SRCS.length, gallery.count + " of " + PHOTO_SRCS.length);
-check("every photo loads", gallery.loaded === gallery.count, gallery.loaded + "/" + gallery.count);
-check("the gallery has an irregular rhythm", gallery.widths.length >= 3, "widths " + gallery.widths.join(", "));
-check("gallery items are staggered", gallery.tops.length >= 3, "tops " + gallery.tops.join(", "));
+const onHome = await page.locator(".wtable .wrow").count();
+check("the home page caps 近作 at three", HOME_LIMIT === 3 && onHome <= HOME_LIMIT, "config " + HOME_LIMIT + ", shown " + onHome);
 
 /* 5. navigation */
+await page.goto(base + "/blog", { waitUntil: "load" });
+await page.waitForTimeout(700);
 const nav = await page.evaluate(() => Array.from(document.querySelectorAll("[data-nav]")).map((a) => a.getAttribute("data-nav")));
-check("the header has three sections", nav.length === 3 && nav.indexOf("photos") >= 0, nav.join(" / "));
-check("the photo section is marked active", (await page.locator('[data-nav="photos"].is-active').count()) === 1);
-check("the current section is announced", (await page.locator('[data-nav="photos"][aria-current="page"]').count()) === 1);
+check("the header has two sections", nav.length === 2 && nav.indexOf("blog") >= 0, nav.join(" / "));
+check("the current section is marked active", (await page.locator('[data-nav="blog"].is-active').count()) === 1);
+check("the current section is announced", (await page.locator('[data-nav="blog"][aria-current="page"]').count()) === 1);
 
 /* the help panel should behave like a real dialog */
 await page.keyboard.press("?");
@@ -188,7 +158,7 @@ await page.waitForTimeout(260);
 const released = await page.evaluate(() => !document.getElementById("modal").contains(document.activeElement));
 check("focus leaves the dialog on close", released);
 const running = (await page.locator("#runninghead").innerText()).trim();
-check("running head tracks the section", running === "\u7167\u7247", running);
+check("running head tracks the section", running === "\u65e5\u5fd7", running);
 
 /* 6. settings and toasts are gone */
 check("no toast container", (await page.locator("#toasts, .toast, .toasts").count()) === 0);
@@ -326,13 +296,11 @@ const mobile = await context.newPage();
 await mobile.setViewportSize({ width: 390, height: 844 });
 const mobileErrors = [];
 mobile.on("pageerror", (e) => mobileErrors.push(e.message));
-await mobile.goto(base + "/photos", { waitUntil: "load" });
+await mobile.goto(base + "/", { waitUntil: "load" });
 await mobile.waitForTimeout(1500);
 const mOverflow = await mobile.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 check("no horizontal overflow (390)", mOverflow <= 1, mOverflow + "px");
-const mGallery = await mobile.locator(".gallery__fig").count();
-check("the gallery reflows on mobile", mGallery === PHOTO_SRCS.length, mGallery + " figures");
-await mobile.screenshot({ path: "shots/mobile-photos.png" });
+await mobile.screenshot({ path: "shots/mobile-home.png" });
 check("mobile has no page errors", mobileErrors.length === 0, mobileErrors.join(" | "));
 await mobile.click("#ctl-menu");
 await mobile.waitForTimeout(400);

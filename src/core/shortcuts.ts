@@ -4,7 +4,6 @@ import { navigate } from './router';
 
 export const HELP: { keys: string; desc: string }[] = [
   { keys: 'G B', desc: '跳到日志' },
-  { keys: 'G P', desc: '跳到照片' },
   { keys: '/', desc: '在日志页聚焦搜索框' },
   { keys: '?', desc: '打开这个面板' },
 ];
@@ -64,7 +63,7 @@ export function showHelp(): void {
     </div>`);
 }
 
-const GO: Record<string, string> = { b: '/blog', p: '/photos', h: '/' };
+const GO: Record<string, string> = { b: '/blog', h: '/' };
 
 export function initShortcuts(): void {
   let gPending = false;

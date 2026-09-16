@@ -26,7 +26,6 @@ const routes = [
   ['home', '/'],
   ['blog', '/blog'],
   ['post', '/blog/hello-world'],
-  ['photos', '/photos'],
 ];
 
 await mkdir('shots', { recursive: true });

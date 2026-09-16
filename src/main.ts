@@ -10,7 +10,6 @@ import { initShortcuts } from './core/shortcuts';
 import { homePage } from './pages/home';
 import { blogPage } from './pages/blog';
 import { postPage } from './pages/post';
-import { photosPage } from './pages/photos';
 import { addTick } from './core/ticker';
 import { site, LOCALE } from '../site.config';
 
@@ -31,7 +30,7 @@ function applyConfig(): void {
   set('year', String(new Date().getFullYear()));
 }
 
-const RUNNING_HEAD: Record<string, string> = { home: '首页', blog: '日志', photos: '照片' };
+const RUNNING_HEAD: Record<string, string> = { home: '首页', blog: '日志' };
 function setRunningHead(section: string, title?: string): void {
   const el = document.getElementById('runninghead');
   if (el) el.textContent = title || RUNNING_HEAD[section] || section;
@@ -65,10 +64,6 @@ function registerRoutes(): void {
     setRunningHead('blog', probe.querySelector('.post-head__title')?.textContent ?? '日志');
     return view;
   }, 'blog');
-  route('/photos', () => {
-    setRunningHead('photos');
-    return photosPage();
-  }, 'photos');
 }
 
 function main(): void {

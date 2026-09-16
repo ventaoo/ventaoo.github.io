@@ -38,16 +38,10 @@ export const site = {
     title: '日志',
     /** 标题下面的一句话 */
     intro: '写代码时踩过的坑、想明白的道理，以及一些纯粹因为好玩才做的事。',
-    /** 主页「近作」区块展示几篇 */
-    latestOnHome: 6,
+    /** 主页「近作」最多列几篇 */
+    latestOnHome: 3,
   },
 
-  /* ── 照片页 ───────────────────────────────────────────────────────── */
-
-  photosPage: {
-    title: '照片',
-    intro: '随手拍的一些东西，多数是走路时看到的。',
-  },
   /* ── SEO ──────────────────────────────────────────────────────────── */
 
   seo: {
@@ -58,27 +52,6 @@ export const site = {
   footerNote: '写作与造物',
   colophon: 'Space Grotesk & EB Garamond 排版',
 } as const;
-
-/* ── 照片 ───────────────────────────────────────────────────────────────
-   照片放在「首页」和「日志」右侧的**独立专栏**里，不插进正文中间。
-
-   把图片丢进 public/images/，然后在这里按顺序登记；数组留空整栏隐藏。
-   现在这六张是占位图（来自 Lorem Picsum），换成你自己的即可。            */
-
-export interface Photo {
-  src: string;
-  alt?: string;
-  caption?: string;
-}
-
-export const photos: Photo[] = [
-  { src: '/images/valley.jpg', alt: '山谷与河', caption: '山谷' },
-  { src: '/images/window.jpg', alt: '窗边的光', caption: '窗' },
-  { src: '/images/paper.jpg', alt: '纸与纹理', caption: '纸' },
-  { src: '/images/ridge.jpg', alt: '山脊', caption: '山脊' },
-  { src: '/images/stone.jpg', alt: '岩石与水流', caption: '石' },
-  { src: '/images/desk.jpg', alt: '桌面一角', caption: '桌面' },
-];
 
 /** 站点部署地址（用于 RSS / sitemap / canonical） */
 export const SITE_URL = 'https://ventaoo.github.io';

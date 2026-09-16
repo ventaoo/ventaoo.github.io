@@ -1,5 +1,6 @@
 /* ============================================================================
-   Links · buttons · tags · filters · search · section heads · modal
+   Buttons · tags · filters · search · section heads · modal
+   Every type declaration here uses a role from tokens.css.
    ========================================================================= */
 
 /* ── links ───────────────────────────────────────────────────────────── */
@@ -24,14 +25,15 @@
 }
 .prose a:hover { border-bottom-color: currentColor; }
 
-/* ── buttons ─────────────────────────────────────────────────────────── */
+/* ── buttons — label role ────────────────────────────────────────────── */
 .btn {
   display: inline-flex; align-items: center; gap: var(--s2);
   padding: .7em 1.2em .76em;
   font-family: var(--font-display);
-  font-size: var(--fs-label);
-  font-weight: 500;
-  letter-spacing: .16em;
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+  letter-spacing: var(--track-label);
+  line-height: var(--lead-snug);
   text-transform: uppercase;
   color: var(--ink);
   border: 1px solid var(--ink);
@@ -41,12 +43,13 @@
 .btn--c1 { color: var(--c1); border-color: var(--c1); }
 .btn--c1:hover { background: var(--c1); color: var(--c1-ink); }
 
-/* ── tags ────────────────────────────────────────────────────────────── */
+/* ── tags — label role ───────────────────────────────────────────────── */
 .tag {
   font-family: var(--font-display);
-  font-size: var(--fs-label);
-  font-weight: 500;
-  letter-spacing: .14em;
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+  letter-spacing: var(--track-label);
+  line-height: var(--lead-snug);
   text-transform: uppercase;
   color: var(--c3);
   white-space: nowrap;
@@ -54,13 +57,14 @@
 }
 a.tag:hover { color: var(--c1); }
 
-/* ── filters ─────────────────────────────────────────────────────────── */
+/* ── filter chips — label role ───────────────────────────────────────── */
 .chip {
   padding: .42em .75em .46em;
   font-family: var(--font-display);
-  font-size: var(--fs-label);
-  font-weight: 500;
-  letter-spacing: .14em;
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+  letter-spacing: var(--track-label);
+  line-height: var(--lead-snug);
   text-transform: uppercase;
   color: var(--ink-3);
   border: 1px solid var(--rule);
@@ -68,9 +72,9 @@ a.tag:hover { color: var(--c1); }
 }
 .chip:hover { color: var(--ink); border-color: var(--ink-3); }
 .chip.is-active { color: var(--c1-ink); background: var(--c1); border-color: var(--c1); }
-.chip__n { margin-left: .5em; opacity: .6; font-variant-numeric: tabular-nums; }
+.chip__n { margin-left: .5em; opacity: .6; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 
-/* ── search ──────────────────────────────────────────────────────────── */
+/* ── search — small role ─────────────────────────────────────────────── */
 .searchbox {
   display: flex; align-items: center; gap: var(--s2);
   flex: 1; min-width: 170px; max-width: 280px;
@@ -83,27 +87,37 @@ a.tag:hover { color: var(--c1); }
 .searchbox input {
   flex: 1; min-width: 0;
   background: none; border: 0; outline: 0;
-  font-family: var(--font-text); font-size: var(--fs-sm);
+  font-family: var(--font-text);
+  font-size: var(--t-sm);
+  line-height: var(--lead-snug);
 }
 .searchbox input::placeholder { color: var(--ink-3); }
 
-/* ── section head: a short tick, the title, then a link ──────────────── */
+/* ── section head: number · title · link ─────────────────────────────── */
 .sec-head {
   display: flex; align-items: baseline; gap: var(--s4);
   padding-bottom: var(--s3);
   border-bottom: 1px solid var(--rule-strong);
 }
 .sec-head__title {
-  font-size: var(--fs-h2);
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-size: var(--t-h2);
+  font-weight: var(--w-bold);
+  letter-spacing: var(--track-heading);
+  line-height: var(--lead-heading);
   white-space: nowrap;
 }
 .sec-head__spacer { flex: 1; }
 .sec-head__more {
   display: inline-flex; align-items: center; gap: var(--s2);
-  font-family: var(--font-display); font-size: var(--fs-label);
-  font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
-  color: var(--ink-3); white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+  letter-spacing: var(--track-label);
+  line-height: var(--lead-snug);
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
   transition: color var(--t-fast) linear;
 }
 .sec-head__more:hover { color: var(--c1); }
@@ -140,13 +154,22 @@ a.tag:hover { color: var(--c1); }
 }
 .modal__close:hover { background: var(--c1); color: var(--c1-ink); }
 .modal__h {
-  font-size: var(--fs-h2);
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-size: var(--t-h2);
+  font-weight: var(--w-bold);
+  letter-spacing: var(--track-heading);
+  line-height: var(--lead-heading);
   margin-bottom: var(--s5);
   padding-bottom: var(--s3);
   border-bottom: 2px solid var(--rule-strong);
 }
-.modal__foot { margin-top: var(--s5); font-size: var(--fs-sm); color: var(--ink-3); }
+.modal__foot {
+  margin-top: var(--s5);
+  font-family: var(--font-text);
+  font-size: var(--t-sm);
+  line-height: var(--lead-body);
+  color: var(--ink-3);
+}
 
 .keys { display: grid; }
 .keys__row {
@@ -155,5 +178,9 @@ a.tag:hover { color: var(--c1); }
   border-bottom: 1px solid var(--rule);
 }
 .keys__row:last-child { border-bottom: 0; }
-.keys__desc { font-size: var(--fs-sm); }
+.keys__desc {
+  font-family: var(--font-text);
+  font-size: var(--t-sm);
+  line-height: var(--lead-snug);
+}
 .keys__keys { display: flex; gap: var(--s1); }

@@ -1,5 +1,5 @@
 /* ============================================================================
-   Reset · type · the magazine grid
+   Reset · the type system applied · layout primitives
    ========================================================================= */
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -19,37 +19,37 @@ html {
   }
 }
 
+/* ── BODY — the baseline every other role is measured against ────────── */
 body {
   min-height: 100vh;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-text);
-  font-size: var(--fs-body);
-  line-height: 1.72;
-  overflow-wrap: break-word;
+  font-size: var(--t-body);
+  font-weight: var(--w-normal);
+  line-height: var(--lead-body);
+  letter-spacing: var(--track-body);
   font-feature-settings: 'kern' 1, 'liga' 1, 'palt' 1;
-  /* clip, not hidden: hidden makes body a scroll container, which would
-     break position: sticky on any descendant */
   overflow-x: clip;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background var(--t-mid) var(--ease), color var(--t-mid) var(--ease);
 }
 
 ::selection { background: var(--c1); color: var(--c1-ink); }
 
-/* ── headings ────────────────────────────────────────────────────────── */
-/* Latin wants negative tracking; Chinese does not — 0 sits between them and
-   the 'palt' feature tightens CJK punctuation on its own. */
+/* ── HEADINGS — the display face, tightened ──────────────────────────── */
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 500;
-  line-height: 1.14;
-  letter-spacing: -0.005em;
+  font-weight: var(--w-medium);
+  letter-spacing: var(--track-heading);
+  line-height: var(--lead-heading);
   text-wrap: balance;
   font-feature-settings: 'kern' 1, 'liga' 1, 'palt' 1;
 }
+h1 { font-size: var(--t-h1); font-weight: var(--w-bold); letter-spacing: var(--track-display); line-height: var(--lead-display); }
+h2 { font-size: var(--t-h2); font-weight: var(--w-bold); }
+h3 { font-size: var(--t-lg); }
 
 p { text-wrap: pretty; }
 ul, ol { list-style: none; }
@@ -61,7 +61,10 @@ button { background: none; border: 0; cursor: pointer; }
 [hidden] { display: none !important; }
 
 kbd {
-  font-family: var(--font-mono); font-size: .78em;
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+  line-height: var(--lead-snug);
   padding: .15em .45em;
   color: var(--ink);
   background: var(--paper-2);
@@ -76,82 +79,60 @@ code, pre { font-family: var(--font-mono); font-feature-settings: 'liga' 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--ink-3); }
 * { scrollbar-color: var(--rule) var(--paper); scrollbar-width: thin; }
 
-/* ── layout ──────────────────────────────────────────────────────────── */
+/* ── LAYOUT ──────────────────────────────────────────────────────────── */
 .shell {
   width: min(100% - (var(--gutter) * 2), var(--shell));
   margin-inline: auto;
 }
+.page { padding-top: calc(var(--topbar-h) + var(--subbar-h)); }
 
-/* an image that escapes the shell to the viewport edges */
-.bleed {
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-}
-
-/* the magazine grid: 12 columns, but items land on irregular ranges and are
-   deliberately pushed off each other's baselines */
+/* 12 columns; items land on irregular ranges on purpose */
 .mag {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--gap);
   row-gap: var(--s6);
 }
-.push-sm { margin-top: var(--s5); }
-.push-md { margin-top: var(--s7); }
-.push-lg { margin-top: var(--s9); }
 
-/* ── shared type devices ─────────────────────────────────────────────── */
-.page { padding-top: calc(var(--topbar-h) + var(--subbar-h)); }
-
+/* ── THE TWO SMALL-CAPS ROLES ────────────────────────────────────────────
+   .label  typographic furniture — nav, column heads, meta, buttons, tags.
+           The display face keeps its character at label size.
+   .num    anything that has to line up in a column — numbers, dates.
+           Monospaced and tabular, so digits share a width.               */
 .label {
   font-family: var(--font-display);
-  font-size: var(--fs-label);
-  font-weight: 500;
-  letter-spacing: .16em;
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+  letter-spacing: var(--track-label);
+  line-height: var(--lead-snug);
   text-transform: uppercase;
   color: var(--ink-3);
-  font-feature-settings: 'tnum' 1;
 }
-.label--c2 { color: var(--c2); }
-.label--c1 { color: var(--c1); }
-
 .num {
   font-family: var(--font-mono);
-  font-size: var(--fs-label);
-  font-weight: 500;
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+  letter-spacing: var(--track-body);
+  line-height: var(--lead-snug);
   font-variant-numeric: tabular-nums;
-  letter-spacing: .06em;
   color: var(--c2);
 }
 
-/* a short rule that leads a heading in, instead of a full-width divider */
-.tick {
-  display: block;
-  width: var(--s6);
-  height: 2px;
-  background: var(--c1);
-}
-
-.rule { height: 1px; background: var(--rule); }
-.rule--strong { height: 2px; background: var(--rule-strong); }
-
+/* ── UTILITIES ───────────────────────────────────────────────────────── */
 .muted { color: var(--ink-3); }
 .sr-only {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
-
 .skip {
   position: fixed; top: -70px; left: var(--s4); z-index: 200;
   padding: .6em 1em;
-  font-family: var(--font-mono); font-size: var(--fs-label);
-  letter-spacing: .12em; text-transform: uppercase;
+  font-family: var(--font-display);
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
   color: var(--c1-ink); background: var(--c1);
   transition: top var(--t-mid) var(--ease);
 }
 .skip:focus { top: var(--s3); }
-
-@media (max-width: 900px) {
-  .mag { grid-template-columns: repeat(6, minmax(0, 1fr)); row-gap: var(--s5); }
-  .push-md, .push-lg { margin-top: var(--s5); }
-}

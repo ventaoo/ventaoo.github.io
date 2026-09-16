@@ -5,7 +5,7 @@
  *   node scripts/verify.mjs [baseUrl]
  */
 import { chromium } from 'playwright-core';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -86,6 +86,34 @@ const check = (name, ok, detail) => {
   return ok;
 };
 
+/* 0. the type system is enforced at the source level */
+const STYLE_DIR = 'src/styles';
+const offScale = [];
+const offWeight = [];
+const offTrack = [];
+const offLead = [];
+for (const name of readdirSync(STYLE_DIR)) {
+  if (!name.endsWith('.css')) continue;
+  const text = readFileSync(STYLE_DIR + '/' + name, 'utf8');
+  for (const m of text.matchAll(/font-size:\s*([^;]+);/g)) {
+    if (!m[1].trim().startsWith('var(--t-')) offScale.push(name + ': ' + m[1].trim());
+  }
+  for (const m of text.matchAll(/font-weight:\s*([^;]+);/g)) {
+    if (!m[1].trim().startsWith('var(--w-')) offWeight.push(name + ': ' + m[1].trim());
+  }
+  for (const m of text.matchAll(/letter-spacing:\s*([^;]+);/g)) {
+    if (!m[1].trim().startsWith('var(--track-')) offTrack.push(name + ': ' + m[1].trim());
+  }
+  for (const m of text.matchAll(/line-height:\s*([^;]+);/g)) {
+    const v = m[1].trim();
+    if (!v.startsWith('var(--lead-') && v !== '1') offLead.push(name + ': ' + v);
+  }
+}
+check('every font-size comes from the scale', offScale.length === 0, offScale.slice(0, 3).join(' | ') || 'all tokens');
+check('every font-weight comes from the scale', offWeight.length === 0, offWeight.slice(0, 3).join(' | ') || 'all tokens');
+check('every letter-spacing comes from the scale', offTrack.length === 0, offTrack.slice(0, 3).join(' | ') || 'all tokens');
+check('every line-height comes from the scale', offLead.length === 0, offLead.slice(0, 3).join(' | ') || 'all tokens');
+
 /* 1. every route */
 for (const r of ["/", "/blog", "/blog/hello-world"]) {
   await page.goto(base + r, { waitUntil: "load" });
@@ -117,6 +145,28 @@ check("no legacy fonts remain", !/Fraunces|Newsreader|Archivo|Inter Variable|Pre
 check("labels stay small", type.label <= 12, type.label + "px");
 check("no oversized display type", type.max <= 60, "largest visible " + type.max + "px");
 
+/* the rendered hierarchy has to match the spec, not just the source */
+const scale = await page.evaluate(() => {
+  const px = (sel) => {
+    const el = document.querySelector(sel);
+    return el ? +parseFloat(getComputedStyle(el).fontSize).toFixed(1) : null;
+  };
+  const sizes = new Set();
+  for (const e of document.querySelectorAll("body *")) {
+    if (!e.offsetParent || e.children.length || e.classList.contains("sr-only")) continue;
+    if (!(e.textContent || "").trim()) continue;
+    sizes.add(+parseFloat(getComputedStyle(e).fontSize).toFixed(1));
+  }
+  return {
+    section: px(".sec-head__title"),
+    entry: px(".wrow__title"),
+    intro: px(".home__intro p"),
+    sizes: Array.from(sizes).sort((a, b) => a - b),
+  };
+});
+check('a list title is smaller than its section heading', scale.entry < scale.section, scale.entry + ' vs ' + scale.section + 'px');
+check('a list title is not headline sized', scale.entry <= scale.intro, scale.entry + ' vs intro ' + scale.intro + 'px');
+check('the home page uses at most six sizes', scale.sizes.length <= 6, scale.sizes.join(', ') + 'px');
 /* 3. intro from config */
 const intro = await page.evaluate(() => {
   const ps = Array.from(document.querySelectorAll(".home__intro p"));
@@ -183,6 +233,10 @@ const table = await page.evaluate(() => {
   const xs = (sel) => rows.map((r) => { const el = r.querySelector(sel); return el ? Math.round(el.getBoundingClientRect().left) : -1; });
   const uniq = (a) => Array.from(new Set(a));
   const d = rows[0] ? rows[0].querySelector(".wrow__date") : null;
+  const dp = (sel) => { const el = document.querySelector(sel); return el ? +parseFloat(getComputedStyle(el).fontSize).toFixed(1) : null; };
+  const descSize = dp(".wrow__desc");
+  const titleSize = dp(".wrow__title");
+  const dateSize = dp(".wrow__date");
   return {
     hasHead: !!head,
     labels: head ? Array.from(head.querySelectorAll(".label")).map((l) => l.textContent.trim()) : [],
@@ -190,8 +244,13 @@ const table = await page.evaluate(() => {
     nX: uniq(xs(".wrow__n")), dateX: uniq(xs(".wrow__date")), tagX: uniq(xs(".wrow__tags")),
     date: d ? d.textContent.trim() : "",
     rows: rows.length,
+    descSize,
+    titleSize,
+    dateSize,
   };
 });
+check("a summary is smaller than its title", table.descSize < table.titleSize, table.descSize + " vs " + table.titleSize + "px");
+check("a date is label sized", table.dateSize <= 12, table.dateSize + "px");
 check("the table has a header row", table.hasHead && table.labels.length === 4, table.labels.join(" / "));
 check("header and body share one column template", table.headCols === table.rowCols, table.headCols);
 check("columns align across rows", table.nX.length <= 1 && table.dateX.length <= 1 && table.tagX.length <= 1, "n=" + table.nX + " date=" + table.dateX + " tags=" + table.tagX);

@@ -23,9 +23,10 @@
 
 .wordmark {
   font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  font-size: var(--t-lg);
+  font-weight: var(--w-bold);
+  letter-spacing: var(--track-heading);
+  line-height: var(--lead-heading);
   text-transform: uppercase;
   color: var(--ink);
   flex-shrink: 0;
@@ -34,13 +35,15 @@
 .wordmark em { font-style: normal; color: var(--c1); }
 .wordmark:hover { color: var(--c1); }
 
+/* nav — label role */
 .nav { display: flex; align-items: center; gap: var(--s6); margin-left: auto; }
 .nav a {
   position: relative;
   font-family: var(--font-display);
-  font-size: var(--fs-label);
-  font-weight: 500;
-  letter-spacing: .16em;
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+  letter-spacing: var(--track-label);
+  line-height: var(--lead-snug);
   text-transform: uppercase;
   color: var(--ink-3);
   transition: color var(--t-fast) linear;
@@ -74,7 +77,6 @@
   display: flex; align-items: center; justify-content: space-between; gap: var(--s4);
   border-top: 1px solid var(--rule);
 }
-.masthead__sub span { color: var(--ink-3); }
 
 /* ── colophon ────────────────────────────────────────────────────────── */
 .colophon {
@@ -86,7 +88,12 @@
   display: flex; flex-wrap: wrap; gap: var(--s2) var(--s7);
   justify-content: space-between; align-items: baseline;
 }
-.colophon__inner p { font-size: var(--fs-sm); color: var(--ink-3); }
+.colophon__inner p {
+  font-family: var(--font-text);
+  font-size: var(--t-sm);
+  line-height: var(--lead-body);
+  color: var(--ink-3);
+}
 .colophon__inner .sep { color: var(--rule); margin: 0 var(--s2); }
 
 /* ── back to top ─────────────────────────────────────────────────────── */
@@ -94,7 +101,10 @@
   position: fixed; right: 0; bottom: 0; z-index: var(--z-topbar);
   display: grid; place-items: center;
   width: 50px; height: 50px;
-  font-family: var(--font-display); font-size: 15px;
+  font-family: var(--font-display);
+  font-size: var(--t-lg);
+  font-weight: var(--w-medium);
+  line-height: 1;
   color: var(--paper); background: var(--ink);
   opacity: 0; visibility: hidden;
   transition: opacity var(--t-mid) var(--ease), visibility var(--t-mid), background var(--t-fast) linear;
@@ -115,8 +125,11 @@
     transition: transform var(--t-mid) var(--ease), visibility var(--t-mid);
   }
   .nav.is-open { transform: translateY(0); visibility: visible; pointer-events: auto; }
-  .nav a { padding: var(--s4) 0; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  .nav a {
+    font-size: var(--t-sm);
+    padding: var(--s4) 0;
+    border-bottom: 1px solid var(--rule);
+  }
   .nav a::after { display: none; }
   .ctl--menu { display: grid; }
-  .masthead__sub { font-size: 9.5px; }
 }

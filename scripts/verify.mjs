@@ -26,8 +26,13 @@ const base = process.argv[2] || 'http://127.0.0.1:4173';
 const RAMP = ' .:-=+*#%@';
 
 const browser = await chromium.launch({ executablePath: exe, args: ['--no-sandbox'] });
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-const blank = await browser.newPage();
+// clipboard permission so the copy button's success path is really exercised
+const context = await browser.newContext({
+  viewport: { width: 1440, height: 900 },
+  permissions: ["clipboard-read", "clipboard-write"],
+});
+const page = await context.newPage();
+const blank = await context.newPage();
 const errors = [];
 page.on('console', (m) => m.type() === 'error' && errors.push('[console] ' + m.text()));
 page.on('pageerror', (e) => errors.push('[pageerror] ' + e.message));
@@ -159,6 +164,29 @@ check("gallery items are staggered", gallery.tops.length >= 3, "tops " + gallery
 const nav = await page.evaluate(() => Array.from(document.querySelectorAll("[data-nav]")).map((a) => a.getAttribute("data-nav")));
 check("the header has three sections", nav.length === 3 && nav.indexOf("photos") >= 0, nav.join(" / "));
 check("the photo section is marked active", (await page.locator('[data-nav="photos"].is-active').count()) === 1);
+check("the current section is announced", (await page.locator('[data-nav="photos"][aria-current="page"]').count()) === 1);
+
+/* the help panel should behave like a real dialog */
+await page.keyboard.press("?");
+await page.waitForTimeout(320);
+const dlg = await page.evaluate(() => {
+  const m = document.getElementById("modal");
+  return {
+    role: m.getAttribute("role"),
+    modal: m.getAttribute("aria-modal"),
+    focusInside: m.contains(document.activeElement),
+  };
+});
+check("the help panel is a dialog", dlg.role === "dialog" && dlg.modal === "true", dlg.role + " / " + dlg.modal);
+check("focus moves into the dialog", dlg.focusInside);
+await page.keyboard.press("Tab");
+await page.keyboard.press("Tab");
+const trapped = await page.evaluate(() => document.getElementById("modal").contains(document.activeElement));
+check("Tab stays inside the dialog", trapped);
+await page.keyboard.press("Escape");
+await page.waitForTimeout(260);
+const released = await page.evaluate(() => !document.getElementById("modal").contains(document.activeElement));
+check("focus leaves the dialog on close", released);
 const running = (await page.locator("#runninghead").innerText()).trim();
 check("running head tracks the section", running === "\u7167\u7247", running);
 
@@ -212,6 +240,8 @@ if (tagBtns > 0) {
   await page.waitForTimeout(300);
   const tagged = await page.evaluate(() => Array.from(document.querySelectorAll(".wrow")).filter((e) => !e.hidden).length);
   check("tag filter narrows the table", tagged > 0 && tagged <= table.rows, tagged + "/" + table.rows);
+  const pressed = await page.evaluate(() => Array.from(document.querySelectorAll(".chip[data-tag]")).map((c) => c.getAttribute("aria-pressed")));
+  check("filter buttons expose their pressed state", pressed.filter((p) => p === "true").length === 1 && pressed.every((p) => p === "true" || p === "false"), pressed.join(","));
 } else check("tag filter present", false, "no chips");
 
 /* 8. article */
@@ -292,7 +322,8 @@ check("contrast on paper", worst[1] >= 4.5, "min " + worst[1] + " (" + worst[0] 
 /* 11. overflow + mobile */
 const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 check("no horizontal overflow (1440)", overflow <= 1, overflow + "px");
-const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+const mobile = await context.newPage();
+await mobile.setViewportSize({ width: 390, height: 844 });
 const mobileErrors = [];
 mobile.on("pageerror", (e) => mobileErrors.push(e.message));
 await mobile.goto(base + "/photos", { waitUntil: "load" });

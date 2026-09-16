@@ -10,6 +10,17 @@ export function blogPage(ctx: Ctx): View {
   const initialTag = ctx.query.get('tag') ?? '';
   const minutes = posts.reduce((n, p) => n + p.reading, 0);
 
+  const chip = (name: string, count: number | null): string => {
+    const on = initialTag === name;
+    return (
+      '<button class="chip' + (on ? ' is-active' : '') + '" data-tag="' + esc(name) + '"' +
+      ' aria-pressed="' + (on ? 'true' : 'false') + '">' +
+      (name ? esc(name) : '全部') +
+      (count === null ? '' : '<span class="chip__n">' + count + '</span>') +
+      '</button>'
+    );
+  };
+
   return {
     title: site.blog.title + ' · ' + site.name,
     html: `
@@ -23,20 +34,13 @@ export function blogPage(ctx: Ctx): View {
           </p>
         </header>
 
-        <div class="filterbar reveal">
+        <div class="filterbar reveal" role="group" aria-label="按标签筛选">
           <label class="searchbox">
             <span class="ico">${icon('search', 14)}</span>
             <input type="search" id="post-search" placeholder="搜索标题、摘要或标签" autocomplete="off" aria-label="搜索文章" />
           </label>
-          <button class="chip${initialTag ? '' : ' is-active'}" data-tag="">全部</button>
-          ${tags
-            .map(
-              (t) =>
-                `<button class="chip${initialTag === t.name ? ' is-active' : ''}" data-tag="${esc(t.name)}">${esc(
-                  t.name,
-                )}<span class="chip__n">${t.count}</span></button>`,
-            )
-            .join('')}
+          ${chip('', null)}
+          ${tags.map((t) => chip(t.name, t.count)).join('')}
         </div>
 
         <div class="wtable" id="post-list">${renderIndex(posts, { header: true })}</div>
@@ -73,7 +77,11 @@ export function blogPage(ctx: Ctx): View {
       chips.forEach((c) =>
         c.addEventListener('click', () => {
           activeTag = c.dataset.tag ?? '';
-          chips.forEach((x) => x.classList.toggle('is-active', x === c));
+          chips.forEach((x) => {
+            const on = x === c;
+            x.classList.toggle('is-active', on);
+            x.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
           const url = new URL(location.href);
           if (activeTag) url.searchParams.set('tag', activeTag);
           else url.searchParams.delete('tag');

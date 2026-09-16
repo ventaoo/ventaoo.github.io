@@ -83,7 +83,12 @@ export function render(target?: string): void {
   const nav = found?.nav ?? '';
   if (nav !== currentNav) {
     currentNav = nav;
-    $$<HTMLAnchorElement>('[data-nav]').forEach((a) => a.classList.toggle('is-active', a.dataset.nav === nav));
+    $$<HTMLAnchorElement>('[data-nav]').forEach((a) => {
+      const on = a.dataset.nav === nav;
+      a.classList.toggle('is-active', on);
+      if (on) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
   }
 
   hydrateIcons(viewEl);

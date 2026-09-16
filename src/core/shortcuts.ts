@@ -1,4 +1,4 @@
-/** Global keyboard shortcuts and the help panel. */
+/** Global keyboard shortcuts and the help dialog. */
 import { $ } from './dom';
 import { navigate } from './router';
 
@@ -9,23 +9,51 @@ export const HELP: { keys: string; desc: string }[] = [
   { keys: '?', desc: '打开这个面板' },
 ];
 
+/** Whatever had focus before the dialog opened, so it can be handed back. */
+let restoreFocus: HTMLElement | null = null;
+
+const FOCUSABLE = 'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export function openModal(html: string): void {
   const modal = $('#modal');
   const body = $('#modal-body');
   if (!modal || !body) return;
+  restoreFocus = document.activeElement as HTMLElement | null;
   body.innerHTML = html;
   modal.hidden = false;
-  $<HTMLElement>('#modal-close')?.focus();
+  const first = modal.querySelector<HTMLElement>(FOCUSABLE);
+  first?.focus();
 }
 
 export function closeModal(): void {
   const modal = $('#modal');
   if (!modal || modal.hidden) return;
   modal.hidden = true;
+  // put the caret back where it was, so the keyboard does not lose its place
+  restoreFocus?.focus?.();
+  restoreFocus = null;
+}
+
+/** Keep Tab inside the dialog while it is open. */
+function trapTab(ev: KeyboardEvent): void {
+  const modal = $('#modal');
+  if (!modal || modal.hidden || ev.key !== 'Tab') return;
+  const items = Array.from(modal.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => el.offsetParent !== null);
+  if (!items.length) return;
+  const first = items[0];
+  const last = items[items.length - 1];
+  const active = document.activeElement;
+  if (ev.shiftKey && (active === first || !modal.contains(active))) {
+    ev.preventDefault();
+    last.focus();
+  } else if (!ev.shiftKey && active === last) {
+    ev.preventDefault();
+    first.focus();
+  }
 }
 
 export function showHelp(): void {
-  openModal(`<h2 class="modal__h">快捷键</h2>
+  openModal(`<h2 class="modal__h" id="help-title">快捷键</h2>
     <div class="keys">
       ${HELP.map(
         (h) => `<div class="keys__row"><span class="keys__desc">${h.desc}</span><span class="keys__keys">${h.keys
@@ -52,6 +80,9 @@ export function initShortcuts(): void {
       $('#nav')?.classList.remove('is-open');
       return;
     }
+
+    trapTab(ev);
+
     if (typing) return;
 
     if (gPending) {

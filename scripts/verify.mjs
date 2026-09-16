@@ -140,8 +140,36 @@ check("spread is a 12-column grid", spread.tracks === 12, spread.tracks + " trac
 check("main column and rail are separate columns", spread.mainCol === "1" && spread.railCol === "10", spread.mainCol + " / " + spread.railCol);
 check("the rail is not nested inside the running text", spread.railInsideMain === false);
 check("the rail sits clear of the main column", spread.railLeft >= spread.mainRight, spread.railLeft + " vs " + spread.mainRight);
+/* the rail must stay beside the content, not stretch the page */
+const railFit = await page.evaluate(() => {
+  const rail = document.querySelector(".rail");
+  const main = document.querySelector(".spread__main");
+  if (!rail) return null;
+  return {
+    docH: Math.round(document.documentElement.scrollHeight),
+    mainH: Math.round(main.getBoundingClientRect().height),
+    scrolls: rail.scrollHeight > rail.clientHeight + 4,
+    faded: rail.classList.contains("rail--scroll"),
+    position: getComputedStyle(rail).position,
+  };
+});
+check("the rail is sticky, not a page-stretcher", railFit && railFit.position === "sticky", railFit ? railFit.position : "no rail");
+check("a short main column does not leave a huge empty page", railFit && railFit.docH < railFit.mainH * 3 + 900, railFit ? "page " + railFit.docH + "px, main " + railFit.mainH + "px" : "n/a");
+check("the bottom fade matches the scroll state", railFit && railFit.faded === railFit.scrolls, railFit ? "scrolls=" + railFit.scrolls + " faded=" + railFit.faded : "n/a");
 
 /* 5. photographs live in the rail, on home AND archive */
+// the rail is a scroll container and the images are lazy, so walk it through
+// before asserting that every one of them actually resolves.
+await page.evaluate(async () => {
+  const rail = document.querySelector(".rail");
+  if (!rail) return;
+  for (let y = 0; y <= rail.scrollHeight; y += Math.max(1, rail.clientHeight)) {
+    rail.scrollTop = y;
+    await new Promise((r) => setTimeout(r, 260));
+  }
+  rail.scrollTop = 0;
+});
+await page.waitForTimeout(900);
 const railPhotos = await page.evaluate(() => {
   const figs = Array.from(document.querySelectorAll(".rail .rail__fig"));
   const loaded = figs.filter((f) => { const i = f.querySelector("img"); return i && i.complete && i.naturalWidth > 0; });

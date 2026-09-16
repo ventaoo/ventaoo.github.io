@@ -1,7 +1,7 @@
 import type { Ctx, View } from '../core/router';
 import { icon } from '../core/icons';
 import { esc } from '../core/dom';
-import { site } from '../../site.config';
+import { site, photos } from '../../site.config';
 import { posts, tags } from '../blog/posts';
 import { renderIndex } from '../blog/entry';
 import { photoRail } from './rail';
@@ -10,12 +10,13 @@ import { bindReveals } from '../fx/reveal';
 export function blogPage(ctx: Ctx): View {
   const initialTag = ctx.query.get('tag') ?? '';
   const minutes = posts.reduce((n, p) => n + p.reading, 0);
+  const spreadClass = photos.length ? 'spread' : 'spread spread--solo';
 
   return {
-    title: `${site.blog.title} · ${site.name}`,
+    title: site.blog.title + ' · ' + site.name,
     html: `
     <div class="page">
-      <div class="shell mag spread">
+      <div class="shell mag ${spreadClass}">
         <div class="spread__main">
           <header class="page-head reveal">
             <h1 class="page-head__title">${esc(site.blog.title)}</h1>

@@ -24,3 +24,14 @@ export function photoRail(): string {
     '</aside>'
   );
 }
+
+/**
+ * The rail scrolls inside itself when the photo list is taller than the
+ * viewport. Only then should it fade at the bottom — the fade is a "there is
+ * more" hint, and applying it unconditionally would clip the last caption.
+ */
+export function syncRail(root: ParentNode = document): void {
+  root.querySelectorAll<HTMLElement>('.rail').forEach((el) => {
+    el.classList.toggle('rail--scroll', el.scrollHeight > el.clientHeight + 4);
+  });
+}

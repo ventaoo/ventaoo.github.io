@@ -6,9 +6,24 @@
 
 .spread { padding-top: var(--s9); align-items: start; }
 .spread__main { grid-column: 1 / span 8; min-width: 0; }
+.spread--solo .spread__main { grid-column: 1 / -1; }
 
 /* ── the photograph rail ─────────────────────────────────────────────── */
-.rail { grid-column: 10 / span 3; min-width: 0; }
+.rail {
+  grid-column: 10 / span 3;
+  min-width: 0;
+  position: sticky;
+  top: calc(var(--topbar-h) + var(--subbar-h) + var(--s5));
+  max-height: calc(100vh - var(--topbar-h) - var(--subbar-h) - var(--s8));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+/* only when it actually scrolls — see syncRail() */
+.rail--scroll {
+  mask-image: linear-gradient(180deg, #000 calc(100% - 34px), transparent);
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 34px), transparent);
+}
 .rail__head {
   display: flex; align-items: baseline; gap: var(--s3);
   padding-bottom: var(--s2);
@@ -31,6 +46,11 @@
 @media (max-width: 1080px) {
   .spread__main { grid-column: 1 / -1; }
   .rail {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    mask-image: none;
+    -webkit-mask-image: none;
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));

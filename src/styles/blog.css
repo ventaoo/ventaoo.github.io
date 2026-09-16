@@ -164,7 +164,7 @@
   color: var(--ink);
   background: var(--paper-2);
   border: 1px solid var(--rule);
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 /* ── code ────────────────────────────────────────────────────────────── */

@@ -11,6 +11,7 @@ import { initShortcuts, toggleTheme } from './core/shortcuts';
 import { homePage } from './pages/home';
 import { blogPage } from './pages/blog';
 import { postPage } from './pages/post';
+import { syncRail } from './pages/rail';
 import { addTick } from './core/ticker';
 import { site, LOCALE } from '../site.config';
 
@@ -84,6 +85,13 @@ function main(): void {
   registerRoutes();
   initShortcuts();
   startRouter();
+
+  // the rail's bottom fade only belongs there when it has somewhere to scroll
+  const view = document.getElementById('view');
+  const refreshRail = () => requestAnimationFrame(() => syncRail(document));
+  if (view) new MutationObserver(refreshRail).observe(view, { childList: true });
+  window.addEventListener('resize', refreshRail);
+  refreshRail();
 }
 
 main();

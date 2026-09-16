@@ -1,7 +1,7 @@
 import type { View } from '../core/router';
 import { icon } from '../core/icons';
 import { esc } from '../core/dom';
-import { site } from '../../site.config';
+import { site, photos } from '../../site.config';
 import { posts } from '../blog/posts';
 import { renderIndex } from '../blog/entry';
 import { photoRail } from './rail';
@@ -9,6 +9,7 @@ import { bindReveals } from '../fx/reveal';
 
 export function homePage(): View {
   const latest = posts.slice(0, site.blog.latestOnHome);
+  const hasRail = photos.length > 0;
 
   const links = site.links
     .map(
@@ -25,7 +26,7 @@ export function homePage(): View {
     title: site.seo.title,
     html: [
       '<div class="page">',
-      '  <div class="shell mag spread">',
+      '  <div class="shell mag spread' + (hasRail ? '' : ' spread--solo') + '">',
       '    <div class="spread__main">',
       '      <h1 class="sr-only">' + esc(site.name) + ' · ' + esc(site.footerNote) + '</h1>',
       '      <div class="intro reveal">' + intro + '</div>',

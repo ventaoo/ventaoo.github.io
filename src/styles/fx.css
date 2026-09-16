@@ -12,12 +12,6 @@ html.js .reveal {
 }
 html.js .reveal.in { opacity: 1; transform: none; }
 
-.line-swap { animation: line-in 460ms var(--ease) both; }
-@keyframes line-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: none; }
-}
-
 .view { animation: view-in 400ms var(--ease) both; }
 @keyframes view-in {
   from { opacity: 0; transform: translateY(10px); }

@@ -4,6 +4,7 @@ import { esc } from '../core/dom';
 import { site } from '../../site.config';
 import { posts, tags } from '../blog/posts';
 import { renderIndex } from '../blog/entry';
+import { photoRail } from './rail';
 import { bindReveals } from '../fx/reveal';
 
 export function blogPage(ctx: Ctx): View {
@@ -14,39 +15,38 @@ export function blogPage(ctx: Ctx): View {
     title: `${site.blog.title} · ${site.name}`,
     html: `
     <div class="page">
-      <header class="page-head">
-        <div class="shell mag">
-          <h1 class="page-head__title reveal">${esc(site.blog.title)}</h1>
-          <p class="page-head__sub reveal" data-reveal-delay="80">
-            ${esc(site.blog.intro)}
-            <br>共 <b>${posts.length}</b> 篇 · 约 <b>${minutes}</b> 分钟。
-          </p>
+      <div class="shell mag spread">
+        <div class="spread__main">
+          <header class="page-head reveal">
+            <h1 class="page-head__title">${esc(site.blog.title)}</h1>
+            <p class="page-head__sub">
+              ${esc(site.blog.intro)}
+              共 <b>${posts.length}</b> 篇 · 约 <b>${minutes}</b> 分钟。
+            </p>
+          </header>
+
+          <div class="filterbar reveal">
+            <label class="searchbox">
+              <span class="ico">${icon('search', 14)}</span>
+              <input type="search" id="post-search" placeholder="搜索标题、摘要或标签" autocomplete="off" aria-label="搜索文章" />
+            </label>
+            <button class="chip${initialTag ? '' : ' is-active'}" data-tag="">全部</button>
+            ${tags
+              .map(
+                (t) =>
+                  `<button class="chip${initialTag === t.name ? ' is-active' : ''}" data-tag="${esc(t.name)}">${esc(
+                    t.name,
+                  )}<span class="chip__n">${t.count}</span></button>`,
+              )
+              .join('')}
+          </div>
+
+          <div class="wtable" id="post-list">${renderIndex(posts, { header: true })}</div>
+          <p class="empty-hint" id="post-empty" hidden>没有匹配的文章 —— 换个关键词试试。</p>
+
+          <p class="feed-note">订阅更新 <a class="ulink" href="/rss.xml">/rss.xml ${icon('rss', 13)}</a></p>
         </div>
-      </header>
-
-      <div class="shell">
-        <div class="filterbar reveal">
-          <label class="searchbox">
-            <span class="ico">${icon('search', 14)}</span>
-            <input type="search" id="post-search" placeholder="搜索标题、摘要或标签" autocomplete="off" aria-label="搜索文章" />
-          </label>
-          <button class="chip${initialTag ? '' : ' is-active'}" data-tag="">全部</button>
-          ${tags
-            .map(
-              (t) =>
-                `<button class="chip${initialTag === t.name ? ' is-active' : ''}" data-tag="${esc(t.name)}">${esc(
-                  t.name,
-                )}<span class="chip__n">${t.count}</span></button>`,
-            )
-            .join('')}
-        </div>
-
-        <div class="wtable" id="post-list">${renderIndex(posts)}</div>
-        <p class="empty-hint" id="post-empty" hidden>没有匹配的文章 —— 换个关键词试试。</p>
-
-        <p class="feed-note reveal">
-          订阅更新 <a class="ulink" href="/rss.xml">/rss.xml ${icon('rss', 13)}</a>
-        </p>
+        ${photoRail()}
       </div>
     </div>`,
 
@@ -57,7 +57,6 @@ export function blogPage(ctx: Ctx): View {
       if (!list) return;
 
       const rows = Array.from(list.querySelectorAll<HTMLElement>('.wrow'));
-      const groups = Array.from(list.querySelectorAll<HTMLElement>('.wgroup'));
       const chips = Array.from(root.querySelectorAll<HTMLButtonElement>('.chip[data-tag]'));
       let activeTag = initialTag;
       let query = '';
@@ -72,7 +71,6 @@ export function blogPage(ctx: Ctx): View {
           el.hidden = !ok;
           if (ok) visible++;
         }
-        for (const g of groups) g.hidden = !g.querySelector<HTMLElement>('.wrow:not([hidden])');
         if (empty) empty.hidden = visible > 0;
       };
 

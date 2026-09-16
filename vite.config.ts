@@ -129,6 +129,16 @@ function staticSitePlugin(): Plugin {
       }
 
       write(
+        'photos',
+        page(
+          'photos',
+          `${site.photosPage.title} · ${site.name}`,
+          site.photosPage.intro,
+          `<h1>${site.photosPage.title}</h1><p>${site.photosPage.intro}</p>`,
+        ),
+      );
+
+      write(
         'blog',
         page(
           'blog',
@@ -167,7 +177,7 @@ ${p.tags.map((t) => '      <category>' + xml(t) + '</category>').join('\n')}
 </rss>
 `;
 
-      const urls = ['/', '/blog/', ...items.map((p) => `/blog/${p.slug}/`)];
+      const urls = ['/', '/blog/', '/photos/', ...items.map((p) => `/blog/${p.slug}/`)];
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
@@ -183,7 +193,7 @@ ${urls
       fs.writeFileSync(path.join(dist, 'sitemap.xml'), sitemap);
       fs.writeFileSync(path.join(dist, 'robots.txt'), 'User-agent: *\nAllow: /\n\nSitemap: ' + SITE_URL + '/sitemap.xml\n');
 
-      this.info(`static: ${items.length + 1} route files · rss.xml · sitemap.xml · robots.txt`);
+      this.info(`static: ${items.length + 2} route files · rss.xml · sitemap.xml · robots.txt`);
     },
   };
 }

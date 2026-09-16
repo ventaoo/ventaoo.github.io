@@ -3,7 +3,6 @@ import { icon } from '../core/icons';
 import { esc } from '../core/dom';
 import { site } from '../../site.config';
 import { getPost, neighbours, renderPost } from '../blog/posts';
-import { toast } from '../core/toast';
 import { bindReveals } from '../fx/reveal';
 
 export function postPage(ctx: Ctx): View {
@@ -11,7 +10,7 @@ export function postPage(ctx: Ctx): View {
 
   if (!post) {
     return {
-      title: `找不到这篇文章 · ${site.name}`,
+      title: '找不到这篇文章 · ' + site.name,
       html: `<div class="page"><div class="shell">
         <div class="empty">
           <p class="empty__code">404</p>
@@ -26,11 +25,11 @@ export function postPage(ctx: Ctx): View {
   const { prev, next } = neighbours(post.slug);
 
   return {
-    title: `${post.title} · ${site.name}`,
+    title: post.title + ' · ' + site.name,
     html: `
     <div class="page">
-      <header class="post-head">
-        <div class="shell post-head__grid">
+      <div class="shell">
+        <header class="post-head mag">
           <a class="post-head__back" href="/blog" data-link>${icon('arrowLeft', 13)} 日志</a>
           <h1 class="post-head__title">${esc(post.title)}</h1>
           <div class="post-head__meta">
@@ -40,51 +39,53 @@ export function postPage(ctx: Ctx): View {
               .map((t) => `<a class="tag" href="/blog?tag=${encodeURIComponent(t)}" data-link>${esc(t)}</a>`)
               .join('')}</span>
           </div>
+        </header>
+
+        <div class="post-layout">
+          <div class="prose post-body" id="prose">${html}</div>
+          ${
+            headings.length
+              ? `<aside class="post-toc"><p class="post-toc__t label">目录</p>
+                   <nav class="post-toc__list" id="toc">${headings
+                     .map((h) => `<a href="#${h.id}" data-depth="${h.depth}">${esc(h.text)}</a>`)
+                     .join('')}</nav></aside>`
+              : ''
+          }
+
+          <nav class="post-nav">
+            ${
+              prev
+                ? `<a class="post-nav__item" href="/blog/${prev.slug}" data-link>
+                    <span class="post-nav__lbl">${icon('arrowLeft', 12)} 更早</span>
+                    <span class="post-nav__t">${esc(prev.title)}</span></a>`
+                : '<span></span>'
+            }
+            ${
+              next
+                ? `<a class="post-nav__item post-nav__item--next" href="/blog/${next.slug}" data-link>
+                    <span class="post-nav__lbl">更新 ${icon('arrowRight', 12)}</span>
+                    <span class="post-nav__t">${esc(next.title)}</span></a>`
+                : '<span></span>'
+            }
+          </nav>
         </div>
-      </header>
-
-      <div class="shell post-layout">
-        <div class="prose post-body" id="prose">${html}</div>
-        ${
-          headings.length
-            ? `<aside class="post-toc"><p class="post-toc__t label">目录</p>
-                 <nav class="post-toc__list" id="toc">${headings
-                   .map((h) => `<a href="#${h.id}" data-depth="${h.depth}">${esc(h.text)}</a>`)
-                   .join('')}</nav></aside>`
-            : ''
-        }
-
-        <nav class="post-nav">
-          ${
-            prev
-              ? `<a class="post-nav__item" href="/blog/${prev.slug}" data-link>
-                  <span class="post-nav__lbl">${icon('arrowLeft', 12)} 更早</span>
-                  <span class="post-nav__t">${esc(prev.title)}</span></a>`
-              : '<span></span>'
-          }
-          ${
-            next
-              ? `<a class="post-nav__item post-nav__item--next" href="/blog/${next.slug}" data-link>
-                  <span class="post-nav__lbl">更新 ${icon('arrowRight', 12)}</span>
-                  <span class="post-nav__t">${esc(next.title)}</span></a>`
-              : '<span></span>'
-          }
-        </nav>
       </div>
     </div>`,
 
     mount(root) {
       root.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+        const reset = () => {
+          btn.innerHTML = icon('copy', 12) + '<span>复制</span>';
+        };
         btn.addEventListener('click', async () => {
           const code = btn.closest('.codeblock')?.querySelector('code')?.textContent ?? '';
           try {
             await navigator.clipboard.writeText(code);
             btn.innerHTML = icon('check', 12) + '<span>已复制</span>';
-            window.setTimeout(() => {
-              btn.innerHTML = icon('copy', 12) + '<span>复制</span>';
-            }, 1500);
+            window.setTimeout(reset, 1500);
           } catch {
-            toast('复制失败', '浏览器拒绝了剪贴板访问');
+            btn.innerHTML = '<span>复制失败</span>';
+            window.setTimeout(reset, 1800);
           }
         });
       });

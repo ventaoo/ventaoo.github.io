@@ -4,23 +4,17 @@
 import './styles/index.css';
 
 import { $, on } from './core/dom';
-import { applyBootState, settings, subscribe } from './core/store';
 import { hydrateIcons } from './core/icons';
 import { route, startRouter } from './core/router';
-import { initShortcuts, toggleTheme } from './core/shortcuts';
+import { initShortcuts } from './core/shortcuts';
 import { homePage } from './pages/home';
 import { blogPage } from './pages/blog';
 import { postPage } from './pages/post';
-import { syncRail } from './pages/rail';
+import { photosPage } from './pages/photos';
 import { addTick } from './core/ticker';
 import { site, LOCALE } from '../site.config';
 
-function syncControls(): void {
-  const face = $('#ctl-theme [data-icon]');
-  if (face) face.dataset.icon = settings.theme === 'dark' ? 'sun' : 'moon';
-  hydrateIcons(document);
-}
-
+/** Fill every config-driven slot in the static shell. */
 function applyConfig(): void {
   document.documentElement.lang = LOCALE;
   document.title = site.seo.title;
@@ -37,7 +31,7 @@ function applyConfig(): void {
   set('year', String(new Date().getFullYear()));
 }
 
-const RUNNING_HEAD: Record<string, string> = { home: '首页', blog: '日志' };
+const RUNNING_HEAD: Record<string, string> = { home: '首页', blog: '日志', photos: '照片' };
 function setRunningHead(section: string, title?: string): void {
   const el = document.getElementById('runninghead');
   if (el) el.textContent = title || RUNNING_HEAD[section] || section;
@@ -71,27 +65,20 @@ function registerRoutes(): void {
     setRunningHead('blog', probe.querySelector('.post-head__title')?.textContent ?? '日志');
     return view;
   }, 'blog');
+  route('/photos', () => {
+    setRunningHead('photos');
+    return photosPage();
+  }, 'photos');
 }
 
 function main(): void {
-  applyBootState();
   applyConfig();
   hydrateIcons(document);
-  syncControls();
-  on($('#ctl-theme'), 'click', toggleTheme);
   on($('#btn-top'), 'click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-  subscribe(syncControls);
   wireScroll();
   registerRoutes();
   initShortcuts();
   startRouter();
-
-  // the rail's bottom fade only belongs there when it has somewhere to scroll
-  const view = document.getElementById('view');
-  const refreshRail = () => requestAnimationFrame(() => syncRail(document));
-  if (view) new MutationObserver(refreshRail).observe(view, { childList: true });
-  window.addEventListener('resize', refreshRail);
-  refreshRail();
 }
 
 main();

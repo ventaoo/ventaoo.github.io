@@ -11,14 +11,14 @@ summary: 这里是唯一的示例文章。它同时说明了怎么写新文章�
 
 在 `content/posts/` 目录下新建一个 `.md` 文件，开头写上 front-matter：
 
-`@yaml
+```yaml
 ---
 title: 文章标题
 date: 2026-09-15
 tags: [标签一, 标签二]
 summary: 一句话摘要，会显示在列表页和搜索结果里。
 ---
-`@
+```
 
 文件名就是 URL，比如 `content/posts/my-note.md` 会对应 `/blog/my-note`。
 
@@ -50,20 +50,20 @@ summary: 一句话摘要，会显示在列表页和搜索结果里。
 
 行内代码和代码块：
 
-`@ts
+```ts
 // 代码块带语法高亮和一键复制
 export function greet(name: string): string {
   return `你好，${name}`;
 }
-`@
+```
 
-`@python
+```python
 def fib(n: int) -> int:
     a, b = 0, 1
     for _ in range(n):
         a, b = b, a + b
     return a
-`@
+```
 
 ---
 

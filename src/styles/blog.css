@@ -10,20 +10,11 @@
   --syn-fn: #34525e;
   --syn-typ: #6b4076;
 }
-[data-theme='dark'] {
-  --syn-key: #e08a6c;
-  --syn-str: #a4c489;
-  --syn-num: #d5aa5c;
-  --syn-com: #78705f;
-  --syn-fn: #8fb4c2;
-  --syn-typ: #c6a2d4;
-}
 
 .post { padding-top: var(--s9); }
 
 /* ── header ──────────────────────────────────────────────────────────── */
-.post-head { margin-bottom: var(--s8); }
-.post-head .mag { align-items: start; }
+.post-head { align-items: start; row-gap: 0; padding-top: 0; padding-bottom: 0; margin-bottom: var(--s8); }
 .post-head__back {
   grid-column: 1 / -1;
   display: inline-flex; align-items: center; gap: var(--s2);

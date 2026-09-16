@@ -1,6 +1,5 @@
 /* ============================================================================
    Tokens — 宣纸 · 墨 · 朱砂 · 赭石 · 黛青
-   Unequal columns, generous margins, hard hairlines.
    ========================================================================= */
 
 :root {
@@ -10,7 +9,6 @@
   --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Seven clear steps. Nothing in between. */
-  --fs-mega: clamp(30px, 5.4vw, 76px);
   --fs-h1: clamp(30px, 4.4vw, 58px);
   --fs-h2: clamp(21px, 1.9vw, 30px);
   --fs-h3: clamp(17px, 0.9vw, 20px);
@@ -30,21 +28,7 @@
   --topbar-h: 58px;
   --subbar-h: 32px;
 
-  /* ── motion — short, calm, no bounce ─────────────────────────────────── */
-  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --t-fast: 140ms;
-  --t-mid: 260ms;
-  --t-slow: 520ms;
-
-  --z-content: 10;
-  --z-topbar: 40;
-  --z-toast: 60;
-  --z-modal: 70;
-}
-
-/* ── 宣纸 · paper ────────────────────────────────────────────────────── */
-:root,
-[data-theme='light'] {
+  /* ── 宣纸 · paper ────────────────────────────────────────────────────── */
   --paper: #f6f3ea;
   --paper-2: #ece7d9;
   --ink: #1b1916;
@@ -54,32 +38,20 @@
   --rule-strong: #1b1916;
   --wash: rgba(168, 52, 31, 0.05);
   color-scheme: light;
-}
 
-/* ── 夜 · ink ────────────────────────────────────────────────────────── */
-[data-theme='dark'] {
-  --paper: #141311;
-  --paper-2: #1d1b17;
-  --ink: #ebe4d5;
-  --ink-2: #b3aa99;
-  --ink-3: #918878;
-  --rule: #2d2a24;
-  --rule-strong: #ebe4d5;
-  --wash: rgba(217, 112, 79, 0.08);
-  color-scheme: dark;
-}
-
-/* ── three pigments, three jobs ──────────────────────────────────────── */
-:root,
-[data-theme='light'] {
+  /* ── three pigments, three jobs ──────────────────────────────────────── */
   --c1: #a8341f;   /* 朱砂 — links and emphasis */
   --c2: #34525e;   /* 黛青 — numbers and labels */
   --c3: #8f6520;   /* 赭石 — tags */
   --c1-ink: #fdf8f2;
-}
-[data-theme='dark'] {
-  --c1: #d9704f;
-  --c2: #7fa3b0;
-  --c3: #c9a05a;
-  --c1-ink: #1a1310;
+
+  /* ── motion ──────────────────────────────────────────────────────────── */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --t-fast: 140ms;
+  --t-mid: 260ms;
+  --t-slow: 520ms;
+
+  --z-content: 10;
+  --z-topbar: 40;
+  --z-modal: 70;
 }

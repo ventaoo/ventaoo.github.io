@@ -1,53 +1,48 @@
 import type { Ctx, View } from '../core/router';
 import { icon } from '../core/icons';
 import { esc } from '../core/dom';
-import { site, photos } from '../../site.config';
+import { site } from '../../site.config';
 import { posts, tags } from '../blog/posts';
 import { renderIndex } from '../blog/entry';
-import { photoRail } from './rail';
 import { bindReveals } from '../fx/reveal';
 
 export function blogPage(ctx: Ctx): View {
   const initialTag = ctx.query.get('tag') ?? '';
   const minutes = posts.reduce((n, p) => n + p.reading, 0);
-  const spreadClass = photos.length ? 'spread' : 'spread spread--solo';
 
   return {
     title: site.blog.title + ' · ' + site.name,
     html: `
     <div class="page">
-      <div class="shell mag ${spreadClass}">
-        <div class="spread__main">
-          <header class="page-head reveal">
-            <h1 class="page-head__title">${esc(site.blog.title)}</h1>
-            <p class="page-head__sub">
-              ${esc(site.blog.intro)}
-              共 <b>${posts.length}</b> 篇 · 约 <b>${minutes}</b> 分钟。
-            </p>
-          </header>
+      <div class="shell">
+        <header class="page-head reveal">
+          <h1 class="page-head__title">${esc(site.blog.title)}</h1>
+          <p class="page-head__sub">
+            ${esc(site.blog.intro)}
+            共 <b>${posts.length}</b> 篇 · 约 <b>${minutes}</b> 分钟。
+          </p>
+        </header>
 
-          <div class="filterbar reveal">
-            <label class="searchbox">
-              <span class="ico">${icon('search', 14)}</span>
-              <input type="search" id="post-search" placeholder="搜索标题、摘要或标签" autocomplete="off" aria-label="搜索文章" />
-            </label>
-            <button class="chip${initialTag ? '' : ' is-active'}" data-tag="">全部</button>
-            ${tags
-              .map(
-                (t) =>
-                  `<button class="chip${initialTag === t.name ? ' is-active' : ''}" data-tag="${esc(t.name)}">${esc(
-                    t.name,
-                  )}<span class="chip__n">${t.count}</span></button>`,
-              )
-              .join('')}
-          </div>
-
-          <div class="wtable" id="post-list">${renderIndex(posts, { header: true })}</div>
-          <p class="empty-hint" id="post-empty" hidden>没有匹配的文章 —— 换个关键词试试。</p>
-
-          <p class="feed-note">订阅更新 <a class="ulink" href="/rss.xml">/rss.xml ${icon('rss', 13)}</a></p>
+        <div class="filterbar reveal">
+          <label class="searchbox">
+            <span class="ico">${icon('search', 14)}</span>
+            <input type="search" id="post-search" placeholder="搜索标题、摘要或标签" autocomplete="off" aria-label="搜索文章" />
+          </label>
+          <button class="chip${initialTag ? '' : ' is-active'}" data-tag="">全部</button>
+          ${tags
+            .map(
+              (t) =>
+                `<button class="chip${initialTag === t.name ? ' is-active' : ''}" data-tag="${esc(t.name)}">${esc(
+                  t.name,
+                )}<span class="chip__n">${t.count}</span></button>`,
+            )
+            .join('')}
         </div>
-        ${photoRail()}
+
+        <div class="wtable" id="post-list">${renderIndex(posts, { header: true })}</div>
+        <p class="empty-hint" id="post-empty" hidden>没有匹配的文章 —— 换个关键词试试。</p>
+
+        <p class="feed-note">订阅更新 <a class="ulink" href="/rss.xml">/rss.xml ${icon('rss', 13)}</a></p>
       </div>
     </div>`,
 

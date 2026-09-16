@@ -26,6 +26,7 @@ const routes = [
   ['home', '/'],
   ['blog', '/blog'],
   ['post', '/blog/hello-world'],
+  ['photos', '/photos'],
 ];
 
 await mkdir('shots', { recursive: true });
@@ -44,11 +45,6 @@ for (const [name, route] of routes) {
   console.log('captured ' + name);
 }
 
-// day theme + mobile, for the record
-await page.evaluate(() => (document.documentElement.dataset.theme = 'day'));
-await page.goto(base + '/', { waitUntil: 'load' });
-await page.waitForTimeout(1800);
-await page.screenshot({ path: 'shots/home-day.png' });
 
 const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 await mobile.goto(base + '/', { waitUntil: 'load' });

@@ -1,21 +1,13 @@
 /** Global keyboard shortcuts and the help panel. */
 import { $ } from './dom';
-import { settings, setSetting, type Theme } from './store';
-import { toast } from './toast';
 import { navigate } from './router';
 
 export const HELP: { keys: string; desc: string }[] = [
-  { keys: 'T', desc: '切换深浅色' },
   { keys: 'G B', desc: '跳到日志' },
+  { keys: 'G P', desc: '跳到照片' },
   { keys: '/', desc: '在日志页聚焦搜索框' },
   { keys: '?', desc: '打开这个面板' },
 ];
-
-export function toggleTheme(): void {
-  const next: Theme = settings.theme === 'dark' ? 'light' : 'dark';
-  setSetting('theme', next);
-  toast(next === 'dark' ? '夜' : '昼');
-}
 
 export function openModal(html: string): void {
   const modal = $('#modal');
@@ -44,6 +36,8 @@ export function showHelp(): void {
     </div>`);
 }
 
+const GO: Record<string, string> = { b: '/blog', p: '/photos', h: '/' };
+
 export function initShortcuts(): void {
   let gPending = false;
   let gTimer: number | undefined;
@@ -63,15 +57,15 @@ export function initShortcuts(): void {
     if (gPending) {
       gPending = false;
       clearTimeout(gTimer);
-      if (k === 'b') {
+      const to = GO[k];
+      if (to) {
         ev.preventDefault();
-        navigate('/blog');
+        navigate(to);
         return;
       }
     }
 
     switch (k) {
-      case 't': toggleTheme(); break;
       case '/': {
         const box = document.getElementById('post-search') as HTMLInputElement | null;
         if (box) {

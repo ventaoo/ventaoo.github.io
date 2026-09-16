@@ -1,5 +1,5 @@
 /* ============================================================================
-   Masthead · running head · colophon · progress · toasts
+   Masthead · running head · colophon · progress
    ========================================================================= */
 
 .progress {
@@ -56,7 +56,7 @@
 .nav a:hover::after, .nav a.is-active::after { transform: scaleX(1); }
 .nav a.is-active { color: var(--ink); }
 
-.controls { display: flex; align-items: center; gap: var(--s3); flex-shrink: 0; }
+.controls { display: flex; align-items: center; flex-shrink: 0; }
 .ctl {
   display: grid; place-items: center;
   width: 32px; height: 32px;
@@ -67,7 +67,6 @@
 .ctl:hover { color: var(--ink); border-color: var(--ink-3); }
 .ctl--menu { display: none; }
 
-/* running head */
 .masthead__sub {
   width: min(100% - (var(--gutter) * 2), var(--shell));
   height: var(--subbar-h);
@@ -103,28 +102,6 @@
 .to-top.is-on { opacity: 1; visibility: visible; }
 .to-top:hover { background: var(--c1); color: var(--c1-ink); }
 
-/* ── toasts ──────────────────────────────────────────────────────────── */
-.toasts {
-  position: fixed; right: 0; bottom: 50px;
-  display: flex; flex-direction: column-reverse;
-  max-width: min(320px, 80vw);
-  pointer-events: none;
-}
-.toast {
-  padding: var(--s3) var(--s5);
-  font-size: var(--fs-sm);
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  border-left: 3px solid var(--c1);
-  animation: toast-in 240ms var(--ease) both;
-  pointer-events: auto;
-}
-.toast.is-out { animation: toast-out 180ms linear both; }
-.toast__t { color: var(--ink); }
-.toast__d { color: var(--ink-3); font-size: .94em; }
-@keyframes toast-in { from { transform: translateX(14px); opacity: 0 } }
-@keyframes toast-out { to { transform: translateX(14px); opacity: 0 } }
-
 /* ── responsive ──────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .nav {
@@ -141,6 +118,5 @@
   .nav a { padding: var(--s4) 0; font-size: 12px; border-bottom: 1px solid var(--rule); }
   .nav a::after { display: none; }
   .ctl--menu { display: grid; }
-  .toasts { left: 0; right: 0; bottom: 0; max-width: none; }
   .masthead__sub { font-size: 9.5px; }
 }

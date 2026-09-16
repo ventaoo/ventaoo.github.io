@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -10,17 +10,9 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="VENTAOO · 写作与造物" />
     <meta property="og:description" content="VENTAOO 的个人主页与博客：代码、实验与想法。" />
-    <script>
-      (function () {
-        document.documentElement.classList.add('js');
-        try {
-          var s = JSON.parse(localStorage.getItem('mx:settings') || '{}');
-          if (s.theme) document.documentElement.dataset.theme = s.theme;
-        } catch (e) {}
-      })();
-    </script>
+    <script>document.documentElement.classList.add('js');</script>
   </head>
-  <body>
+  <body class="js">
     <a class="skip" href="#view">跳到正文</a>
     <div class="progress" aria-hidden="true"><i id="scroll-fill"></i></div>
 
@@ -33,12 +25,10 @@
         <nav class="nav" id="nav" aria-label="主导航">
           <a href="/" data-link data-nav="home">首页</a>
           <a href="/blog" data-link data-nav="blog">日志</a>
+          <a href="/photos" data-link data-nav="photos">照片</a>
         </nav>
 
         <div class="controls">
-          <button class="ctl" id="ctl-theme" title="切换深浅 (T)" aria-label="切换深浅色">
-            <span data-icon="moon" data-icon-size="17"></span>
-          </button>
           <button class="ctl ctl--menu" id="ctl-menu" title="菜单" aria-label="菜单">
             <span data-icon="menu" data-icon-size="18"></span>
           </button>
@@ -61,7 +51,6 @@
     </footer>
 
     <button class="to-top" id="btn-top" aria-label="回到顶部" title="回到顶部">↑</button>
-    <div class="toasts" id="toasts" aria-live="polite"></div>
 
     <div class="modal" id="modal" hidden>
       <div class="modal__panel">

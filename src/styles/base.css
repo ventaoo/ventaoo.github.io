@@ -26,8 +26,11 @@ body {
   font-family: var(--font-text);
   font-size: var(--fs-body);
   line-height: 1.72;
+  overflow-wrap: break-word;
   font-feature-settings: 'kern' 1, 'liga' 1, 'palt' 1;
-  overflow-x: hidden;
+  /* clip, not hidden: hidden makes body a scroll container, which would
+     break position: sticky on any descendant */
+  overflow-x: clip;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

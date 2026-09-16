@@ -1,23 +1,23 @@
-/** Persisted preferences (theme + accent ink) with a tiny pub/sub. */
+/** Persisted preferences (theme + colour system) with a tiny pub/sub. */
 
 export type Theme = 'light' | 'dark';
-export type Accent = 'vermillion' | 'indigo' | 'moss' | 'ochre';
+export type Scheme = 'signal' | 'riso' | 'mono' | 'earth';
 
-export const ACCENTS: Accent[] = ['vermillion', 'indigo', 'moss', 'ochre'];
-export const ACCENT_LABEL: Record<Accent, string> = {
-  vermillion: '朱砂',
-  indigo: '靛青',
-  moss: '苔绿',
-  ochre: '赭石',
+export const SCHEMES: Scheme[] = ['signal', 'riso', 'mono', 'earth'];
+export const SCHEME_LABEL: Record<Scheme, string> = {
+  signal: '信号',
+  riso: '丝网印',
+  mono: '单色',
+  earth: '土色',
 };
 
 export interface Settings {
   theme: Theme;
-  accent: Accent;
+  scheme: Scheme;
 }
 
-const KEY = 'vx:settings';
-const DEFAULTS: Settings = { theme: 'light', accent: 'vermillion' };
+const KEY = 'gx:settings';
+const DEFAULTS: Settings = { theme: 'light', scheme: 'signal' };
 
 function load(): Settings {
   try {
@@ -48,9 +48,9 @@ export function setSetting<K extends keyof Settings>(key: K, value: Settings[K])
   if (key === 'theme') {
     document.documentElement.dataset.theme = value as string;
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', value === 'dark' ? '#131210' : '#faf7f1');
+    if (meta) meta.setAttribute('content', value === 'dark' ? '#111214' : '#f5f4f1');
   }
-  if (key === 'accent') document.documentElement.dataset.ink = value as string;
+  if (key === 'scheme') document.documentElement.dataset.scheme = value as string;
   listeners.forEach((l) => l());
 }
 
@@ -58,5 +58,5 @@ export function setSetting<K extends keyof Settings>(key: K, value: Settings[K])
 export function applyBootState(): void {
   const root = document.documentElement;
   root.dataset.theme = settings.theme;
-  root.dataset.ink = settings.accent;
+  root.dataset.scheme = settings.scheme;
 }

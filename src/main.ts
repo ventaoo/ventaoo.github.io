@@ -1,14 +1,13 @@
 /**
- * Entry point: paint the ink wash, wire the masthead, register the routes.
+ * Entry point: wire the masthead, register the routes, start the router.
  */
 import './styles/index.css';
 
 import { $, $$, on } from './core/dom';
-import { applyBootState, settings, setSetting, subscribe, ACCENTS, ACCENT_LABEL, type Theme, type Accent } from './core/store';
+import { applyBootState, settings, setSetting, subscribe, SCHEMES, SCHEME_LABEL, type Scheme } from './core/store';
 import { hydrateIcons } from './core/icons';
-import { initAtmosphere } from './fx/atmosphere';
 import { route, startRouter } from './core/router';
-import { initShortcuts, toggleTheme, cycleAccent } from './core/shortcuts';
+import { initShortcuts, toggleTheme, cycleScheme } from './core/shortcuts';
 import { toast } from './core/toast';
 import { homePage } from './pages/home';
 import { blogPage } from './pages/blog';
@@ -20,19 +19,19 @@ import { site, LOCALE } from '../site.config';
 function syncControls(): void {
   const face = $('#ctl-theme [data-icon]');
   if (face) face.dataset.icon = settings.theme === 'dark' ? 'sun' : 'moon';
-  $$<HTMLElement>('.swatch').forEach((s) => s.classList.toggle('is-active', s.dataset.swatch === settings.accent));
+  $$<HTMLElement>('.scheme').forEach((s) => s.classList.toggle('is-active', s.dataset.scheme === settings.scheme));
   hydrateIcons(document);
 }
 
 function wireControls(): void {
   on($('#ctl-theme'), 'click', toggleTheme);
 
-  $$<HTMLButtonElement>('.swatch').forEach((btn) => {
+  $$<HTMLButtonElement>('.scheme').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const accent = btn.dataset.swatch as Accent | undefined;
-      if (!accent || !ACCENTS.includes(accent)) return;
-      setSetting('accent', accent);
-      toast('强调色 · ' + ACCENT_LABEL[accent]);
+      const scheme = btn.dataset.scheme as Scheme | undefined;
+      if (!scheme || !SCHEMES.includes(scheme)) return;
+      setSetting('scheme', scheme);
+      toast('配色 · ' + SCHEME_LABEL[scheme]);
     });
   });
 
@@ -52,35 +51,48 @@ function applyConfig(): void {
   set('footer-name', site.name);
   set('footer-note', site.footerNote);
   set('colophon-note', site.colophon);
+  set('runningmeta', site.status);
   set('year', String(new Date().getFullYear()));
 }
 
+/** The running head shows where you are. */
+const RUNNING_HEAD: Record<string, string> = { home: '首页', blog: '日志' };
+function setRunningHead(section: string, title?: string): void {
+  const el = document.getElementById('runninghead');
+  if (!el) return;
+  el.textContent = title ? title : (RUNNING_HEAD[section] ?? section);
+}
+
 function wireScroll(): void {
-  let lastY = window.scrollY;
   const bar = $('#scroll-fill');
   addTick((_dt, _t, y) => {
     const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
     if (bar) bar.style.width = ((y / max) * 100).toFixed(2) + '%';
-
-    const head = $('#masthead');
-    if (head) {
-      const down = y > lastY + 4;
-      const up = y < lastY - 4;
-      if (y > 260 && down) head.classList.add('is-hidden');
-      else if (up || y < 120) head.classList.remove('is-hidden');
-      head.classList.toggle('is-stuck', y > 10);
-    }
     const top = $('#btn-top');
-    if (top) top.classList.toggle('is-on', y > 800);
-    lastY = y;
+    if (top) top.classList.toggle('is-on', y > 700);
   });
 }
 
 function registerRoutes(): void {
-  route('/', () => homePage(), 'home');
-  route('/index.html', () => homePage(), 'home');
-  route('/blog', (ctx) => blogPage(ctx), 'blog');
-  route('/blog/:slug', (ctx) => postPage(ctx), 'blog');
+  route('/', () => {
+    setRunningHead('home');
+    return homePage();
+  }, 'home');
+  route('/index.html', () => {
+    setRunningHead('home');
+    return homePage();
+  }, 'home');
+  route('/blog', (ctx) => {
+    setRunningHead('blog');
+    return blogPage(ctx);
+  }, 'blog');
+  route('/blog/:slug', (ctx) => {
+    const view = postPage(ctx);
+    const el = document.createElement('div');
+    el.innerHTML = view.html;
+    setRunningHead('blog', el.querySelector('.post-head__title')?.textContent ?? '日志');
+    return view;
+  }, 'blog');
 }
 
 /* ── go ──────────────────────────────────────────────────────────────── */
@@ -94,11 +106,9 @@ function main(): void {
   wireScroll();
   registerRoutes();
   initShortcuts();
-  initAtmosphere();
   startRouter();
 
-  void cycleAccent;
-  void (settings.theme as Theme);
+  void cycleScheme;
 }
 
 main();

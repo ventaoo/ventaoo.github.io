@@ -7,28 +7,22 @@
    the reveal deadlocks. */
 html.js .reveal {
   opacity: 0;
-  transform: translateY(22px);
-  transition: opacity 900ms var(--ease-out), transform 1000ms var(--ease-out);
+  transform: translateY(12px);
+  transition: opacity var(--t-slow) var(--ease), transform var(--t-slow) var(--ease);
 }
 html.js .reveal.in { opacity: 1; transform: none; }
 
-/* the statement line cross-fades rather than typing itself out */
-.line-swap { animation: line-in 900ms var(--ease-out) both; }
+/* the statement swaps with a plain cross-fade — no blur, no bounce */
+.line-swap { animation: line-in 420ms var(--ease) both; }
 @keyframes line-in {
-  from { opacity: 0; transform: translateY(14px); filter: blur(4px); }
-  to { opacity: 1; transform: none; filter: none; }
-}
-
-/* ── route transition ────────────────────────────────────────────────── */
-.view { animation: view-in 680ms var(--ease-out) both; }
-@keyframes view-in {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
 
-/* ── focus ───────────────────────────────────────────────────────────── */
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 4px;
+.view { animation: view-in 380ms var(--ease) both; }
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
 }
+
+:focus-visible { outline: 2px solid var(--c1); outline-offset: 2px; }

@@ -14,18 +14,20 @@ export function blogPage(ctx: Ctx): View {
     title: `${site.blog.title} · ${site.name}`,
     html: `
     <div class="page">
-      <div class="shell">
-        <header class="page-head">
+      <header class="page-head">
+        <div class="shell page-head__grid">
           <h1 class="page-head__title reveal">${esc(site.blog.title)}</h1>
           <p class="page-head__sub reveal" data-reveal-delay="80">
             ${esc(site.blog.intro)}
-            共 <b>${posts.length}</b> 篇，约 <b>${minutes}</b> 分钟读完。
+            <br>共 <b>${posts.length}</b> 篇 · 约 <b>${minutes}</b> 分钟。
           </p>
-        </header>
+        </div>
+      </header>
 
-        <div class="filterbar reveal" data-reveal-delay="140">
+      <div class="shell">
+        <div class="filterbar reveal">
           <label class="searchbox">
-            <span class="ico">${icon('search', 15)}</span>
+            <span class="ico">${icon('search', 14)}</span>
             <input type="search" id="post-search" placeholder="搜索标题、摘要或标签" autocomplete="off" aria-label="搜索文章" />
           </label>
           <button class="chip${initialTag ? '' : ' is-active'}" data-tag="">全部</button>
@@ -39,11 +41,11 @@ export function blogPage(ctx: Ctx): View {
             .join('')}
         </div>
 
-        <div class="index" id="post-list">${renderIndex(posts)}</div>
+        <div class="wtable" id="post-list">${renderIndex(posts)}</div>
         <p class="empty-hint" id="post-empty" hidden>没有匹配的文章 —— 换个关键词试试。</p>
 
         <p class="feed-note reveal">
-          订阅更新 <a class="linkline" href="/rss.xml">/rss.xml ${icon('rss', 13)}</a>
+          订阅更新 <a class="ulink" href="/rss.xml">/rss.xml ${icon('rss', 13)}</a>
         </p>
       </div>
     </div>`,
@@ -54,8 +56,8 @@ export function blogPage(ctx: Ctx): View {
       const empty = root.querySelector<HTMLElement>('#post-empty');
       if (!list) return;
 
-      const rows = Array.from(list.querySelectorAll<HTMLElement>('.entry'));
-      const groups = Array.from(list.querySelectorAll<HTMLElement>('.index__group'));
+      const rows = Array.from(list.querySelectorAll<HTMLElement>('.wrow'));
+      const groups = Array.from(list.querySelectorAll<HTMLElement>('.wgroup'));
       const chips = Array.from(root.querySelectorAll<HTMLButtonElement>('.chip[data-tag]'));
       let activeTag = initialTag;
       let query = '';
@@ -70,10 +72,7 @@ export function blogPage(ctx: Ctx): View {
           el.hidden = !ok;
           if (ok) visible++;
         }
-        // hide a year heading once all of its entries are filtered out
-        for (const g of groups) {
-          g.hidden = !g.querySelector<HTMLElement>('.entry:not([hidden])');
-        }
+        for (const g of groups) g.hidden = !g.querySelector<HTMLElement>('.wrow:not([hidden])');
         if (empty) empty.hidden = visible > 0;
       };
 

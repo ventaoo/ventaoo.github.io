@@ -1,84 +1,82 @@
 /* ============================================================================
-   Tokens — `data-theme` = light | dark,  `data-ink` = pigment
+   Tokens — International Typographic Style
+   `data-theme` = light | dark     `data-scheme` = colour system
    ========================================================================= */
 
 :root {
-  /* ── type ────────────────────────────────────────────────────────────── */
-  --font-display: 'Cormorant Garamond Variable', 'Songti SC', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
-  --font-text: 'EB Garamond Variable', 'Songti SC', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
+  /* ── type: one grotesque, one neutral text face, one mono ────────────── */
+  --font-display: 'Archivo Variable', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', system-ui, sans-serif;
+  --font-text: 'Inter Variable', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --fs-name: clamp(54px, 12vw, 152px);
-  --fs-h1: clamp(36px, 5.6vw, 64px);
-  --fs-h2: clamp(25px, 2.3vw, 34px);
-  --fs-h3: clamp(19px, 1.1vw, 23px);
-  --fs-statement: clamp(24px, 3.1vw, 44px);
-  --fs-lead: clamp(19px, 0.7vw + 17px, 23px);
-  --fs-body: clamp(17.5px, 0.35vw + 16.5px, 19.5px);
-  --fs-sm: clamp(14px, 0.25vw + 13.4px, 15.5px);
-  --fs-label: clamp(11.5px, 0.2vw + 11px, 12.5px);
+  /* scale contrast is the whole point — tiny labels against very large type */
+  --fs-mega: clamp(38px, 7.2vw, 104px);
+  --fs-h1: clamp(30px, 4.2vw, 54px);
+  --fs-h2: clamp(19px, 1.7vw, 26px);
+  --fs-h3: clamp(16px, 0.9vw, 19px);
+  --fs-lead: clamp(17px, 0.6vw + 15.5px, 20px);
+  --fs-body: clamp(16px, 0.3vw + 15px, 17.5px);
+  --fs-sm: clamp(13.5px, 0.2vw + 13px, 15px);
+  --fs-label: 11.5px;
 
-  /* ── measure & rhythm ────────────────────────────────────────────────── */
-  --measure: 33em;
-  --shell: 1100px;
-  --gutter: clamp(22px, 6vw, 64px);
-  --topbar-h: 68px;
+  /* ── the grid ────────────────────────────────────────────────────────── */
+  --shell: 1240px;
+  --gutter: clamp(18px, 4vw, 52px);
+  --gap: clamp(14px, 1.5vw, 26px);
+  --topbar-h: 56px;
+  --subbar-h: 34px;
 
-  /* ── motion ──────────────────────────────────────────────────────────── */
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
-  --t-fast: 200ms;
-  --t-mid: 380ms;
-  --t-slow: 760ms;
+  /* ── motion: short, linear-ish, never bouncy ─────────────────────────── */
+  --ease: cubic-bezier(0.2, 0, 0.15, 1);
+  --t-fast: 140ms;
+  --t-mid: 260ms;
+  --t-slow: 520ms;
 
-  /* ── layers ──────────────────────────────────────────────────────────── */
-  --z-atmos: 0;
-  --z-grain: 2;
   --z-content: 10;
   --z-topbar: 40;
   --z-toast: 60;
   --z-modal: 70;
 }
 
-/* ── LIGHT — morning light on paper ──────────────────────────────────── */
+/* ── LIGHT ───────────────────────────────────────────────────────────── */
 :root,
 [data-theme='light'] {
-  --bg: #faf7f1;
-  --bg-2: #f3ede2;
-  --bg-3: #eae2d2;
-  --ink: #1d1a15;
-  --ink-2: #4a4536;
-  --ink-3: #736b5a;
-  --rule: #e4dccb;
-  --rule-2: #efe9dd;
-  --glow: rgba(255, 236, 205, 0.5);
-  --shade: rgba(60, 48, 30, 0.09);
+  --paper: #f5f4f1;
+  --paper-2: #eceae5;
+  --ink: #111111;
+  --ink-2: #4a4a48;
+  --ink-3: #6f6f6b;
+  --rule: #d8d6d0;
+  --rule-strong: #111111;
+  --shade: rgba(0, 0, 0, 0.08);
   color-scheme: light;
 }
 
-/* ── DARK — ink at night ─────────────────────────────────────────────── */
+/* ── DARK ────────────────────────────────────────────────────────────── */
 [data-theme='dark'] {
-  --bg: #131210;
-  --bg-2: #1b1917;
-  --bg-3: #242019;
-  --ink: #ece5d7;
-  --ink-2: #b5ac9a;
-  --ink-3: #8d8574;
-  --rule: #2d2921;
-  --rule-2: #221f1a;
-  --glow: rgba(120, 90, 50, 0.14);
-  --shade: rgba(0, 0, 0, 0.45);
+  --paper: #111214;
+  --paper-2: #1a1c1f;
+  --ink: #f0efec;
+  --ink-2: #b4b3ae;
+  --ink-3: #8b8a85;
+  --rule: #2c2e32;
+  --rule-strong: #f0efec;
+  --shade: rgba(0, 0, 0, 0.5);
   color-scheme: dark;
 }
 
-/* ── PIGMENTS ────────────────────────────────────────────────────────── */
+/* ── COLOUR SYSTEMS: three roles, never more ─────────────────────────────
+   c1 = links and emphasis · c2 = section numbers and labels · c3 = tags    */
 :root,
-[data-ink='vermillion'] { --accent: #b0442a; --accent-ink: #fffaf4; --accent-soft: rgba(176, 68, 42, 0.13); }
-[data-ink='indigo'] { --accent: #2d4a5e; --accent-ink: #f6fafc; --accent-soft: rgba(45, 74, 94, 0.13); }
-[data-ink='moss'] { --accent: #4a5c33; --accent-ink: #f8fbf3; --accent-soft: rgba(74, 92, 51, 0.13); }
-[data-ink='ochre'] { --accent: #8b5e12; --accent-ink: #fffaf0; --accent-soft: rgba(139, 94, 18, 0.13); }
+[data-scheme='signal'] {
+  --c1: #c8281a; --c2: #1a3fd0; --c3: #2f7d32;
+  --c1-ink: #ffffff;
+}
+[data-scheme='riso'] { --c1: #c2185b; --c2: #2b4cf2; --c3: #8a5600; --c1-ink: #ffffff; }
+[data-scheme='mono'] { --c1: #111111; --c2: #5a5a5a; --c3: #c8281a; --c1-ink: #ffffff; }
+[data-scheme='earth'] { --c1: #b4472a; --c2: #2f5d50; --c3: #8a6216; --c1-ink: #ffffff; }
 
-[data-theme='dark'][data-ink='vermillion'] { --accent: #e28a6a; --accent-ink: #1b120d; --accent-soft: rgba(226, 138, 106, 0.16); }
-[data-theme='dark'][data-ink='indigo'] { --accent: #92b6cc; --accent-ink: #0d171e; --accent-soft: rgba(146, 182, 204, 0.16); }
-[data-theme='dark'][data-ink='moss'] { --accent: #a8c084; --accent-ink: #131a0c; --accent-soft: rgba(168, 192, 132, 0.16); }
-[data-theme='dark'][data-ink='ochre'] { --accent: #deab50; --accent-ink: #1d1607; --accent-soft: rgba(222, 171, 80, 0.16); }
+[data-theme='dark'][data-scheme='signal'] { --c1: #ff6b52; --c2: #7d97ff; --c3: #6fbf73; --c1-ink: #14100e; }
+[data-theme='dark'][data-scheme='riso'] { --c1: #ff7aa8; --c2: #8ba4ff; --c3: #e0b055; --c1-ink: #17110f; }
+[data-theme='dark'][data-scheme='mono'] { --c1: #f0efec; --c2: #9a9a95; --c3: #ff6b52; --c1-ink: #111111; }
+[data-theme='dark'][data-scheme='earth'] { --c1: #e08a68; --c2: #7fb3a2; --c3: #d5aa5c; --c1-ink: #17110d; }

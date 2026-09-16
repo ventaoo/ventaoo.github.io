@@ -1,35 +1,28 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="light" data-ink="vermillion">
+<html lang="zh-CN" data-theme="light" data-scheme="signal">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#faf7f1" />
+    <meta name="theme-color" content="#f5f4f1" />
     <title>VENTAOO · 写作与造物</title>
     <meta name="description" content="VENTAOO 的个人主页与博客：代码、实验与想法。" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="VENTAOO · 写作与造物" />
     <meta property="og:description" content="VENTAOO 的个人主页与博客：代码、实验与想法。" />
     <script>
-      // Apply saved preferences before the first paint to avoid a flash.
       (function () {
         document.documentElement.classList.add('js');
         try {
-          var s = JSON.parse(localStorage.getItem('vx:settings') || '{}');
+          var s = JSON.parse(localStorage.getItem('gx:settings') || '{}');
           if (s.theme) document.documentElement.dataset.theme = s.theme;
-          if (s.accent) document.documentElement.dataset.ink = s.accent;
+          if (s.scheme) document.documentElement.dataset.scheme = s.scheme;
         } catch (e) {}
       })();
     </script>
   </head>
   <body>
     <a class="skip" href="#view">跳到正文</a>
-
-    <!-- a slow ink wash and a warm shaft of light -->
-    <canvas id="atmosphere" class="atmosphere" aria-hidden="true"></canvas>
-    <div class="glow" aria-hidden="true"></div>
-    <div class="grain" aria-hidden="true"></div>
-
     <div class="progress" aria-hidden="true"><i id="scroll-fill"></i></div>
 
     <header class="masthead" id="masthead">
@@ -44,19 +37,25 @@
         </nav>
 
         <div class="controls">
-          <div class="swatches" role="group" aria-label="墨色">
-            <button class="swatch" data-swatch="vermillion" title="朱砂" aria-label="朱砂"></button>
-            <button class="swatch" data-swatch="indigo" title="靛青" aria-label="靛青"></button>
-            <button class="swatch" data-swatch="moss" title="苔绿" aria-label="苔绿"></button>
-            <button class="swatch" data-swatch="ochre" title="赭石" aria-label="赭石"></button>
+          <div class="schemes" role="group" aria-label="配色系统">
+            <button class="scheme" data-scheme="signal" title="信号" aria-label="信号配色"></button>
+            <button class="scheme" data-scheme="riso" title="丝网印" aria-label="丝网印配色"></button>
+            <button class="scheme" data-scheme="mono" title="单色" aria-label="单色配色"></button>
+            <button class="scheme" data-scheme="earth" title="土色" aria-label="土色配色"></button>
           </div>
-          <button class="ctl" id="ctl-theme" title="切换深浅色 (T)" aria-label="切换深浅色">
-            <span data-icon="moon" data-icon-size="19"></span>
+          <button class="ctl" id="ctl-theme" title="切换深浅 (T)" aria-label="切换深浅色">
+            <span data-icon="moon" data-icon-size="17"></span>
           </button>
           <button class="ctl ctl--menu" id="ctl-menu" title="菜单" aria-label="菜单">
-            <span data-icon="menu" data-icon-size="20"></span>
+            <span data-icon="menu" data-icon-size="18"></span>
           </button>
         </div>
+      </div>
+
+      <!-- running head -->
+      <div class="masthead__sub">
+        <span class="label" id="runninghead">首页</span>
+        <span class="label" id="runningmeta"></span>
       </div>
     </header>
 
@@ -64,21 +63,18 @@
 
     <footer class="colophon">
       <div class="shell colophon__inner">
-        <p>© <span id="year"></span> <span id="footer-name">VENTAOO</span> · <span id="footer-note"></span></p>
-        <p class="colophon__meta">
-          <span id="colophon-note"></span> · 按 <kbd>?</kbd> 查看快捷键
-        </p>
+        <p>© <span id="year"></span> <span id="footer-name">VENTAOO</span><span class="sep">/</span><span id="footer-note"></span></p>
+        <p><span id="colophon-note"></span><span class="sep">/</span>按 <kbd>?</kbd> 查看快捷键</p>
       </div>
     </footer>
 
     <button class="to-top" id="btn-top" aria-label="回到顶部" title="回到顶部">↑</button>
-
     <div class="toasts" id="toasts" aria-live="polite"></div>
 
     <div class="modal" id="modal" hidden>
       <div class="modal__panel">
         <button class="modal__close" id="modal-close" aria-label="关闭">
-          <span data-icon="close" data-icon-size="18"></span>
+          <span data-icon="close" data-icon-size="16"></span>
         </button>
         <div id="modal-body"></div>
       </div>

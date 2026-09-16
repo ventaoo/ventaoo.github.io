@@ -1,6 +1,6 @@
 # VENTAOO · 写作与造物
 
-> 一个以排版为主的个人主页 + 博客。纸与墨的配色、两款加拉蒙衬线、一层缓慢漂移的墨晕背景 —— 没有框架，没有图片素材。
+> 一个以排版为主的个人主页 + 博客。纸与墨的配色、一款怪诞体、一层缓慢漂移的墨晕背景 —— 没有框架，没有图片素材。
 
 **线上地址：<https://ventaoo.github.io/>**
 
@@ -41,7 +41,7 @@ export const site = {
   blog: { title: '日志', intro: '……', latestOnHome: 3 },
   seo: { title: '…', description: '…' },
   footerNote: '写作与造物',
-  colophon: 'Cormorant & EB Garamond 排版',
+  colophon: 'Cormorant & Inter 排版',
 } as const;
 `@
 
@@ -79,8 +79,8 @@ summary: 一句话摘要，显示在归档和 RSS 里。
 
 排版是唯一的装饰：
 
-- **Cormorant Garamond** 做名字、标题和那句自述 —— 高对比度的加拉蒙，字号一大就非常好看
-- **EB Garamond** 做正文，同源的加拉蒙，长文耐读
+- **Archivo** 做名字、标题和那句自述 —— 高对比度的加拉蒙，字号一大就非常好看
+- **Inter** 做正文，同源的加拉蒙，长文耐读
 - 中文自动落到系统的宋体（Songti SC / Noto Serif CJK），和拉丁衬线是同一家族的质感
 - 正文宽度锁在 33em、1.86 倍行高；中文段落用**两字首行缩进**（标题后的首段不缩进）
 - 全大写字距标签、渐隐的发丝分隔线、边栏目录跟随滚动
@@ -104,7 +104,7 @@ Vite 7 + TypeScript，**没有 UI 框架**。运行时依赖只有三个：
 
 | 库 | 用途 |
 | --- | --- |
-| [@fontsource-variable](https://fontsource.org/) | Cormorant Garamond / EB Garamond / JetBrains Mono 自托管 |
+| [@fontsource-variable](https://fontsource.org/) | Archivo / Inter / JetBrains Mono 自托管 |
 | [marked](https://marked.js.org/) | Markdown 解析 |
 | [highlight.js](https://highlightjs.org/) | 代码高亮 |
 
@@ -136,7 +136,7 @@ npm run verify     # 截图 + ASCII 构图图 + 35 项断言
 npm run shot       # 只截图，输出到 shots/
 `@
 
-断言覆盖：每个路由渲染、墨晕背景确实在画且会随时间变化、字体确实是 Cormorant Garamond / EB Garamond、
+断言覆盖：每个路由渲染、墨晕背景确实在画且会随时间变化、字体确实是 Archivo / Inter、
 config 文案确实生效、滚动显现、深浅色切换、四个墨点切换、帮助面板、归档搜索与标签筛选、
 按年份分组、404、客户端路由、桌面与手机无横向溢出、
 **8 种墨色 × 深浅组合下全部文字色通过 WCAG AA**，以及首次加载的字体字节数。

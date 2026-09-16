@@ -1,12 +1,12 @@
 /** Global keyboard shortcuts and the help panel. */
 import { $ } from './dom';
-import { settings, setSetting, ACCENTS, ACCENT_LABEL, type Theme, type Accent } from './store';
+import { settings, setSetting, SCHEMES, SCHEME_LABEL, type Theme, type Scheme } from './store';
 import { toast } from './toast';
 import { navigate } from './router';
 
 export const HELP: { keys: string; desc: string }[] = [
-  { keys: 'T', desc: '切换深色 / 浅色' },
-  { keys: 'A', desc: '换一种强调色' },
+  { keys: 'T', desc: '切换深浅色' },
+  { keys: 'S', desc: '换一套配色系统' },
   { keys: 'G B', desc: '跳到日志' },
   { keys: '/', desc: '在日志页聚焦搜索框' },
   { keys: '?', desc: '打开这个面板' },
@@ -15,13 +15,13 @@ export const HELP: { keys: string; desc: string }[] = [
 export function toggleTheme(): void {
   const next: Theme = settings.theme === 'dark' ? 'light' : 'dark';
   setSetting('theme', next);
-  toast(next === 'dark' ? '墨色' : '纸色', next === 'dark' ? '夜深了' : '天亮了');
+  toast(next === 'dark' ? '深色' : '浅色');
 }
 
-export function cycleAccent(): void {
-  const next = ACCENTS[(ACCENTS.indexOf(settings.accent) + 1) % ACCENTS.length] as Accent;
-  setSetting('accent', next);
-  toast('强调色 · ' + ACCENT_LABEL[next], '按 A 继续切换');
+export function cycleScheme(): void {
+  const next = SCHEMES[(SCHEMES.indexOf(settings.scheme) + 1) % SCHEMES.length] as Scheme;
+  setSetting('scheme', next);
+  toast('配色 · ' + SCHEME_LABEL[next], '按 S 继续切换');
 }
 
 export function openModal(html: string): void {
@@ -49,7 +49,7 @@ export function showHelp(): void {
           .join('')}</span></div>`,
       ).join('')}
     </div>
-    <p class="modal__foot">右上角的四个色点是四种墨色，点一下就能换。</p>`);
+    <p class="modal__foot">页眉右上角的四个方块是四套配色系统，点一下就能换。</p>`);
 }
 
 export function initShortcuts(): void {
@@ -80,7 +80,7 @@ export function initShortcuts(): void {
 
     switch (k) {
       case 't': toggleTheme(); break;
-      case 'a': cycleAccent(); break;
+      case 's': cycleScheme(); break;
       case '/': {
         const box = document.getElementById('post-search') as HTMLInputElement | null;
         if (box) {

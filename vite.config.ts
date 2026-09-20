@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { marked } from 'marked';
 import { site, SITE_URL } from './site.config';
-import { dateRange, toPost, toTrip, type ParsedPost, type ParsedTrip } from './src/blog/frontmatter';
+import { toPost, type ParsedPost } from './src/blog/frontmatter';
 
 /** 与 src/blog/markdown.ts 同一套规则：连续的单图段落合成图组。 */
 const groupImages = (md: string) => md.replace(/(!\[[^\]]*\]\([^)]*\))[ \t]*\n[ \t]*\n(?=!\[)/g, '$1\n');
@@ -29,14 +29,13 @@ function readCollection<T>(
     .map((f) => make(f.replace(/\.md$/, ''), fs.readFileSync(path.join(abs, f), 'utf8')))
     .filter((item) => !(item as { draft?: boolean }).draft)
     .sort((a, b) => {
-      const ka = ((a as ParsedPost).date ?? (a as ParsedTrip).start) as string;
-      const kb = ((b as ParsedPost).date ?? (b as ParsedTrip).start) as string;
+      const ka = (a as ParsedPost).date;
+      const kb = (b as ParsedPost).date;
       return ka < kb ? 1 : ka > kb ? -1 : 0;
     });
 }
 
 const readPosts = () => readCollection('content/posts', toPost);
-const readTrips = () => readCollection('content/travel', toTrip);
 
 const xml = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -96,8 +95,6 @@ function staticSite(): Plugin {
       const shell = fs.readFileSync(shellPath, 'utf8');
 
       const posts = readPosts();
-      const trips = readTrips();
-      const latest = posts.slice(0, site.home.latestCount);
 
       const url = (route: string) => SITE_URL + (route === '' ? '/' : `/${route}/`);
       const page = (
@@ -125,60 +122,20 @@ function staticSite(): Plugin {
           )
           .join('')}</ul>`;
 
-      const tripList = (list: ParsedTrip[]) =>
-        `<ul>${list
-          .map(
-            (t) =>
-              `<li><a href="/travel/${t.slug}/">${t.title}</a> — <small>${t.place} · ${dateRange(t.start, t.end)}</small><br>${t.summary}</li>`,
-          )
-          .join('')}</ul>`;
-
       const contact = `<ul>${site.links
         .map((l) => `<li><a href="${attr(l.href)}">${l.label}</a> — ${l.value}</li>`)
         .join('')}</ul>`;
 
-      /* ── 首页 ── */
-      write(
-        '',
-        page(
-          '',
-          site.seo.title,
-          site.seo.description,
-          `<h1>${site.name}</h1>
-           <p><em>${site.hero.title.replace(/\n/g, ' ')}</em></p>
-           <p>${site.hero.lead}</p>
-           ${site.hero.now ? `<p><small>${site.hero.now}</small></p>` : ''}
-           <p><a href="/blog/">${site.blog.title}</a> · <a href="/travel/">${site.travel.title}</a> · <a href="/about/">${site.about.title}</a></p>
-           ${latest.length ? `<h2>${site.home.latest.title}</h2>${postList(latest)}` : ''}
-           ${trips.length ? `<h2>${site.home.trips.title}</h2>${tripList(trips.slice(0, site.home.tripCount))}` : ''}`,
-        ),
-      );
+      /* ── 首页：一本书的目录 ── */
+      const indexBody = `<h1>${site.book.title}</h1>
+        <p><small>${site.book.subtitle}</small></p>
+        <h2>${site.book.indexTitle}</h2>
+        ${posts.length ? postList(posts) : `<p>${site.book.empty}</p>`}
+        <p><a href="/about/">${site.about.title}</a></p>`;
+      write('', page('', site.seo.title, site.seo.description, indexBody));
 
-      /* ── 随笔列表 ── */
-      write(
-        'blog',
-        page(
-          'blog',
-          `${site.blog.title} · ${site.name}`,
-          site.blog.intro,
-          posts.length
-            ? `<h1>${site.blog.title}</h1><p>${site.blog.intro}</p>${postList(posts)}`
-            : `<h1>${site.blog.title}</h1><p>还没有文章。</p>`,
-        ),
-      );
-
-      /* ── 旅途列表 ── */
-      write(
-        'travel',
-        page(
-          'travel',
-          `${site.travel.title} · ${site.name}`,
-          site.travel.intro,
-          trips.length
-            ? `<h1>${site.travel.title}</h1><p>${site.travel.intro}</p>${tripList(trips)}`
-            : `<h1>${site.travel.title}</h1><p>还没有出门的记录。</p>`,
-        ),
-      );
+      /* ── /blog 指向同一份目录 ── */
+      write('blog', page('blog', site.seo.title, site.seo.description, indexBody));
 
       /* ── 关于 ── */
       write(
@@ -205,23 +162,6 @@ function staticSite(): Plugin {
             p.summary,
             `<h1>${p.title}</h1><p><small>${p.date} · ${p.tags.join(' / ')}</small></p>${body}
              <p><a href="/blog/">← 返回${site.blog.title}</a></p>`,
-            'article',
-          ),
-        );
-      }
-
-      /* ── 旅途故事 ── */
-      for (const t of trips) {
-        const body = marked.parse(groupImages(t.body), { async: false, gfm: true }) as string;
-        write(
-          `travel/${t.slug}`,
-          page(
-            `travel/${t.slug}`,
-            `${t.title} · ${site.name}`,
-            t.summary,
-            `<h1>${t.title}</h1>
-             <p><small>${t.place} · ${dateRange(t.start, t.end)} · ${t.days} 天</small></p>${body}
-             <p><a href="/travel/">← 返回${site.travel.title}</a></p>`,
             'article',
           ),
         );
@@ -257,14 +197,11 @@ ${p.tags.map((t) => '      <category>' + xml(t) + '</category>').join('\n')}
 
       /* ── sitemap：lastmod 用真实日期 ── */
       const latestPost = posts[0]?.date;
-      const latestTrip = trips[0]?.start;
       const urls: { loc: string; lastmod?: string }[] = [
         { loc: '/', lastmod: latestPost },
         { loc: '/blog/', lastmod: latestPost },
-        { loc: '/travel/', lastmod: latestTrip },
         { loc: '/about/', lastmod: latestPost },
         ...posts.map((p) => ({ loc: `/blog/${p.slug}/`, lastmod: p.date })),
-        ...trips.map((t) => ({ loc: `/travel/${t.slug}/`, lastmod: t.start })),
       ];
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -285,7 +222,7 @@ ${urls
       );
 
       console.log(
-        `  static: ${posts.length + trips.length + 4} 个路由 · rss.xml（全文）· sitemap.xml · robots.txt`,
+        `  static: ${posts.length + 3} 个路由 · rss.xml（全文）· sitemap.xml · robots.txt`,
       );
     },
   };

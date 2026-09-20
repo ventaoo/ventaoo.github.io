@@ -1,58 +1,75 @@
-/** 版面：扉页、目录、图版、页边注。 */
+/** 版面：一本书的目录、图版、文章页的页边注。 */
 
-/* ── 扉页 ───────────────────────────────────────────────────────── */
+/* ── 目录页：书名 + 目录 ────────────────────────────────────────── */
 
-.intro {
-  padding-block: var(--s-9) var(--s-7);
+.tocpage {
+  max-width: 44rem;
+  margin-inline: auto;
+  padding-block: clamp(3.5rem, 9vw, 7rem) var(--s-9);
 }
 
-.intro--page {
-  padding-block: var(--s-8) var(--s-6);
-}
-
-.intro__kicker {
-  margin-bottom: var(--s-5);
+.book__by {
   font-family: var(--font-mono);
   font-size: var(--t-2xs);
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 
-.intro__title {
-  max-width: 22ch;
+.book__title {
+  margin-top: var(--s-4);
   font-family: var(--font-display);
-  font-size: var(--t-title);
+  font-size: clamp(2rem, 4.8vw, 3rem);
   font-weight: 700;
-  line-height: 1.18;
+  line-height: 1.2;
 }
 
-.intro__lead {
-  max-width: 34rem;
-  margin-top: var(--s-5);
-  font-size: var(--t-lg);
-  line-height: 1.9;
+.book__sub {
+  margin-top: var(--s-4);
+  font-size: var(--t-sm);
   color: var(--ink-2);
 }
 
-.intro__now {
-  margin-top: var(--s-5);
-  font-family: var(--font-mono);
-  font-size: var(--t-2xs);
-  letter-spacing: 0.12em;
-  color: var(--ink-3);
+.tocpage__label {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-4);
+  margin: clamp(2.5rem, 6vw, 4rem) 0 var(--s-3);
 }
 
-/* ── 一栏一栏往下：细线分隔 ─────────────────────────────────────── */
+.tocpage__label span {
+  font-family: var(--font-display);
+  font-size: var(--t-xl);
+  font-weight: 700;
+}
 
-.block {
-  margin-top: var(--s-7);
-  padding-top: var(--s-6);
+.tocpage__label::after {
+  content: '';
+  flex: 1;
   border-top: 1px solid var(--rule);
+  transform: translateY(-0.35em);
+}
+
+.tocpage .empty {
+  border-bottom: 0;
+  padding-block: var(--s-5) 0;
+}
+
+/* 目录里的行比列表页更松、更大 */
+.toc--book .toc__row {
+  padding: 1.05rem 0;
+}
+
+.toc--book .toc__no {
+  flex-basis: 2.4rem;
+}
+
+.toc--book .toc__title {
+  font-size: var(--t-xl);
 }
 
 .block__more {
-  margin-top: var(--s-4);
+  margin-top: var(--s-5);
   font-family: var(--font-mono);
   font-size: var(--t-2xs);
   letter-spacing: 0.12em;
@@ -140,77 +157,41 @@
   border-bottom: 1px solid var(--accent);
 }
 
-/* ── 图版：整幅照片，说明在下面 ─────────────────────────────────── */
+/* ── 内页抬头（旅途 / 关于） ────────────────────────────────────── */
 
-.plate {
-  margin-bottom: var(--s-8);
+.page__head {
+  max-width: 40rem;
+  padding-block: clamp(3rem, 8vw, 5.5rem) var(--s-7);
 }
 
-.plate__link {
-  display: block;
-}
-
-.plate img {
-  width: 100%;
-  aspect-ratio: 3 / 2;
-  object-fit: cover;
-  transition: opacity var(--dur) var(--ease);
-}
-
-.plate__link:hover img {
-  opacity: 0.86;
-}
-
-.plate__cap {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--s-4);
-  margin-top: var(--s-3);
+.page__kicker {
   font-family: var(--font-mono);
   font-size: var(--t-2xs);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--ink-3);
 }
 
-.plate__title {
-  margin-top: var(--s-2);
+.page__title {
+  margin-top: var(--s-4);
   font-family: var(--font-display);
-  font-size: var(--t-2xl);
+  font-size: var(--t-page);
   font-weight: 700;
-  transition: color var(--dur) var(--ease);
+  line-height: 1.2;
 }
 
-.plate__link:hover .plate__title {
-  color: var(--accent-ink);
-}
-
-.plate__desc {
+.page__intro {
   max-width: 34rem;
-  margin-top: var(--s-2);
-  font-size: var(--t-sm);
-  line-height: 1.85;
+  margin-top: var(--s-4);
+  font-size: var(--t-lg);
+  line-height: 1.9;
   color: var(--ink-2);
-}
-
-/* 没有封面时的图版占位 */
-.plate__blank {
-  height: 9rem;
-  border: 1px solid var(--rule);
-  border-bottom: 0;
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--rule-2),
-    var(--rule-2) 6px,
-    transparent 6px,
-    transparent 12px
-  );
 }
 
 /* ── 文章：日期在页边，正文在中间 ───────────────────────────────── */
 
 .article {
-  padding-block: var(--s-8) 0;
+  padding-block: clamp(3rem, 8vw, 5.5rem) 0;
 }
 
 .article__grid {
@@ -264,60 +245,10 @@
   margin-top: var(--s-6);
 }
 
-.article__foot,
-.story__foot {
+.article__foot {
   margin-top: var(--s-8);
   padding-top: var(--s-5);
   border-top: 1px solid var(--rule);
-}
-
-/* ── 旅途故事：整幅图版 + 窄栏正文 ──────────────────────────────── */
-
-.story {
-  padding-block: var(--s-8) 0;
-}
-
-.story__head {
-  max-width: var(--w-prose);
-}
-
-.story__title {
-  margin-top: var(--s-3);
-  font-family: var(--font-display);
-  font-size: var(--t-page);
-  font-weight: 700;
-  line-height: 1.25;
-}
-
-.story__meta {
-  margin-top: var(--s-4);
-  font-family: var(--font-mono);
-  font-size: var(--t-2xs);
-  letter-spacing: 0.12em;
-  color: var(--ink-3);
-}
-
-.story__lead {
-  max-width: var(--w-prose);
-  margin-top: var(--s-4);
-  font-size: var(--t-lg);
-  line-height: 1.85;
-  color: var(--ink-2);
-}
-
-.story__cover {
-  margin-top: var(--s-6);
-}
-
-.story__cover img {
-  width: 100%;
-  aspect-ratio: 2 / 1;
-  object-fit: cover;
-}
-
-.story .prose {
-  max-width: var(--w-prose);
-  margin-top: var(--s-6);
 }
 
 /* ── 翻页：两行字，不是两张卡 ───────────────────────────────────── */
@@ -377,10 +308,6 @@
 }
 
 /* ── 关于 ───────────────────────────────────────────────────────── */
-
-.about {
-  padding-block: var(--s-8) 0;
-}
 
 .about__text p {
   max-width: 34rem;
@@ -461,14 +388,9 @@
 /* ── 窄屏：页边注挪到正文上方 ──────────────────────────────────── */
 
 @media (max-width: 56rem) {
-  .cols,
   .article__grid {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--s-4);
-  }
-
-  .cols__label {
-    font-size: var(--t-lg);
   }
 
   .article__aside {
@@ -499,6 +421,10 @@
   .toc__date {
     flex: 0 0 100%;
     padding-left: 2.6rem;
+  }
+
+  .toc--book .toc__date {
+    padding-left: 3.1rem;
   }
 
   .pager {

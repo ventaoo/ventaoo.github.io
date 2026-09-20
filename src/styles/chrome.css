@@ -1,71 +1,4 @@
-/** 页眉与页脚：两条细线之间的东西，不吸顶。 */
-
-.masthead {
-  border-bottom: 1px solid var(--rule);
-}
-
-.masthead__inner {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--s-5);
-  padding-block: var(--s-4);
-}
-
-.brand {
-  display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
-}
-
-.brand__name {
-  font-family: var(--font-display);
-  font-size: var(--t-xl);
-  font-weight: 700;
-}
-
-.brand__tag {
-  font-family: var(--font-mono);
-  font-size: var(--t-2xs);
-  letter-spacing: 0.14em;
-  color: var(--ink-3);
-}
-
-.nav {
-  display: flex;
-  align-items: baseline;
-  gap: var(--s-4);
-}
-
-.nav a {
-  position: relative;
-  font-family: var(--font-mono);
-  font-size: var(--t-2xs);
-  letter-spacing: 0.14em;
-  color: var(--ink-2);
-  transition: color var(--dur) var(--ease);
-}
-
-.nav a:hover {
-  color: var(--ink);
-}
-
-.nav a.is-active {
-  color: var(--accent-ink);
-}
-
-.nav a.is-active::before {
-  content: '';
-  position: absolute;
-  left: -0.65rem;
-  top: 0.5em;
-  width: 4px;
-  height: 4px;
-  background: var(--accent);
-  border-radius: 50%;
-}
-
-/* ── 页脚 ───────────────────────────────────────────────────────── */
+/** 没有页眉。只有页脚：一行索引，一行出处。 */
 
 .colophon {
   margin-top: var(--s-10);
@@ -77,16 +10,33 @@
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--s-3) var(--s-5);
+  gap: var(--s-3) var(--s-6);
   padding-block: var(--s-5) var(--s-7);
   font-size: var(--t-sm);
   color: var(--ink-3);
 }
 
+.colophon__nav,
 .colophon__links {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-4);
+}
+
+.colophon__nav a {
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  letter-spacing: 0.14em;
+  color: var(--ink-2);
+  transition: color var(--dur) var(--ease);
+}
+
+.colophon__nav a:hover {
+  color: var(--ink);
+}
+
+.colophon__nav a.is-active {
+  color: var(--accent-ink);
 }
 
 .colophon__links a {
@@ -101,12 +51,6 @@
   color: var(--accent-ink);
 }
 
-@media (max-width: 44rem) {
-  .brand__tag {
-    display: none;
-  }
-
-  .nav {
-    gap: var(--s-3);
-  }
+.colophon__meta {
+  margin-left: auto;
 }

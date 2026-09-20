@@ -23,11 +23,11 @@ export function aboutPage(): View {
 
   return {
     title: `${site.about.title} · ${site.name}`,
-    html: `<article class="about">
+    html: `<article class="page">
   <div class="sheet">
-    <header class="intro intro--page rv">
-      <p class="intro__kicker">${esc(site.tagline)}</p>
-      <h1 class="intro__title">${esc(site.about.title)}</h1>
+    <header class="page__head rv">
+      <p class="page__kicker">${esc(site.name)}</p>
+      <h1 class="page__title">${esc(site.about.title)}</h1>
     </header>
     <div class="about__text rv">
       ${site.about.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}
@@ -40,6 +40,7 @@ export function aboutPage(): View {
       <h2 class="about__label">联系</h2>
       <ul class="contact">${contact}</ul>
     </section>
+    <p class="block__more"><a href="/" data-link>← ${esc(site.blog.back)}</a></p>
   </div>
 </article>`,
   };

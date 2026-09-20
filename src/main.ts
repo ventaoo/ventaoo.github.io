@@ -6,11 +6,8 @@ import { hydrateIcons } from './core/icons';
 import { route, startRouter } from './core/router';
 import { LOCALE, site } from '../site.config';
 import { aboutPage } from './pages/about';
-import { blogPage } from './pages/blog';
 import { homePage } from './pages/home';
 import { postPage } from './pages/post';
-import { travelPage } from './pages/travel';
-import { tripPage } from './pages/trip';
 
 /** 按链接类型选一个小图标。 */
 function linkIcon(href: string): string {
@@ -26,8 +23,6 @@ function applyConfig(): void {
     const el = document.getElementById(id);
     if (el) el.textContent = text;
   };
-  set('brand-name', site.name);
-  set('brand-tagline', site.tagline);
   set('footer-name', site.name);
   set('footer-note', site.footerNote);
   set('year', String(new Date().getFullYear()));
@@ -47,10 +42,9 @@ function applyConfig(): void {
 function registerRoutes(): void {
   route('/', homePage, 'home');
   route('/index.html', homePage, 'home');
-  route('/blog', blogPage, 'blog');
-  route('/blog/:slug', postPage, 'blog');
-  route('/travel', travelPage, 'travel');
-  route('/travel/:slug', tripPage, 'travel');
+  // 首页就是目录，/blog 指向同一页，老链接不会断
+  route('/blog', homePage, 'home');
+  route('/blog/:slug', postPage, 'home');
   route('/about', aboutPage, 'about');
 }
 

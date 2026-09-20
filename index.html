@@ -19,31 +19,19 @@
   <body>
     <a class="skip" href="#view">跳到正文</a>
 
-    <header class="masthead">
-      <div class="sheet masthead__inner">
-        <a class="brand" href="/" data-link>
-          <span class="brand__name" id="brand-name">VENTAOO</span>
-          <span class="brand__tag" id="brand-tagline">随笔与旅途</span>
-        </a>
-
-        <nav class="nav" id="nav" aria-label="主导航">
-          <a href="/" data-link data-nav="home">首页</a>
-          <a href="/blog" data-link data-nav="blog">随笔</a>
-          <a href="/travel" data-link data-nav="travel">旅途</a>
-          <a href="/about" data-link data-nav="about">关于</a>
-        </nav>
-      </div>
-    </header>
-
     <main id="view">@@CONTENT@@</main>
 
     <footer class="colophon">
       <div class="sheet colophon__inner">
-        <p>
-          © <span id="year"></span> <span id="footer-name">VENTAOO</span><span class="sep">·</span
-          ><span id="footer-note">随笔与旅途</span>
-        </p>
+        <nav class="colophon__nav" aria-label="站点导航">
+          <a href="/" data-link data-nav="home">目录</a>
+          <a href="/about" data-link data-nav="about">关于</a>
+        </nav>
         <nav class="colophon__links" id="footer-links" aria-label="联系方式"></nav>
+        <p class="colophon__meta">
+          © <span id="year"></span> <span id="footer-name">VENTAOO</span><span class="sep">·</span
+          ><span id="footer-note">随笔集</span>
+        </p>
       </div>
     </footer>
 

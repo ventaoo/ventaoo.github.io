@@ -128,9 +128,10 @@ function staticSite(): Plugin {
 
       /* ── 首页：一本书的目录 ── */
       const indexBody = `<h1>${site.book.title}</h1>
-        <p><small>${site.book.subtitle}</small></p>
-        <h2>${site.book.indexTitle}</h2>
-        ${posts.length ? postList(posts) : `<p>${site.book.empty}</p>`}`;
+        ${posts.length ? postList(posts) : `<p>${site.book.empty}</p>`}
+        <p><a href="/about/">${site.about.title}</a>${site.links
+          .map((l) => ` · <a href="${attr(l.href)}">${l.label}</a>`)
+          .join('')}</p>`;
       write('', page('', site.seo.title, site.seo.description, indexBody));
 
       /* ── /blog 指向同一份目录 ── */
@@ -160,7 +161,7 @@ function staticSite(): Plugin {
             `${p.title} · ${site.name}`,
             p.summary,
             `<h1>${p.title}</h1><p><small>${p.date} · ${p.tags.join(' / ')}</small></p>${body}
-             <p><a href="/blog/">← 返回${site.blog.title}</a></p>`,
+             <p><a href="/">← 回到${site.blog.back}</a></p>`,
             'article',
           ),
         );

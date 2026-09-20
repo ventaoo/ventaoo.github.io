@@ -3,9 +3,15 @@
 /* ── 目录页：书名 + 目录 ────────────────────────────────────────── */
 
 .tocpage {
-  max-width: 44rem;
+  max-width: 42rem;
   margin-inline: auto;
-  padding-block: clamp(3.5rem, 9vw, 7rem) var(--s-9);
+  padding-block: clamp(4rem, 12vw, 8rem) clamp(4rem, 10vw, 7rem);
+  text-align: center;
+}
+
+/* 目录里的条目仍旧左对齐 */
+.tocpage .toc {
+  text-align: left;
 }
 
 .book__by {
@@ -17,11 +23,11 @@
 }
 
 .book__title {
-  margin-top: var(--s-4);
+  margin-top: var(--s-5);
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4.8vw, 3rem);
+  font-size: clamp(2rem, 4.6vw, 2.9rem);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.22;
 }
 
 .book__sub {
@@ -31,23 +37,16 @@
 }
 
 .tocpage__label {
-  display: flex;
-  align-items: baseline;
-  gap: var(--s-4);
-  margin: clamp(2.5rem, 6vw, 4rem) 0 var(--s-3);
-}
-
-.tocpage__label span {
+  margin: clamp(3rem, 8vw, 5rem) 0 var(--s-5);
   font-family: var(--font-display);
   font-size: var(--t-xl);
   font-weight: 700;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em; /* 让「目录」看起来真的在中间 */
 }
 
-.tocpage__label::after {
-  content: '';
-  flex: 1;
-  border-top: 1px solid var(--rule);
-  transform: translateY(-0.35em);
+.tocpage__label span {
+  font-family: inherit;
 }
 
 .tocpage .empty {
@@ -437,4 +436,9 @@
     margin-left: 0;
     text-align: left;
   }
+}
+
+/* 没有页脚，目录页自己收尾 */
+.tocpage {
+  padding-bottom: clamp(5rem, 14vw, 9rem);
 }

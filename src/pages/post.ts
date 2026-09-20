@@ -30,7 +30,7 @@ export async function postPage(ctx: Ctx): Promise<View> {
         <p class="article__lead">${esc(post.summary)}</p>
         ${post.cover ? `<figure class="article__cover"><img src="${esc(post.cover)}" alt="" decoding="async" /></figure>` : ''}
         <div class="article__body prose">${html}</div>
-        <footer class="article__foot">
+        <div class="article__foot">
           <nav class="pager" aria-label="相邻的文章">
             ${
               prev
@@ -49,8 +49,8 @@ export async function postPage(ctx: Ctx): Promise<View> {
                 : '<span class="pager__item pager__item--none"></span>'
             }
           </nav>
-          <a class="backlink" href="/blog" data-link>← 回到随笔</a>
-        </footer>
+          <a class="backlink" href="/" data-link>← ${esc(site.blog.back)}</a>
+        </div>
       </div>
     </div>
   </div>

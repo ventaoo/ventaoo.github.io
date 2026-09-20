@@ -130,8 +130,7 @@ function staticSite(): Plugin {
       const indexBody = `<h1>${site.book.title}</h1>
         <p><small>${site.book.subtitle}</small></p>
         <h2>${site.book.indexTitle}</h2>
-        ${posts.length ? postList(posts) : `<p>${site.book.empty}</p>`}
-        <p><a href="/about/">${site.about.title}</a></p>`;
+        ${posts.length ? postList(posts) : `<p>${site.book.empty}</p>`}`;
       write('', page('', site.seo.title, site.seo.description, indexBody));
 
       /* ── /blog 指向同一份目录 ── */

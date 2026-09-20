@@ -63,8 +63,6 @@ export const site = {
     title: 'VENTAOO · 随笔集',
     description: 'VENTAOO 的随笔集：目录与文章。',
   },
-
-  footerNote: '随笔集',
 } as const;
 
 /** 站点部署地址（用于 RSS / sitemap / canonical） */

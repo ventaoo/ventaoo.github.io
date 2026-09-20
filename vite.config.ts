@@ -74,11 +74,11 @@ const NOJS_CSS = `<style>
   .nojs h2{font-size:20px;font-weight:600;margin:38px 0 10px;padding-top:16px;border-top:1px solid #e5e5e3}
   .nojs h3{font-size:17px;font-weight:600;margin:26px 0 8px}
   .nojs p,.nojs li{color:#4c5259}
-  .nojs small,.nojs .dim{color:#676c60}
+  .nojs small,.nojs .dim{color:#6f757d}
   .nojs ul,.nojs ol{padding-left:22px}
-  .nojs blockquote{margin:18px 0;padding-left:16px;border-left:2px solid #8a5f36;color:#4c5259}
-  .nojs code{background:#efefed;border-radius:4px;padding:1px 6px;font-size:14px}
-  .nojs pre{background:#efefed;border-radius:8px;padding:14px;overflow-x:auto}
+  .nojs blockquote{margin:18px 0;padding-left:16px;border-left:2px solid #d8402a;color:#4c5259}
+  .nojs code{background:#efefed;padding:1px 6px;font-size:14px}
+  .nojs pre{background:#efefed;padding:14px;overflow-x:auto}
   .nojs pre code{background:none;padding:0}
   .nojs img{max-width:100%;border-radius:8px}
   .nojs table{border-collapse:collapse}

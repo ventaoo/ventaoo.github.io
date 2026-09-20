@@ -1,7 +1,7 @@
-/** 旅途列表：一个地方一张卡，照片在前。 */
+/** 旅途：一趟一幅图版。 */
 import { esc } from '../core/dom';
 import { site } from '../../site.config';
-import { cardGrid, tripCard } from '../blog/entry';
+import { plate } from '../blog/entry';
 import { tripStats, trips } from '../blog/travel';
 import type { View } from '../core/router';
 
@@ -11,16 +11,16 @@ export function travelPage(): View {
   return {
     title: `${site.travel.title} · ${site.name}`,
     html: `<article class="page">
-  <div class="shell">
-    <header class="page__head rv">
-      <h1 class="page__title">${esc(site.travel.title)}</h1>
-      <p class="page__intro">${esc(site.travel.intro)}</p>
-      ${stats ? `<p class="page__note">${esc(stats)}</p>` : ''}
+  <div class="sheet">
+    <header class="intro intro--page rv">
+      <p class="intro__kicker">${esc(stats || '还没有记录')}</p>
+      <h1 class="intro__title">${esc(site.travel.title)}</h1>
+      <p class="intro__lead">${esc(site.travel.intro)}</p>
     </header>
     ${
       trips.length
-        ? cardGrid(trips.map(tripCard), 'tripgrid--page')
-        : '<p class="empty">还没有出门的记录。下次回来就写。</p>'
+        ? trips.map(plate).join('')
+        : '<p class="empty">还没有出门的记录。<span class="empty__hint">下次回来就写。</span></p>'
     }
   </div>
 </article>`,

@@ -1,4 +1,4 @@
-/** 关于：几句话、联系方式，以及这个站是怎么搭的。 */
+/** 关于：几句话，两小节，一条条列出来。 */
 import { esc } from '../core/dom';
 import { site } from '../../site.config';
 import { icon } from '../core/icons';
@@ -23,28 +23,23 @@ export function aboutPage(): View {
 
   return {
     title: `${site.about.title} · ${site.name}`,
-    html: `<article class="page about">
-  <div class="shell">
-    <header class="about__head rv">
-      <span class="about__avatar" aria-hidden="true">V</span>
-      <div>
-        <h1 class="page__title">${esc(site.about.title)}</h1>
-        <p class="page__note">${esc(site.tagline)}</p>
-      </div>
+    html: `<article class="about">
+  <div class="sheet">
+    <header class="intro intro--page rv">
+      <p class="intro__kicker">${esc(site.tagline)}</p>
+      <h1 class="intro__title">${esc(site.about.title)}</h1>
     </header>
-    <div class="about__body">
-      <div class="about__text rv">
-        ${site.about.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}
-      </div>
-      <section class="rv">
-        <h2 class="about__label">${esc(site.about.colophon.title)}</h2>
-        <ul class="about__list">${site.about.colophon.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>
-      </section>
-      <section class="rv">
-        <h2 class="about__label">联系</h2>
-        <ul class="contact">${contact}</ul>
-      </section>
+    <div class="about__text rv">
+      ${site.about.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}
     </div>
+    <section class="about__block rv">
+      <h2 class="about__label">${esc(site.about.colophon.title)}</h2>
+      <ul class="about__list">${site.about.colophon.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>
+    </section>
+    <section class="about__block rv">
+      <h2 class="about__label">联系</h2>
+      <ul class="contact">${contact}</ul>
+    </section>
   </div>
 </article>`,
   };

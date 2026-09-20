@@ -1,18 +1,8 @@
-/** 正文排版：长文、图组、代码块、阅读进度。 */
-
-.progress {
-  position: fixed;
-  inset: 0 auto auto 0;
-  z-index: 60;
-  width: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--peri));
-  border-radius: 0 3px 3px 0;
-}
+/** 正文排版：长文、图组、代码。 */
 
 .prose {
   font-size: 1.0625rem;
-  line-height: 1.9;
+  line-height: 1.95;
   color: var(--ink);
 }
 
@@ -24,7 +14,7 @@
 .prose h3,
 .prose h4 {
   position: relative;
-  scroll-margin-top: 5.5rem;
+  scroll-margin-top: 2rem;
 }
 
 .prose h2 {
@@ -49,15 +39,15 @@
 
 .prose a {
   color: var(--accent-ink);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.24em;
-  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
-  transition: text-decoration-color var(--dur) var(--ease);
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  transition: background-size var(--dur) var(--ease);
 }
 
 .prose a:hover {
-  text-decoration-color: currentColor;
+  background-size: 0% 1px;
 }
 
 .prose strong {
@@ -66,28 +56,25 @@
 
 .prose ul,
 .prose ol {
-  padding-left: 1.35em;
+  padding-left: 1.3em;
 }
 
 .prose li + li {
-  margin-top: 0.4em;
+  margin-top: 0.35em;
 }
 
 .prose li::marker {
   color: var(--accent);
 }
 
-
 .prose blockquote {
   margin-block: 1.8em;
-  padding: 0.9em 1.2em;
-  font-size: 1.05rem;
-  line-height: 1.85;
+  padding-left: 1.1em;
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  line-height: 1.9;
   color: var(--ink-2);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--r-md);
+  border-left: 2px solid var(--accent);
 }
 
 .prose blockquote p + p {
@@ -95,35 +82,31 @@
 }
 
 .prose hr {
-  width: 5rem;
+  width: 4rem;
   margin-block: 2.6em;
   margin-inline: auto;
   border: 0;
-  border-top: 2px dotted var(--line);
+  border-top: 1px solid var(--rule);
 }
 
 .prose code {
-  padding: 0.12em 0.4em;
+  padding: 0.1em 0.35em;
   font-family: var(--font-mono);
   font-size: 0.86em;
-  background: var(--surface-2);
-  border-radius: var(--r-sm);
+  background: var(--rule-2);
 }
 
 .prose kbd {
   padding: 0.1em 0.4em;
   font-family: var(--font-mono);
   font-size: 0.8em;
-  border: 1px solid var(--line);
-  border-bottom-width: 2px;
-  border-radius: var(--r-sm);
+  border: 1px solid var(--rule);
 }
 
 .anchor {
   position: absolute;
   left: -1.1em;
   color: var(--ink-3);
-  text-decoration: none;
   opacity: 0;
   transition: opacity var(--dur) var(--ease);
 }
@@ -153,52 +136,44 @@
 
 .figure img {
   width: 100%;
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
 }
 
 .prose figcaption {
   margin-top: 0.6rem;
-  font-size: var(--t-xs);
-  line-height: 1.6;
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  line-height: 1.7;
+  letter-spacing: 0.06em;
   color: var(--ink-3);
 }
 
 /* ── 代码 ───────────────────────────────────────────────────────── */
 
 .codeblock {
-  overflow: hidden;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  box-shadow: var(--sh-1);
+  border: 1px solid var(--rule);
 }
 
 .codeblock__bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.4rem 0.5rem 0.4rem 0.9rem;
+  padding: 0.35rem 0.5rem 0.35rem 0.8rem;
   font-family: var(--font-mono);
   font-size: var(--t-2xs);
   color: var(--ink-3);
-  background: var(--surface-2);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--rule);
 }
 
 .codeblock__copy {
-  padding: 0.2rem 0.6rem;
+  padding: 0.15rem 0.5rem;
+  font-family: var(--font-mono);
   font-size: var(--t-2xs);
   color: var(--ink-3);
-  border-radius: var(--r-sm);
-  transition:
-    color var(--dur) var(--ease),
-    background-color var(--dur) var(--ease);
+  transition: color var(--dur) var(--ease);
 }
 
 .codeblock__copy:hover {
   color: var(--accent-ink);
-  background: var(--surface);
 }
 
 .prose pre {
@@ -216,7 +191,7 @@
   background: none;
 }
 
-/* 语法高亮 —— 亮底上的一小组颜色 */
+/* 语法高亮：亮底上的一小组颜色 */
 .hljs-comment,
 .hljs-quote {
   font-style: italic;
@@ -274,8 +249,6 @@
 
 .tablewrap {
   overflow-x: auto;
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
 }
 
 .prose table {
@@ -286,31 +259,23 @@
 
 .prose th,
 .prose td {
-  padding: 0.6rem 0.9rem;
+  padding: 0.55rem 0.8rem;
   text-align: left;
-  border-bottom: 1px solid var(--line-2);
+  border-bottom: 1px solid var(--rule-2);
 }
 
 .prose th {
-  font-weight: 600;
-  background: var(--surface-2);
-  border-bottom-color: var(--line);
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  border-bottom-color: var(--rule);
 }
 
 .prose td {
   color: var(--ink-2);
-}
-
-.prose tr:last-child td {
-  border-bottom: 0;
-}
-
-/* ── 旅途故事 ───────────────────────────────────────────────────── */
-
-.story .prose {
-  max-width: var(--w-page);
-  margin-top: var(--s-7);
-  margin-inline: auto;
 }
 
 @media (max-width: 44rem) {
@@ -320,8 +285,8 @@
   }
 
   .prose {
-    font-size: 1.03rem;
-    line-height: 1.85;
+    font-size: 1.02rem;
+    line-height: 1.9;
   }
 
   .anchor {

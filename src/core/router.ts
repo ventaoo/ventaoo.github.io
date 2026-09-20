@@ -121,12 +121,13 @@ export async function render(target?: string, opts: { pop?: boolean } = {}): Pro
 
 function notFound(): View {
   return {
-    title: `查无此页 · ${site.name}`,
-    html: `<div class="page">
-  <div class="empty">
-    <p class="empty__code">查无此页</p>
-    <p class="empty__hint">这个地址上没有东西，可能链接抄错了一个字。</p>
-    <a class="btn btn--solid" href="/" data-link>回到首页</a>
+    title: `没有这一页 · ${site.name}`,
+    html: `<div class="sheet">
+  <div class="intro intro--page">
+    <p class="intro__kicker">没有这一页</p>
+    <h1 class="intro__title">这个地址上没有东西</h1>
+    <p class="intro__lead">可能链接抄错了一个字，也可能它已经不在了。</p>
+    <p class="block__more"><a href="/" data-link>回到首页</a></p>
   </div>
 </div>`,
   };

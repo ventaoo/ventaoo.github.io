@@ -1,4 +1,4 @@
-/** 复位、页面底色、通用小件。 */
+/** 复位、纸张、通用排版元素。 */
 
 *,
 *::before,
@@ -20,9 +20,9 @@ body {
   flex-direction: column;
   font-family: var(--font-sans);
   font-size: var(--t-md);
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--ink);
-  background: var(--bg);
+  background: var(--paper);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -35,7 +35,7 @@ svg {
 
 img {
   height: auto;
-  background: var(--surface-2);
+  background: var(--rule-2);
 }
 
 a {
@@ -54,34 +54,83 @@ button {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: var(--r-sm);
 }
 
 ::selection {
   background: var(--accent-soft);
-  color: var(--ink);
 }
 
 h1,
 h2,
 h3,
 h4 {
-  line-height: 1.22;
   font-weight: 600;
+  line-height: 1.25;
 }
-
-/* ── 骨架 ───────────────────────────────────────────────────────── */
 
 main {
   flex: 1;
-  width: 100%;
 }
 
-.shell {
+/* ── 版面容器：一张纸 ───────────────────────────────────────────── */
+
+.sheet {
   width: 100%;
-  max-width: calc(var(--w-shell) + var(--s-5) * 2);
+  max-width: var(--w-sheet);
   margin-inline: auto;
-  padding-inline: var(--s-5);
+  padding-inline: clamp(1.25rem, 4vw, 3rem);
+}
+
+/* 页边注 + 正文的两栏骨架 */
+.cols {
+  display: grid;
+  grid-template-columns: var(--margin-col) minmax(0, 1fr);
+  gap: var(--gutter);
+  align-items: start;
+}
+
+.cols__label {
+  font-family: var(--font-display);
+  font-size: var(--t-xl);
+  font-weight: 700;
+}
+
+.cols__main {
+  min-width: 0;
+}
+
+/* ── 小字 ───────────────────────────────────────────────────────── */
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 0.5em;
+  background: var(--accent);
+  border-radius: 50%;
+  vertical-align: 0.15em;
+}
+
+/* 文字链接：悬停时细线从左到右长出来 */
+.tlink {
+  color: var(--accent-ink);
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size var(--dur) var(--ease);
+}
+
+.tlink:hover {
+  background-size: 100% 1px;
 }
 
 .skip {
@@ -90,33 +139,27 @@ main {
   top: 0;
   z-index: 100;
   padding: var(--s-3) var(--s-4);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 0 0 var(--r-md) 0;
+  background: var(--paper);
+  border: 1px solid var(--rule);
 }
 
 .skip:focus {
   left: 0;
 }
 
-.sep {
-  margin-inline: 0.4em;
-  color: var(--ink-3);
-}
-
-/* ── 显现：只做一次淡入，很短 ───────────────────────────────────── */
+/* ── 进场：只有一次很轻的淡入 ───────────────────────────────────── */
 
 .js .rv {
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(8px);
 }
 
 .js .rv.in {
   opacity: 1;
   transform: none;
   transition:
-    opacity 0.45s var(--ease) var(--rv-delay, 0ms),
-    transform 0.45s var(--ease) var(--rv-delay, 0ms);
+    opacity 0.4s var(--ease) var(--rv-delay, 0ms),
+    transform 0.4s var(--ease) var(--rv-delay, 0ms);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -128,122 +171,23 @@ main {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
 }
 
-/* ── 小件 ───────────────────────────────────────────────────────── */
-
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: var(--t-2xs);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.22em 0.7em;
-  font-size: var(--t-xs);
-  color: var(--ink-2);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r-full);
-  white-space: nowrap;
-}
-
-.chip--accent {
-  color: var(--accent-ink);
-  background: var(--accent-soft);
-  border-color: transparent;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.62em 1.15em;
-  font-size: var(--t-sm);
-  font-weight: 550;
-  color: var(--on-accent);
-  background: var(--accent-ink);
-  border: 1px solid transparent;
-  border-radius: var(--r-full);
-  box-shadow: 0 1px 2px rgba(195, 61, 28, 0.28);
-  transition:
-    transform var(--dur) var(--ease),
-    box-shadow var(--dur) var(--ease);
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px -6px rgba(195, 61, 28, 0.5);
-}
-
-.btn--ghost {
-  color: var(--ink);
-  background: var(--surface);
-  border-color: var(--line);
-  box-shadow: var(--sh-1);
-}
-
-.btn--ghost:hover {
-  border-color: var(--ink-3);
-  box-shadow: var(--sh-2);
-}
-
-.btn svg {
-  transition: transform var(--dur) var(--ease);
-}
-
-.btn:hover svg {
-  transform: translateX(3px);
-}
-
-/* 图上的浮层小标签 */
-.media-tag {
-  position: absolute;
-  left: var(--s-4);
-  top: var(--s-4);
-  padding: 0.24em 0.7em;
-  font-family: var(--font-mono);
-  font-size: var(--t-2xs);
-  letter-spacing: 0.06em;
-  color: #fff;
-  background: rgba(20, 20, 22, 0.55);
-  backdrop-filter: blur(6px);
-  border-radius: var(--r-full);
-}
+/* ── 空态：也是一句话，不是一块灰 ───────────────────────────────── */
 
 .empty {
-  padding: var(--s-7) 0;
-  color: var(--ink-2);
-}
-
-.empty__code {
+  padding: var(--s-5) 0 var(--s-6);
   font-family: var(--font-display);
-  font-size: var(--t-2xl);
-  font-weight: 700;
-  color: var(--ink);
+  font-size: var(--t-lg);
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--rule);
 }
 
 .empty__hint {
-  margin-block: var(--s-3) var(--s-5);
-  max-width: 30rem;
-}
-
-/* 图片缺席时的占位块 */
-.ph {
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-height: 8rem;
-  background:
-    radial-gradient(60% 70% at 20% 20%, rgba(240, 83, 47, 0.12), transparent 70%),
-    radial-gradient(50% 60% at 80% 30%, rgba(107, 138, 253, 0.14), transparent 70%),
-    var(--surface-2);
+  margin-top: var(--s-3);
+  font-family: var(--font-sans);
+  font-size: var(--t-sm);
+  color: var(--ink-3);
 }

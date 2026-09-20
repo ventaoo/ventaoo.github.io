@@ -1,26 +1,21 @@
 /**
- * 设计变量：一个亮色主题，不做切换。
- * 底色接近白，靠一层很淡的彩色光晕和卡片阴影撑起空间感；
- * 标题用霞鹜文楷（有手写体温的现代楷体），正文用 Inter + 系统黑体，元数据用等宽。
+ * 设计变量：一张白纸，一把字，一条细线。
+ * 没有卡片、没有圆角、没有阴影、没有渐变 —— 版面靠字、细线、页边注和整幅图版撑起来。
  */
 
 :root {
-  /* ── 底色与墨色 ─────────────────────────────────────────────────── */
-  --bg: #fbfaf9;
-  --surface: #ffffff;
-  --surface-2: #f5f4f1;
-  --ink: #17181a;
-  --ink-2: #575c64;
-  --ink-3: #6a6f76; /* 小字也要过 AA，所以比"看起来对"的灰再深一档 */
-  --line: #e8e6e2;
-  --line-2: #f0eeea;
+  /* ── 纸与墨 ─────────────────────────────────────────────────────── */
+  --paper: #ffffff;
+  --ink: #111214;
+  --ink-2: #4c5259;
+  --ink-3: #6f757d;
+  --rule: #e5e5e3;
+  --rule-2: #efefed;
 
-  /* ── 点缀色 ─────────────────────────────────────────────────────── */
-  --accent: #f0532f;
-  --accent-ink: #c33d1c; /* 文字用的深一档，保证对比度 */
-  --accent-soft: #feece6;
-  --peri: #6b8afd;
-  --on-accent: #fffaf8;
+  /* ── 一个点缀色，用得很少 ───────────────────────────────────────── */
+  --accent: #d8402a;
+  --accent-ink: #b0301b; /* 文字用的深一档 */
+  --accent-soft: #fdf0ec;
 
   /* ── 字体 ───────────────────────────────────────────────────────── */
   --font-display: 'LXGW WenKai', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC',
@@ -29,17 +24,18 @@
     'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --t-2xs: 0.72rem;
-  --t-xs: 0.8rem;
-  --t-sm: 0.9rem;
+  --t-2xs: 0.7rem;
+  --t-xs: 0.78rem;
+  --t-sm: 0.88rem;
   --t-md: 1rem;
-  --t-lg: 1.09rem;
-  --t-xl: 1.3rem;
-  --t-2xl: 1.6rem;
-  --t-3xl: clamp(1.75rem, 3.6vw, 2.5rem);
-  --t-hero: clamp(2.15rem, 5vw, 3.9rem);
+  --t-lg: 1.06rem;
+  --t-xl: 1.22rem;
+  --t-2xl: 1.5rem;
+  --t-page: clamp(1.9rem, 4vw, 2.6rem);
+  --t-title: clamp(2rem, 5vw, 3.4rem);
 
   /* ── 间距 ───────────────────────────────────────────────────────── */
+  --s-1: 0.25rem;
   --s-2: 0.5rem;
   --s-3: 0.75rem;
   --s-4: 1rem;
@@ -50,23 +46,14 @@
   --s-9: 5rem;
   --s-10: 7rem;
 
-  /* ── 形状 ───────────────────────────────────────────────────────── */
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 18px;
-  --r-xl: 24px;
-  --r-full: 999px;
-  --sh-1: 0 1px 2px rgba(23, 24, 26, 0.04), 0 8px 24px -18px rgba(23, 24, 26, 0.28);
-  --sh-2: 0 2px 6px rgba(23, 24, 26, 0.06), 0 20px 44px -24px rgba(23, 24, 26, 0.34);
-
   /* ── 尺度 ───────────────────────────────────────────────────────── */
-  --w-shell: 70rem;
+  --w-sheet: 68rem;
   --w-prose: 40rem;
-  --w-page: 46rem;
+  --gutter: 2.5rem;
+  --margin-col: 7rem;
 
-  /* ── 动效（只留必要的） ─────────────────────────────────────────── */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --dur: 0.22s;
+  --dur: 0.2s;
 
   color-scheme: light;
 }

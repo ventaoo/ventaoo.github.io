@@ -1,114 +1,98 @@
-/** 页眉与页脚。 */
+/** 页眉与页脚：两条细线之间的东西，不吸顶。 */
 
 .masthead {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: color-mix(in srgb, var(--bg) 84%, transparent);
-  backdrop-filter: saturate(1.6) blur(14px);
-  -webkit-backdrop-filter: saturate(1.6) blur(14px);
-  border-bottom: 1px solid var(--line-2);
+  border-bottom: 1px solid var(--rule);
 }
 
 .masthead__inner {
   display: flex;
-  align-items: center;
+  align-items: baseline;
+  justify-content: space-between;
   gap: var(--s-5);
-  width: 100%;
-  max-width: calc(var(--w-shell) + var(--s-5) * 2);
-  min-height: 4.1rem;
-  margin-inline: auto;
-  padding-inline: var(--s-5);
+  padding-block: var(--s-4);
 }
 
 .brand {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 0.6rem;
-  min-width: 0;
-}
-
-.brand__mark {
-  display: grid;
-  place-items: center;
-  width: 27px;
-  height: 27px;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 700;
-  color: #fff;
-  background: linear-gradient(135deg, var(--accent-ink) 10%, var(--peri) 120%);
-  border-radius: 9px;
 }
 
 .brand__name {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-family: var(--font-display);
+  font-size: var(--t-xl);
+  font-weight: 700;
 }
 
 .brand__tag {
-  font-size: var(--t-xs);
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  letter-spacing: 0.14em;
   color: var(--ink-3);
-  white-space: nowrap;
 }
 
 .nav {
   display: flex;
-  align-items: center;
-  gap: 0.15rem;
-  margin-left: auto;
+  align-items: baseline;
+  gap: var(--s-4);
 }
 
 .nav a {
-  padding: 0.42rem 0.8rem;
-  font-size: var(--t-sm);
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  letter-spacing: 0.14em;
   color: var(--ink-2);
-  border-radius: var(--r-full);
-  transition:
-    color var(--dur) var(--ease),
-    background-color var(--dur) var(--ease);
+  transition: color var(--dur) var(--ease);
 }
 
 .nav a:hover {
   color: var(--ink);
-  background: var(--surface-2);
 }
 
 .nav a.is-active {
   color: var(--accent-ink);
-  background: var(--accent-soft);
+}
+
+.nav a.is-active::before {
+  content: '';
+  position: absolute;
+  left: -0.65rem;
+  top: 0.5em;
+  width: 4px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 50%;
 }
 
 /* ── 页脚 ───────────────────────────────────────────────────────── */
 
 .colophon {
   margin-top: var(--s-10);
-  padding-block: var(--s-6) var(--s-8);
-  border-top: 1px solid var(--line);
-  font-size: var(--t-sm);
-  color: var(--ink-3);
+  border-top: 1px solid var(--rule);
 }
 
 .colophon__inner {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: var(--s-3) var(--s-5);
+  padding-block: var(--s-5) var(--s-7);
+  font-size: var(--t-sm);
+  color: var(--ink-3);
 }
 
 .colophon__links {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s-5);
+  gap: var(--s-4);
 }
 
 .colophon__links a {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   color: var(--ink-2);
   transition: color var(--dur) var(--ease);
 }
@@ -118,23 +102,11 @@
 }
 
 @media (max-width: 44rem) {
-  .masthead__inner {
-    flex-wrap: wrap;
-    gap: 0.3rem 0.9rem;
-    padding-block: 0.6rem;
-  }
-
   .brand__tag {
     display: none;
   }
 
   .nav {
-    order: 3;
-    width: 100%;
-    margin-left: -0.5rem;
-  }
-
-  .nav a {
-    padding-inline: 0.7rem;
+    gap: var(--s-3);
   }
 }

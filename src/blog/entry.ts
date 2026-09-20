@@ -1,33 +1,23 @@
-/** The archive table: one header row, then aligned rows. Flat, no year groups. */
+/** 随笔索引：期号 + 日期 + 大号衬线标题 + 摘要 + 标签。 */
 import { esc } from '../core/dom';
 import type { Post } from './posts';
 
-const HEAD = [
-  '<div class="whead" role="presentation">',
-  '<span class="label">№</span>',
-  '<span class="label">日期</span>',
-  '<span class="label">标题</span>',
-  '<span class="label">标签</span>',
-  '</div>',
-].join('');
-
 function row(p: Post, n: number, mini: boolean): string {
   const tags = p.tags.slice(0, mini ? 1 : 3);
-  return `<li class="wrow${mini ? ' wrow--mini' : ''}"
+  return `<li class="entry"
     data-tags="${esc(p.tags.join(' '))}"
     data-search="${esc((p.title + ' ' + p.summary + ' ' + p.tags.join(' ')).toLowerCase())}">
-    <span class="wrow__n num">${String(n).padStart(2, '0')}</span>
-    <time class="wrow__date label" datetime="${p.date}">${p.date.replace(/-/g, '.')}</time>
-    <span class="wrow__body">
-      <a class="wrow__title" href="/blog/${p.slug}" data-link>${esc(p.title)}</a>
-      ${mini ? '' : `<span class="wrow__desc">${esc(p.summary)}</span>`}
+    <span class="entry__no">№ ${String(n).padStart(3, '0')}</span>
+    <time class="entry__date" datetime="${p.date}">${p.date.replace(/-/g, '.')}</time>
+    <span class="entry__body">
+      <a class="entry__title" href="/blog/${p.slug}" data-link>${esc(p.title)}</a>
+      ${mini ? '' : `<span class="entry__desc">${esc(p.summary)}</span>`}
+      ${tags.length ? `<span class="entry__tags">${tags.map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</span>` : ''}
     </span>
-    <span class="wrow__tags">${tags.map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</span>
   </li>`;
 }
 
-/** `header` renders the column labels once at the top of the table. */
-export function renderIndex(list: Post[], opts: { mini?: boolean; header?: boolean } = {}): string {
+export function renderIndex(list: Post[], opts: { mini?: boolean } = {}): string {
   let n = 0;
-  return (opts.header ? HEAD : '') + '<ol>' + list.map((p) => row(p, ++n, !!opts.mini)).join('') + '</ol>';
+  return '<ol class="index">' + list.map((p) => row(p, ++n, !!opts.mini)).join('') + '</ol>';
 }

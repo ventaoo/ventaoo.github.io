@@ -4,6 +4,7 @@ import { navigate } from './router';
 
 export const HELP: { keys: string; desc: string }[] = [
   { keys: 'G B', desc: '跳到日志' },
+  { keys: 'G H', desc: '回到首页' },
   { keys: '/', desc: '在日志页聚焦搜索框' },
   { keys: '?', desc: '打开这个面板' },
 ];
@@ -28,7 +29,6 @@ export function closeModal(): void {
   const modal = $('#modal');
   if (!modal || modal.hidden) return;
   modal.hidden = true;
-  // put the caret back where it was, so the keyboard does not lose its place
   restoreFocus?.focus?.();
   restoreFocus = null;
 }
@@ -65,6 +65,11 @@ export function showHelp(): void {
 
 const GO: Record<string, string> = { b: '/blog', h: '/' };
 
+function setMenu(open: boolean): void {
+  $('#nav')?.classList.toggle('is-open', open);
+  $('#ctl-menu')?.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
 export function initShortcuts(): void {
   let gPending = false;
   let gTimer: number | undefined;
@@ -76,7 +81,7 @@ export function initShortcuts(): void {
 
     if (ev.key === 'Escape') {
       closeModal();
-      $('#nav')?.classList.remove('is-open');
+      setMenu(false);
       return;
     }
 
@@ -118,6 +123,6 @@ export function initShortcuts(): void {
     if (ev.target === $('#modal')) closeModal();
   });
   $('#ctl-menu')?.addEventListener('click', () => {
-    $('#nav')?.classList.toggle('is-open');
+    setMenu(!$('#nav')?.classList.contains('is-open'));
   });
 }

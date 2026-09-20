@@ -1,7 +1,9 @@
-/** History-API router: three routes, view mounting, teardown. */
+/**
+ * History-API 路由：视图挂载、拆卸、滚动位置记忆。
+ * handler 可以是异步的 —— 文章页借此懒加载 Markdown/高亮引擎。
+ */
 import { $, $$, on } from './dom';
-import { bindReveals } from '../fx/reveal';
-import { bindParallax } from '../fx/parallax';
+import { bindReveals } from './reveal';
 import { hydrateIcons } from './icons';
 import { site } from '../../site.config';
 
@@ -18,7 +20,7 @@ export interface Ctx {
   params: Record<string, string>;
 }
 
-type Handler = (ctx: Ctx) => View;
+type Handler = (ctx: Ctx) => View | Promise<View>;
 
 interface Route { keys: string[]; test: RegExp; handler: Handler; nav: string }
 
@@ -53,6 +55,20 @@ export function normalize(pathname: string): string {
 let teardown: (() => void) | null = null;
 let currentNav = '';
 
+/* ── 滚动位置记忆：前进/后退时回到原位，主动跳转时回页首 ────────────── */
+const scrollMemory = new Map<string, number>();
+let scrollTimer: number | undefined;
+window.addEventListener(
+  'scroll',
+  () => {
+    clearTimeout(scrollTimer);
+    scrollTimer = window.setTimeout(() => {
+      scrollMemory.set(location.pathname + location.search, window.scrollY);
+    }, 120);
+  },
+  { passive: true },
+);
+
 function match(path: string): { handler: Handler; params: Record<string, string>; nav: string } | null {
   for (const r of routes) {
     const m = r.test.exec(path);
@@ -64,7 +80,15 @@ function match(path: string): { handler: Handler; params: Record<string, string>
   return null;
 }
 
-export function render(target?: string): void {
+function closeMobileNav(): void {
+  const nav = $('#nav');
+  if (nav?.classList.contains('is-open')) {
+    nav.classList.remove('is-open');
+    $('#ctl-menu')?.setAttribute('aria-expanded', 'false');
+  }
+}
+
+export async function render(target?: string, opts: { pop?: boolean } = {}): Promise<void> {
   const url = new URL(location.href);
   const path = normalize(target ?? url.pathname);
   const found = match(path);
@@ -75,7 +99,7 @@ export function render(target?: string): void {
   teardown = null;
 
   const ctx: Ctx = { path, query: url.searchParams, params: found?.params ?? {} };
-  const view: View = found ? found.handler(ctx) : notFound();
+  const view: View = found ? await found.handler(ctx) : notFound();
 
   viewEl.innerHTML = view.html;
   document.title = view.title;
@@ -93,11 +117,16 @@ export function render(target?: string): void {
 
   hydrateIcons(viewEl);
   bindReveals(viewEl);
-  bindParallax(viewEl);
   const result = view.mount?.(viewEl);
   teardown = typeof result === 'function' ? result : null;
 
-  requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'auto' }));
+  closeMobileNav();
+
+  // popstate 时恢复记忆位置；主动导航回页首
+  const remembered = opts.pop ? scrollMemory.get(location.pathname + location.search) : undefined;
+  requestAnimationFrame(() =>
+    window.scrollTo({ top: remembered ?? 0, behavior: 'auto' }),
+  );
 }
 
 function notFound(): View {
@@ -105,9 +134,9 @@ function notFound(): View {
     title: `404 · ${site.name}`,
     html: `<div class="page"><div class="shell">
       <div class="empty">
-        <p class="empty__code">404</p>
+        <p class="empty__code">查无此页</p>
         <p class="empty__hint">这个地址上没有东西。</p>
-        <a class="btn" href="/" data-link>返回首页</a>
+        <a class="btn" href="/" data-link>回到卷首</a>
       </div>
     </div></div>`,
   };
@@ -148,7 +177,7 @@ export function startRouter(): void {
     navigate(url.pathname + url.search + url.hash);
   });
 
-  window.addEventListener('popstate', () => render());
+  window.addEventListener('popstate', () => render(undefined, { pop: true }));
 
   // GitHub Pages 404 shim: recover the intended path after the redirect.
   try {

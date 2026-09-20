@@ -1,4 +1,7 @@
-/** Markdown → pixel-flavoured HTML, with syntax highlighting and a TOC. */
+/**
+ * Markdown → HTML：语法高亮 + 目录收集。
+ * 这个模块只在文章页被动态 import —— marked 与 highlight.js 不会拖慢首屏。
+ */
 import { Marked, type Tokens } from 'marked';
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -10,10 +13,18 @@ import css from 'highlight.js/lib/languages/css';
 import xml from 'highlight.js/lib/languages/xml';
 import markdown from 'highlight.js/lib/languages/markdown';
 import yaml from 'highlight.js/lib/languages/yaml';
+import go from 'highlight.js/lib/languages/go';
+import rust from 'highlight.js/lib/languages/rust';
+import sql from 'highlight.js/lib/languages/sql';
+import cpp from 'highlight.js/lib/languages/cpp';
+import c from 'highlight.js/lib/languages/c';
+import java from 'highlight.js/lib/languages/java';
+import diff from 'highlight.js/lib/languages/diff';
+import ini from 'highlight.js/lib/languages/ini';
 import { icon } from '../core/icons';
 import { esc } from '../core/dom';
 
-const LANGS = { javascript, typescript, python, bash, json, css, xml, markdown, yaml };
+const LANGS = { javascript, typescript, python, bash, json, css, xml, markdown, yaml, go, rust, sql, cpp, c, java, diff, ini };
 for (const [name, def] of Object.entries(LANGS)) hljs.registerLanguage(name, def);
 hljs.registerAliases(['js', 'jsx', 'mjs'], { languageName: 'javascript' });
 hljs.registerAliases(['ts', 'tsx'], { languageName: 'typescript' });
@@ -22,6 +33,9 @@ hljs.registerAliases(['sh', 'shell', 'zsh', 'console'], { languageName: 'bash' }
 hljs.registerAliases(['html', 'svg'], { languageName: 'xml' });
 hljs.registerAliases(['md'], { languageName: 'markdown' });
 hljs.registerAliases(['yml'], { languageName: 'yaml' });
+hljs.registerAliases(['golang'], { languageName: 'go' });
+hljs.registerAliases(['rs'], { languageName: 'rust' });
+hljs.registerAliases(['c++', 'hpp', 'cc'], { languageName: 'cpp' });
 
 export interface Heading { id: string; text: string; depth: number }
 
@@ -30,7 +44,7 @@ export function slugify(text: string): string {
     text
       .toLowerCase()
       .trim()
-      .replace(/[^\w\u4e00-\u9fa5\s-]/g, '')
+      .replace(/[^\w一-龥\s-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .slice(0, 60) || 'section'
@@ -41,7 +55,7 @@ function highlight(code: string, lang: string): string {
   const language = hljs.getLanguage(lang) ? lang : '';
   try {
     if (language) return hljs.highlight(code, { language, ignoreIllegals: true }).value;
-    return hljs.highlightAuto(code).value;
+    return esc(code); // 未注册的语言原样输出，不猜
   } catch {
     return esc(code);
   }
@@ -61,7 +75,7 @@ marked.use({
       usedIds.set(id, seen + 1);
       if (seen) id = `${id}-${seen}`;
       if (depth === 2 || depth === 3) collected.push({ id, text: plain, depth });
-      return `<h${depth} id="${id}"><a class="anchor" href="#${id}" aria-hidden="true">#</a>${inline}</h${depth}>`;
+      return `<h${depth} id="${id}"><a class="anchor" href="#${id}" tabindex="-1" aria-hidden="true">#</a>${inline}</h${depth}>`;
     },
     code({ text, lang }: Tokens.Code): string {
       const language = (lang || '').split(/\s+/)[0] || '';
@@ -91,17 +105,6 @@ marked.use({
     },
   },
 });
-
-/** Strip markdown syntax to plain text (for summaries and search). */
-export function plain(md: string): string {
-  return md
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/[#>*_`~-]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
 
 export function renderMarkdown(md: string): { html: string; headings: Heading[] } {
   collected = [];

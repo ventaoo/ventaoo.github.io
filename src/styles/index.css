@@ -1,11 +1,12 @@
-@import '@fontsource-variable/space-grotesk/wght.css';
-@import '@fontsource-variable/eb-garamond/wght.css';
-@import '@fontsource-variable/eb-garamond/wght-italic.css';
+@import '@fontsource-variable/fraunces/standard.css';
+@import '@fontsource-variable/fraunces/standard-italic.css';
+@import '@fontsource/noto-serif-sc/400.css';
+@import '@fontsource/noto-serif-sc/500.css';
+@import '@fontsource/noto-serif-sc/600.css';
 @import '@fontsource-variable/jetbrains-mono/wght.css';
 
 @import './tokens.css';
 @import './base.css';
-@import './components.css';
 @import './chrome.css';
 @import './pages.css';
 @import './blog.css';

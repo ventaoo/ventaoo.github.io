@@ -1,21 +1,20 @@
 /* ============================================================================
-   Reveals · route transition · focus
+   显现 —— 轻微上浮淡入，像翻页
+   渐进而非门槛：没有 JS 时没有任何东西被隐藏。
    ========================================================================= */
 
-/* Progressive enhancement: nothing is hidden without JS. The resting state
-   must not clip the box, or IntersectionObserver sees a zero-area target and
-   the reveal deadlocks. */
-html.js .reveal {
+html.js .rv {
   opacity: 0;
-  transform: translateY(14px);
-  transition: opacity var(--t-slow) var(--ease), transform var(--t-slow) var(--ease);
+  transform: translateY(12px);
+  transition: opacity var(--t-mid) var(--ease), transform var(--t-mid) var(--ease);
+  transition-delay: var(--rv-delay, 0ms);
 }
-html.js .reveal.in { opacity: 1; transform: none; }
+html.js .rv.in { opacity: 1; transform: none; }
 
-.view { animation: view-in 400ms var(--ease) both; }
+.view { animation: view-in 320ms var(--ease) both; }
 @keyframes view-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-:focus-visible { outline: 2px solid var(--c1); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }

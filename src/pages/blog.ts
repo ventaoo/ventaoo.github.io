@@ -4,7 +4,6 @@ import { esc } from '../core/dom';
 import { site } from '../../site.config';
 import { posts, tags } from '../blog/posts';
 import { renderIndex } from '../blog/entry';
-import { bindReveals } from '../fx/reveal';
 
 export function blogPage(ctx: Ctx): View {
   const initialTag = ctx.query.get('tag') ?? '';
@@ -26,15 +25,16 @@ export function blogPage(ctx: Ctx): View {
     html: `
     <div class="page">
       <div class="shell">
-        <header class="page-head reveal">
-          <h1 class="page-head__title">${esc(site.blog.title)}</h1>
-          <p class="page-head__sub">
+        <header class="page-head">
+          <p class="page-head__kicker mono mono--amber rv">全部篇目 · 按时间倒序</p>
+          <h1 class="page-head__title rv">${esc(site.blog.title)}</h1>
+          <p class="page-head__sub rv" data-rv-delay="100">
             ${esc(site.blog.intro)}
             共 <b>${posts.length}</b> 篇 · 约 <b>${minutes}</b> 分钟。
           </p>
         </header>
 
-        <div class="filterbar reveal" role="group" aria-label="按标签筛选">
+        <div class="filterbar rv" role="group" aria-label="按标签筛选">
           <label class="searchbox">
             <span class="ico">${icon('search', 14)}</span>
             <input type="search" id="post-search" placeholder="搜索标题、摘要或标签" autocomplete="off" aria-label="搜索文章" />
@@ -43,10 +43,10 @@ export function blogPage(ctx: Ctx): View {
           ${tags.map((t) => chip(t.name, t.count)).join('')}
         </div>
 
-        <div class="wtable" id="post-list">${renderIndex(posts, { header: true })}</div>
-        <p class="empty-hint" id="post-empty" hidden>没有匹配的文章 —— 换个关键词试试。</p>
+        <div class="rv" id="post-list">${renderIndex(posts)}</div>
+        <p class="empty-hint" id="post-empty" hidden>没有匹配的篇目 —— 换个关键词试试。</p>
 
-        <p class="feed-note">订阅更新 <a class="ulink" href="/rss.xml">/rss.xml ${icon('rss', 13)}</a></p>
+        <p class="feed-note">订阅本刊 <a class="ulink" href="/rss.xml">/rss.xml ${icon('rss', 13)}</a></p>
       </div>
     </div>`,
 
@@ -56,7 +56,7 @@ export function blogPage(ctx: Ctx): View {
       const empty = root.querySelector<HTMLElement>('#post-empty');
       if (!list) return;
 
-      const rows = Array.from(list.querySelectorAll<HTMLElement>('.wrow'));
+      const rows = Array.from(list.querySelectorAll<HTMLElement>('.entry'));
       const chips = Array.from(root.querySelectorAll<HTMLButtonElement>('.chip[data-tag]'));
       let activeTag = initialTag;
       let query = '';
@@ -100,7 +100,6 @@ export function blogPage(ctx: Ctx): View {
       });
 
       apply();
-      bindReveals(root);
       return () => clearTimeout(timer);
     },
   };

@@ -57,6 +57,9 @@ let currentNav = '';
 
 /* ── 滚动位置记忆：前进/后退时回到原位，主动跳转时回页首 ────────────── */
 const scrollMemory = new Map<string, number>();
+
+/* 已经看过的路径：再回去时直接显示，不重播淡入 */
+const visited = new Set<string>();
 let scrollTimer: number | undefined;
 window.addEventListener(
   'scroll',
@@ -108,7 +111,9 @@ export async function render(target?: string, opts: { pop?: boolean } = {}): Pro
   }
 
   hydrateIcons(viewEl);
-  bindReveals(viewEl);
+  const instant = Boolean(opts.pop) || visited.has(path);
+  visited.add(path);
+  bindReveals(viewEl, { instant });
   const result = view.mount?.(viewEl);
   teardown = typeof result === 'function' ? result : null;
 

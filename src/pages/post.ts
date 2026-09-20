@@ -21,6 +21,7 @@ export async function postPage(ctx: Ctx): Promise<View> {
   <div class="sheet">
     <div class="article__grid">
       <aside class="article__aside">
+        <a class="article__back" href="/" data-link>← ${esc(site.book.indexTitle)}</a>
         <span><time datetime="${esc(post.date)}">${dotted(post.date)}</time></span>
         <span>${post.reading} 分钟</span>
         ${post.tags.map((t) => `<span>${esc(t)}</span>`).join('')}

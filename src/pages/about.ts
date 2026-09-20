@@ -25,10 +25,10 @@ export function aboutPage(): View {
     title: `${site.about.title} · ${site.name}`,
     html: `<article class="page">
   <div class="sheet">
-    <header class="page__head rv">
+    <div class="page__head rv">
       <p class="page__kicker">${esc(site.name)}</p>
       <h1 class="page__title">${esc(site.about.title)}</h1>
-    </header>
+    </div>
     <div class="about__text rv">
       ${site.about.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}
     </div>

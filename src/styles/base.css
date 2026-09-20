@@ -162,6 +162,14 @@ main {
     transform 0.4s var(--ease) var(--rv-delay, 0ms);
 }
 
+/* 返回 / 重访：直接就是最终状态，不播动画 */
+.no-anim .rv,
+.js .no-anim .rv {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .js .rv {
     opacity: 1;

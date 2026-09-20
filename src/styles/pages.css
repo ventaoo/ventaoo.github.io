@@ -442,3 +442,63 @@
 .tocpage {
   padding-bottom: clamp(5rem, 14vw, 9rem);
 }
+
+/* 目录末尾的版权行：信息都在，整页仍然是一份目录 */
+.sep {
+  margin-inline: 0.5em;
+  color: var(--ink-3);
+}
+
+.tocpage__foot {
+  margin-top: clamp(3rem, 8vw, 4.5rem);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule);
+}
+
+.tocpage__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  letter-spacing: 0.12em;
+}
+
+.tocpage__links a {
+  color: var(--ink-2);
+  transition: color var(--dur) var(--ease);
+}
+
+.tocpage__links a:hover {
+  color: var(--accent-ink);
+}
+
+.tocpage__imprint {
+  margin-top: var(--s-3);
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+
+/* 文章页页边注最上面一行：回目录 */
+.article__back {
+  display: block;
+  margin-bottom: var(--s-3);
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  letter-spacing: 0.12em;
+  color: var(--ink-2);
+  transition: color var(--dur) var(--ease);
+}
+
+.article__back:hover {
+  color: var(--accent-ink);
+}
+
+@media (max-width: 56rem) {
+  .article__back {
+    margin-bottom: 0;
+  }
+}

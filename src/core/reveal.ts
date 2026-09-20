@@ -1,9 +1,10 @@
 /**
- * 显现系统：.rv 进入视口时淡入上移（500ms，短促、克制）。
+ * 显现系统：.rv 第一次进入视口时淡入上移（400ms，短促克制）。
  *
  * 用 rAF 节流的矩形判断，而不是 IntersectionObserver —— 快速滚动、锚点跳转
- * 或从历史记录回来时都不会漏掉元素，读到的东西永远不会卡在透明状态。
- * 没有 JS 时什么都不隐藏。
+ * 都不会漏掉元素，读到的东西永远不会卡在透明状态。没有 JS 时什么都不隐藏。
+ *
+ * instant 模式：浏览器前进/后退、或者回到已经看过的页面时不再播动画 —— 动画只播一次。
  */
 import { $$, reducedMotion } from './dom';
 
@@ -35,12 +36,21 @@ function schedule(): void {
   });
 }
 
-export function bindReveals(root: ParentNode = document): void {
+/** 直接显示：加 .in，并在容器上挂 .no-anim 让过渡失效。 */
+function showAll(root: ParentNode, nodes: HTMLElement[]): void {
+  if (root instanceof HTMLElement) root.classList.add('no-anim');
+  nodes.forEach((n) => {
+    pending.delete(n);
+    n.classList.add('in');
+  });
+}
+
+export function bindReveals(root: ParentNode = document, opts: { instant?: boolean } = {}): void {
   const nodes = $$<HTMLElement>('.rv', root as HTMLElement);
   if (!nodes.length) return;
 
-  if (reducedMotion) {
-    nodes.forEach((n) => n.classList.add('in'));
+  if (opts.instant || reducedMotion) {
+    showAll(root, nodes);
     return;
   }
 

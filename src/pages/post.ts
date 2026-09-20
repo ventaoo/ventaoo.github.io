@@ -21,7 +21,7 @@ export async function postPage(ctx: Ctx): Promise<View> {
   <div class="sheet">
     <div class="article__grid">
       <aside class="article__aside">
-        <a class="article__back" href="/" data-link>← ${esc(site.book.indexTitle)}</a>
+        <a class="article__back" href="/" data-link>← ${esc(site.blog.back)}</a>
         <span><time datetime="${esc(post.date)}">${dotted(post.date)}</time></span>
         <span>${post.reading} 分钟</span>
         ${post.tags.map((t) => `<span>${esc(t)}</span>`).join('')}
@@ -50,7 +50,7 @@ export async function postPage(ctx: Ctx): Promise<View> {
                 : '<span class="pager__item pager__item--none"></span>'
             }
           </nav>
-          <a class="backlink" href="/" data-link>← ${esc(site.blog.back)}</a>
+          <a class="backlink" href="/" data-link>← 回到${esc(site.blog.back)}</a>
         </div>
       </div>
     </div>

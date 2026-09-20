@@ -26,7 +26,6 @@ export function aboutPage(): View {
     html: `<article class="page">
   <div class="sheet">
     <div class="page__head rv">
-      <p class="page__kicker">${esc(site.name)}</p>
       <h1 class="page__title">${esc(site.about.title)}</h1>
     </div>
     <div class="about__text rv">

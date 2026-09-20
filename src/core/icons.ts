@@ -1,26 +1,26 @@
-/** A tiny hand-drawn icon set — hairline strokes, `currentColor`, no dependency. */
+/** 极简线性图标集：统一 24 格、currentColor、1.5 描边，不引第三方依赖。 */
 
 const S = (body: string, size = 20) =>
   `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" ` +
-  `stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${body}</svg>`;
+  `stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${body}</svg>`;
 
 const REGISTRY: Record<string, string> = {
-  sun: '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>',
-  moon: '<path d="M20 14.2A8.4 8.4 0 1 1 9.8 4a6.8 6.8 0 0 0 10.2 10.2Z"/>',
-  menu: '<path d="M4 9h16M4 15h16"/>',
-  close: '<path d="M6 6l12 12M18 6L6 18"/>',
-  arrowRight: '<path d="M4 12h15M13.5 6.2 19.6 12l-6.1 5.8"/>',
-  arrowLeft: '<path d="M20 12H5M10.5 6.2 4.4 12l6.1 5.8"/>',
-  external: '<path d="M14 4h6v6M20 4l-8.5 8.5M18 14.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h4.5"/>',
-  search: '<circle cx="10.8" cy="10.8" r="6.2"/><path d="M15.4 15.4 20 20"/>',
-  copy: '<rect x="9" y="9" width="11" height="11" rx="1.4"/><path d="M15 5.6A1.6 1.6 0 0 0 13.4 4H5.6A1.6 1.6 0 0 0 4 5.6v7.8A1.6 1.6 0 0 0 5.6 15"/>',
-  check: '<path d="M4.5 12.6 9.5 17.5 19.5 6.8"/>',
-  rss: '<path d="M5 19h.01M4.8 11.4A8 8 0 0 1 12.6 19M4.8 5.6A14 14 0 0 1 18.4 19"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.6v2.1M12 19.3v2.1M2.6 12h2.1M19.3 12h2.1M5.4 5.4l1.5 1.5M17.1 17.1l1.5 1.5M18.6 5.4l-1.5 1.5M6.9 17.1l-1.5 1.5"/>',
+  moon: '<path d="M20.2 14.4A8.6 8.6 0 1 1 9.6 3.8a7 7 0 0 0 10.6 10.6Z"/>',
+  arrow: '<path d="M4.5 12h14M12.8 6.2 18.6 12l-5.8 5.8"/>',
+  up: '<path d="M12 19V5.2M6.2 11 12 5.2 17.8 11"/>',
+  pin: '<path d="M12 21s6.4-5.6 6.4-10.4A6.4 6.4 0 0 0 5.6 10.6C5.6 15.4 12 21 12 21Z"/><circle cx="12" cy="10.4" r="2.4"/>',
+  calendar: '<rect x="3.6" y="5.4" width="16.8" height="15" rx="2"/><path d="M3.6 10h16.8M8.4 3.6v3.6M15.6 3.6v3.6"/>',
+  clock: '<circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3.2 2"/>',
+  rss: '<path d="M5 18.6h.01M4.8 11.4A8 8 0 0 1 12.6 19M4.8 5.6A14 14 0 0 1 18.4 19"/>',
+  mail: '<rect x="3.4" y="5.4" width="17.2" height="13.2" rx="2"/><path d="m3.8 7 8.2 6 8.2-6"/>',
+  github: '<path d="M9.2 20.4c-4 1.1-4-2.2-5.6-2.6m11.2 5v-3.4c0-1 .1-1.7-.5-2.4 2.4-.3 4.5-1.2 4.5-5.2a4 4 0 0 0-1.1-2.8 3.7 3.7 0 0 0-.1-2.8s-.9-.3-3 1.1a10.4 10.4 0 0 0-5.4 0C7 5.9 6.1 6.2 6.1 6.2a3.7 3.7 0 0 0-.1 2.8 4 4 0 0 0-1.1 2.8c0 4 2.1 4.9 4.5 5.2-.6.7-.6 1.4-.5 2.4v3.4"/>',
+  compass: '<circle cx="12" cy="12" r="8.6"/><path d="m15.2 8.8-1.8 4.6-4.6 1.8 1.8-4.6Z"/>',
 };
 
 /** Raw SVG markup for an icon, drawn at `size` px and coloured by `currentColor`. */
 export function icon(name: string, size = 20): string {
-  return S(REGISTRY[name] ?? REGISTRY.external, size);
+  return S(REGISTRY[name] ?? REGISTRY.arrow, size);
 }
 
 /** Replace every `[data-icon]` placeholder inside `root` with its SVG. */

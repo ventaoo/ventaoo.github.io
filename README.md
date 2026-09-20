@@ -1,80 +1,78 @@
-# VENTAOO · 夜航
+# VENTAOO
 
-> 一本关于代码、生活与想法的私人刊物。
-> 暗夜底色、烛光琥珀、Fraunces 高对比衬线 —— 性格来自字体与尺度，不靠装饰。
+个人主页：一些随笔，一些旅途。
 
-**线上地址：<https://ventaoo.github.io/>**
+静态站点，Vite + TypeScript 手搓，没有 UI 框架，没有第三方运行时脚本。推送到 `main` 自动部署到 GitHub Pages。
 
----
+## 设计
 
-## 页面
+- **气质**：温暖纸感，像一本翻旧了的旅行笔记
+- **配色**：低饱和自然色 —— 苔绿（`--moss`）、砂岩（`--sand`）、雾蓝（`--mist`），亮色为默认，可切暗色
+- **字体**：Inter + 系统无衬线，代码用 JetBrains Mono
+- **动效**：只有滚动淡入和悬停，尊重 `prefers-reduced-motion`
 
-| 路由 | 内容 |
-| --- | --- |
-| `/` | 卷首：眉题 + 封面大名 + 卷首语 + 近作（最多三篇）+ 联系 |
-| `/blog` | 随笔：期号索引（№ 001 · 日期 · 大号衬线标题）+ 搜索 + 标签筛选 |
-| `/blog/<slug>` | 正文：首字下沉、放大引文、栏外目次、代码高亮与复制、前后篇 |
-| `/about` | 关于：自述 + 联系 + 本站纪事 |
+所有设计变量在 `src/styles/tokens.css`，全站文案在 `site.config.ts`。
 
-夜（`#12100E`）/ 昼（暖纸）双主题，默认夜，右上角切换；初始主题在首帧前决定，不闪屏。
-移动端导航是全屏衬线大字菜单，逐条浮入。
+## 目录
 
-## 改文案只需要动一个文件
+```
+content/posts/     随笔，一篇一个 .md
+content/travel/    旅途，一趟一个 .md
+public/travel/     旅途照片（现在的图是占位用的 SVG，换成自己的就行）
+src/pages/         五个页面：首页 / 随笔 / 文章 / 旅途 / 故事 / 关于
+src/styles/        tokens · base · chrome · pages · post
+src/blog/          front-matter 解析、Markdown 渲染、两个集合
+vite.config.ts     构建期静态化：每路由真实 HTML + RSS + sitemap
+```
 
-**`site.config.ts`** 是整站文案的唯一来源：眉题、卷首语、联系方式、关于页、SEO。
+## 写一篇随笔
 
-## 写随笔
-
-在 `content/posts/` 放一个 `.md` 文件，文件名就是 URL：
+新建 `content/posts/my-post.md`，文件名就是网址 `/blog/my-post`：
 
 ```markdown
 ---
-title: 文章标题
-date: 2026-09-20
-tags: [随笔]
-summary: 一句话摘要。
-draft: true   # 草稿：客户端与构建期统一过滤，不会进 RSS / sitemap
+title: 标题
+date: 2025-08-24
+tags: [写作, 方法]
+summary: 列表页和 SEO 用的一句话摘要。
+cover: /travel/cover.jpg   # 可选
+draft: true                # 可选，写了就不发布
 ---
 
 正文……
 ```
 
-front-matter 解析只有一处实现（`src/blog/frontmatter.ts`），客户端与构建期共用。
+## 记一趟旅行
 
-## 设计
+新建 `content/travel/quanzhou-2025.md`，网址是 `/travel/quanzhou-2025`：
 
-| | 夜（默认） | 昼 | 用在哪 |
-| --- | --- | --- | --- |
-| 底 | `#12100E` | `#F6F1E7` | 纸面 |
-| 墨 | `#ECE4D4` | `#211C14` | 正文与标题 |
-| 琥珀 | `#E8A33D` | `#B26A10` | 期号、链接、首字、引号 |
+```markdown
+---
+title: 在泉州看石塔
+place: 福建 · 泉州
+start: 2025-04-05
+end: 2025-04-08
+cover: /travel/quanzhou-01.jpg
+summary: 一句话摘要。
+---
 
-- **Fraunces**（可变光学尺寸）：封面大名、标题、引文 —— 斜体轻字重
-- **Noto Serif SC**：一切中文正文，unicode-range 分片加载
-- **JetBrains Mono**：期号、日期、代码
-- 全部字体自托管（fontsource），不依赖任何 CDN
+正文……
 
-## 技术
+![图片说明](/travel/quanzhou-02.jpg)
+```
 
-Vite 7 + TypeScript，无 UI 框架。主 bundle 约 24 KB；
-marked + highlight.js（18 种语言）拆成独立 chunk，仅打开正文时加载。
-构建期为每条路由（含卷首与关于）生成真实静态 HTML（meta + `<noscript>` 正文），
-并产出 `rss.xml`（全文）、`sitemap.xml`（真实 lastmod）、`robots.txt`。
+图片放在 `public/travel/` 下，用 `/travel/文件名` 引用。**单独一段只有图片时会自动变成图组**：一张铺满，两三张并排。`![]()` 里的文字会当成图注。
 
-## 本地开发
+## 改文案
+
+`site.config.ts` 一个文件搞定：站名、首页大标题与开场白、各页标题与简介、关于页、联系方式、SEO。
+
+## 常用命令
 
 ```bash
 npm install
-npm run dev        # http://127.0.0.1:5173
-npm run build      # 输出到 dist/
-npm run preview    # 预览构建结果（端口 4173）
-npm run typecheck
+npm run dev        # 本地开发 http://127.0.0.1:5173
+npm run typecheck  # 类型检查（CI 会跑）
+npm run build      # 产出 dist/，含每路由 HTML、rss.xml、sitemap.xml
+npm run preview    # 预览构建结果
 ```
-
-## 部署
-
-推送到 `main` 即自动部署到 GitHub Pages。
-
-## 许可
-
-代码以 [MIT](LICENSE) 发布。文章内容版权归作者所有。

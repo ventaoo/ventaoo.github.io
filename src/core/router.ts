@@ -80,14 +80,6 @@ function match(path: string): { handler: Handler; params: Record<string, string>
   return null;
 }
 
-function closeMobileNav(): void {
-  const nav = $('#nav');
-  if (nav?.classList.contains('is-open')) {
-    nav.classList.remove('is-open');
-    $('#ctl-menu')?.setAttribute('aria-expanded', 'false');
-  }
-}
-
 export async function render(target?: string, opts: { pop?: boolean } = {}): Promise<void> {
   const url = new URL(location.href);
   const path = normalize(target ?? url.pathname);
@@ -120,8 +112,6 @@ export async function render(target?: string, opts: { pop?: boolean } = {}): Pro
   const result = view.mount?.(viewEl);
   teardown = typeof result === 'function' ? result : null;
 
-  closeMobileNav();
-
   // popstate 时恢复记忆位置；主动导航回页首
   const remembered = opts.pop ? scrollMemory.get(location.pathname + location.search) : undefined;
   requestAnimationFrame(() =>
@@ -131,14 +121,14 @@ export async function render(target?: string, opts: { pop?: boolean } = {}): Pro
 
 function notFound(): View {
   return {
-    title: `404 · ${site.name}`,
-    html: `<div class="page"><div class="shell">
-      <div class="empty">
-        <p class="empty__code">查无此页</p>
-        <p class="empty__hint">这个地址上没有东西。</p>
-        <a class="btn" href="/" data-link>回到卷首</a>
-      </div>
-    </div></div>`,
+    title: `查无此页 · ${site.name}`,
+    html: `<div class="page">
+  <div class="empty">
+    <p class="empty__code">查无此页</p>
+    <p class="empty__hint">这个地址上没有东西，可能链接抄错了一个字。</p>
+    <a class="btn btn--solid" href="/" data-link>回到首页</a>
+  </div>
+</div>`,
   };
 }
 

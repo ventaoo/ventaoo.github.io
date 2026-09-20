@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#dfe6e8"/>
+      <stop offset="1" stop-color="#eee9e1"/>
+    </linearGradient>
+    <radialGradient id="sun"><stop offset="0" stop-color="#ecd9bd" stop-opacity="0.95"/><stop offset="1" stop-color="#ecd9bd" stop-opacity="0"/></radialGradient>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <circle cx="992" cy="363" r="500" fill="url(#sun)"/>
+  <path d="M0 1000 L0 382 L178 393 L356 401 L533 428 L711 381 L889 396 L1067 389 L1244 374 L1422 401 L1600 414 L1600 1000 Z" fill="#93a4a8" opacity="0.92"/>
+  <path d="M0 1000 L0 545 L178 562 L356 568 L533 549 L711 526 L889 542 L1067 523 L1244 543 L1422 552 L1600 544 L1600 1000 Z" fill="#6d8189" opacity="0.8600000000000001"/>
+  <path d="M0 1000 L0 746 L178 757 L356 744 L533 748 L711 743 L889 741 L1067 730 L1244 733 L1422 747 L1600 746 L1600 1000 Z" fill="#43535a" opacity="0.8"/>
+  <rect width="1600" height="1000" fill="#5b6154" opacity="0.033"/>
+  <rect width="1600" height="1000" filter="url(#grain)" opacity="0.07"/>
+</svg>

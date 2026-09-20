@@ -1,19 +1,26 @@
-/**
- * Entry point: wire the masthead, register the routes, start the router.
- */
+/** 入口：填充配置、装好主题、注册路由、启动。 */
 import './styles/index.css';
 
+import { esc } from './core/dom';
 import { hydrateIcons } from './core/icons';
 import { route, startRouter } from './core/router';
-import { initShortcuts } from './core/shortcuts';
 import { initTheme } from './core/theme';
-import { homePage } from './pages/home';
-import { blogPage } from './pages/blog';
-import { postPage } from './pages/post';
+import { LOCALE, site } from '../site.config';
 import { aboutPage } from './pages/about';
-import { site, LOCALE } from '../site.config';
+import { blogPage } from './pages/blog';
+import { homePage } from './pages/home';
+import { postPage } from './pages/post';
+import { travelPage } from './pages/travel';
+import { tripPage } from './pages/trip';
 
-/** Fill every config-driven slot in the static shell. */
+/** 按链接类型选一个小图标。 */
+function linkIcon(href: string): string {
+  if (href.startsWith('mailto:')) return 'mail';
+  if (href.startsWith('http')) return 'github';
+  return 'rss';
+}
+
+/** 把 index.html 里带 id 的空位填上配置文案。 */
 function applyConfig(): void {
   document.documentElement.lang = LOCALE;
   const set = (id: string, text: string) => {
@@ -21,40 +28,31 @@ function applyConfig(): void {
     if (el) el.textContent = text;
   };
   set('brand-name', site.name);
+  set('brand-tagline', site.tagline);
   set('footer-name', site.name);
   set('footer-note', site.footerNote);
-  set('colophon-note', site.tagline);
   set('year', String(new Date().getFullYear()));
-}
 
-const RUNNING_HEAD: Record<string, string> = { home: '卷首', blog: '随笔', about: '关于' };
-function setRunningHead(section: string, title?: string): void {
-  const el = document.getElementById('runninghead');
-  if (el) el.textContent = title || RUNNING_HEAD[section] || section;
+  const links = document.getElementById('footer-links');
+  if (links) {
+    links.innerHTML = site.links
+      .map(
+        (l) =>
+          `<a href="${esc(l.href)}"${l.href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : ''}>` +
+          `<span data-icon="${linkIcon(l.href)}" data-icon-size="15"></span>${esc(l.label)}</a>`,
+      )
+      .join('');
+  }
 }
 
 function registerRoutes(): void {
-  const home = () => {
-    setRunningHead('home');
-    return homePage();
-  };
-  route('/', home, 'home');
-  route('/index.html', home, 'home');
-  route('/blog', (ctx) => {
-    setRunningHead('blog');
-    return blogPage(ctx);
-  }, 'blog');
-  route('/blog/:slug', async (ctx) => {
-    const view = await postPage(ctx);
-    const probe = document.createElement('div');
-    probe.innerHTML = view.html;
-    setRunningHead('blog', probe.querySelector('.post-head__title')?.textContent ?? '随笔');
-    return view;
-  }, 'blog');
-  route('/about', () => {
-    setRunningHead('about');
-    return aboutPage();
-  }, 'about');
+  route('/', homePage, 'home');
+  route('/index.html', homePage, 'home');
+  route('/blog', blogPage, 'blog');
+  route('/blog/:slug', postPage, 'blog');
+  route('/travel', travelPage, 'travel');
+  route('/travel/:slug', tripPage, 'travel');
+  route('/about', aboutPage, 'about');
 }
 
 function main(): void {
@@ -62,7 +60,6 @@ function main(): void {
   initTheme();
   hydrateIcons(document);
   registerRoutes();
-  initShortcuts();
   startRouter();
 }
 

@@ -1,11 +1,11 @@
-/** 夜 / 昼 双主题。初始主题由 index.html 的内联脚本在首帧前写入，默认夜。 */
+/** 昼 / 夜 双主题：默认是明亮的纸色，夜里可以切到暗色。 */
 import { $, on } from './dom';
 import { icon } from './icons';
 
-export type Theme = 'night' | 'day';
+export type Theme = 'day' | 'night';
 
 export function currentTheme(): Theme {
-  return document.documentElement.dataset.theme === 'day' ? 'day' : 'night';
+  return document.documentElement.dataset.theme === 'night' ? 'night' : 'day';
 }
 
 function apply(theme: Theme): void {
@@ -16,12 +16,14 @@ function apply(theme: Theme): void {
     /* private mode */
   }
   const glyph = $('#theme-glyph');
-  if (glyph) glyph.innerHTML = icon(theme === 'night' ? 'sun' : 'moon', 14);
+  if (glyph) glyph.innerHTML = icon(theme === 'day' ? 'moon' : 'sun', 16);
+  const btn = $('#ctl-theme');
+  if (btn) btn.setAttribute('aria-label', theme === 'day' ? '切换到暗色' : '切换到亮色');
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', theme === 'night' ? '#12100e' : '#f6f1e7');
+  if (meta) meta.setAttribute('content', theme === 'day' ? '#f7f5f0' : '#171a18');
 }
 
 export function initTheme(): void {
-  apply(currentTheme()); // sync glyph + meta with the inline-script decision
-  on($('#ctl-theme'), 'click', () => apply(currentTheme() === 'night' ? 'day' : 'night'));
+  apply(currentTheme()); // 与 index.html 内联脚本的首帧决定保持同步
+  on($('#ctl-theme'), 'click', () => apply(currentTheme() === 'day' ? 'night' : 'day'));
 }

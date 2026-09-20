@@ -1,43 +1,46 @@
-import type { View } from '../core/router';
-import { icon } from '../core/icons';
+/** 关于：几句话、联系方式，以及这个站是怎么搭的。 */
 import { esc } from '../core/dom';
 import { site } from '../../site.config';
+import { icon } from '../core/icons';
+import type { View } from '../core/router';
+
+function linkIcon(href: string): string {
+  if (href.startsWith('mailto:')) return icon('mail', 16);
+  if (href.startsWith('http')) return icon('github', 16);
+  return icon('rss', 16);
+}
 
 export function aboutPage(): View {
-  const links = site.links
+  const contact = site.links
     .map(
-      (l) =>
-        '<a href="' + esc(l.href) + '"' + (/^https?:/.test(l.href) ? ' target="_blank" rel="noopener"' : '') + '>' +
-        '<span class="contact__k">' + esc(l.label) + '</span>' +
-        '<span class="contact__v">' + esc(l.value) + '</span>' +
-        '<span class="contact__arrow">' + icon('arrowRight', 14) + '</span></a>',
+      (l) => `<li><a class="contact__link" href="${esc(l.href)}"${l.href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : ''}>
+      <span class="contact__icon">${linkIcon(l.href)}</span>
+      <span class="contact__label">${esc(l.label)}</span>
+      <span class="contact__value">${esc(l.value)}</span>
+    </a></li>`,
     )
     .join('');
 
   return {
-    title: site.about.title + ' · ' + site.name,
-    html: `
-    <div class="page">
-      <div class="shell">
-        <header class="page-head">
-          <p class="page-head__kicker mono mono--amber rv">作者与本刊</p>
-          <h1 class="page-head__title rv">${esc(site.about.title)}</h1>
-          <p class="page-head__sub rv" data-rv-delay="100">${esc(site.lead)}</p>
-        </header>
-
-        <div class="about__grid">
-          <div class="about__body rv">
-            ${site.about.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}
-          </div>
-          <div class="about__side rv" data-rv-delay="120">
-            <div class="contact__links">${links}</div>
-            <div class="about__colophon">
-              <span class="mono">本站纪事</span>
-              ${site.about.colophon.map((p) => `<p>${esc(p)}</p>`).join('')}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>`,
+    title: `${site.about.title} · ${site.name}`,
+    html: `<article class="page about">
+  <header class="page__head rv">
+    <p class="kicker">关于</p>
+    <h1 class="page__title">${esc(site.about.title)}</h1>
+  </header>
+  <div class="about__body">
+    <div class="about__text rv">
+      ${site.about.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}
+    </div>
+    <section class="about__block rv">
+      <h2 class="about__label">${esc(site.about.colophon.title)}</h2>
+      <ul class="about__list">${site.about.colophon.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>
+    </section>
+    <section class="about__block rv">
+      <h2 class="about__label">联系</h2>
+      <ul class="contact">${contact}</ul>
+    </section>
+  </div>
+</article>`,
   };
 }

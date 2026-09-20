@@ -1,0 +1,301 @@
+/** 正文排版：中文长文、图组、代码块、表格。 */
+
+.prose {
+  font-size: 1.0625rem;
+  line-height: 1.9;
+  color: var(--ink);
+}
+
+.prose > * + * {
+  margin-top: 1.15em;
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  position: relative;
+  scroll-margin-top: 5.5rem;
+  letter-spacing: -0.015em;
+}
+
+.prose h2 {
+  margin-top: 2.4em;
+  font-size: var(--t-2xl);
+}
+
+.prose h3 {
+  margin-top: 2em;
+  font-size: var(--t-xl);
+}
+
+.prose h2 + *,
+.prose h3 + *,
+.prose h4 + * {
+  margin-top: 0.55em;
+}
+
+.prose a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: color-mix(in srgb, var(--accent) 38%, transparent);
+  transition: text-decoration-color var(--dur) var(--ease);
+}
+
+.prose a:hover {
+  text-decoration-color: currentColor;
+}
+
+.prose strong {
+  font-weight: 620;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.35em;
+}
+
+.prose li + li {
+  margin-top: 0.4em;
+}
+
+.prose li::marker {
+  color: var(--ink-3);
+}
+
+.prose blockquote {
+  margin-block: 1.7em;
+  padding: 0.15em 0 0.15em 1.2em;
+  border-left: 2px solid var(--sand);
+  color: var(--ink-2);
+}
+
+.prose hr {
+  width: 5rem;
+  margin-block: 2.8em;
+  margin-inline: auto;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+.prose code {
+  padding: 0.12em 0.4em;
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--paper-2);
+  border-radius: var(--r-sm);
+}
+
+.prose kbd {
+  padding: 0.1em 0.4em;
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* 标题旁的锚点：不打扰，悬停才出现 */
+.anchor {
+  position: absolute;
+  left: -1.15em;
+  color: var(--ink-3);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.prose :is(h2, h3):hover .anchor {
+  opacity: 1;
+}
+
+/* ── 图 ─────────────────────────────────────────────────────────── */
+
+.shots {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.shots--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.shots--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.figure {
+  margin: 0;
+}
+
+.figure img {
+  width: 100%;
+  border-radius: var(--r-md);
+}
+
+.figure--wide img {
+  border-radius: var(--r-lg);
+}
+
+.prose figcaption {
+  margin-top: 0.6rem;
+  font-size: var(--t-xs);
+  line-height: 1.6;
+  color: var(--ink-3);
+}
+
+/* ── 代码 ───────────────────────────────────────────────────────── */
+
+.codeblock {
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+
+.codeblock__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.5rem 0.4rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  color: var(--ink-3);
+  background: var(--paper-2);
+  border-bottom: 1px solid var(--line-2);
+}
+
+.codeblock__copy {
+  padding: 0.15rem 0.5rem;
+  font-size: var(--t-2xs);
+  color: var(--ink-3);
+  border-radius: var(--r-sm);
+  transition:
+    color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
+}
+
+.codeblock__copy:hover {
+  color: var(--ink);
+  background: var(--card);
+}
+
+.prose pre {
+  margin: 0;
+  padding: var(--s-4);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  line-height: 1.7;
+}
+
+.prose pre code {
+  padding: 0;
+  font-size: inherit;
+  background: none;
+}
+
+/* 语法高亮 —— 与全站同一套低饱和色 */
+.hljs-comment,
+.hljs-quote {
+  font-style: italic;
+  color: var(--ink-3);
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-section,
+.hljs-link,
+.hljs-tag {
+  color: var(--moss);
+}
+
+.hljs-string,
+.hljs-attr,
+.hljs-addition,
+.hljs-regexp {
+  color: var(--sand);
+}
+
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-built_in,
+.hljs-type {
+  color: var(--mist);
+}
+
+.hljs-title,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.hljs-deletion {
+  color: #b4553f;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 600;
+}
+
+/* ── 表格 ───────────────────────────────────────────────────────── */
+
+.tablewrap {
+  overflow-x: auto;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-sm);
+}
+
+.prose th,
+.prose td {
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid var(--line-2);
+}
+
+.prose th {
+  font-weight: 600;
+  color: var(--ink);
+  border-bottom-color: var(--line);
+}
+
+.prose td {
+  color: var(--ink-2);
+}
+
+/* ── 旅途故事：正文窄一点，图可以宽 ─────────────────────────────── */
+
+.story .prose {
+  max-width: var(--w-page);
+  margin-top: var(--s-7);
+  margin-inline: auto;
+}
+
+@media (max-width: 44rem) {
+  .shots--2,
+  .shots--3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prose {
+    font-size: 1.03rem;
+    line-height: 1.85;
+  }
+
+  .anchor {
+    display: none;
+  }
+}

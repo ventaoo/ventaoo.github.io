@@ -5,16 +5,19 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>正在跳转…</title>
     <style>
-      html, body { margin: 0; height: 100%; background: #f7f4ed; color: #4f4a3b;
-        font-family: Georgia, 'Songti SC', 'Noto Serif CJK SC', serif;
+      html, body { margin: 0; height: 100%; background: #f7f5f0; color: #5b6154;
+        font-family: Inter, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
         display: grid; place-items: center; }
       .b { text-align: center; line-height: 1.8; }
-      .b b { display: block; font-weight: 400; font-size: 26px; color: #191712; margin-bottom: 6px; }
-      .b span { font-size: 14px; color: #6f6858; }
-      .bar { margin: 18px auto 0; width: 180px; height: 1px; background: #ddd5c4; overflow: hidden; }
-      .bar i { display: block; height: 100%; width: 40%; background: #a83f28;
+      .b b { display: block; font-weight: 600; font-size: 24px; color: #24281f; margin-bottom: 8px;
+        letter-spacing: -.01em; }
+      .b span { font-size: 14px; color: #676c60; }
+      .bar { margin: 20px auto 0; width: 180px; height: 2px; background: #e9e5da;
+        border-radius: 999px; overflow: hidden; }
+      .bar i { display: block; height: 100%; width: 40%; background: #4f6a45; border-radius: 999px;
         animation: go 1.1s cubic-bezier(.16,1,.3,1) infinite; }
       @keyframes go { 0% { transform: translateX(-100%) } 100% { transform: translateX(350%) } }
+      @media (prefers-reduced-motion: reduce) { .bar i { animation: none; width: 100% } }
     </style>
   </head>
   <body>

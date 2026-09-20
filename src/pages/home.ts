@@ -1,55 +1,60 @@
-import type { View } from '../core/router';
-import { icon } from '../core/icons';
+/** 首页：一句主张 + 最近写的 + 最近去过的。 */
 import { esc } from '../core/dom';
 import { site } from '../../site.config';
+import { essayList } from '../blog/entry';
+import { dateRange } from '../blog/frontmatter';
 import { posts } from '../blog/posts';
-import { renderIndex } from '../blog/entry';
+import { trips, type Trip } from '../blog/travel';
+import type { View } from '../core/router';
+
+function tripCard(t: Trip): string {
+  return `<li class="tripcard rv">
+  <a class="tripcard__link" href="/travel/${esc(t.slug)}" data-link>
+    <span class="tripcard__thumb">
+      ${t.cover ? `<img src="${esc(t.cover)}" alt="" loading="lazy" decoding="async" />` : '<span class="ph" aria-hidden="true"></span>'}
+    </span>
+    <span class="tripcard__body">
+      <span class="tripcard__place">${esc(t.place)}</span>
+      <span class="tripcard__title">${esc(t.title)}</span>
+      <span class="tripcard__when">${dateRange(t.start, t.end)} · ${t.days} 天</span>
+    </span>
+  </a>
+</li>`;
+}
 
 export function homePage(): View {
-  const latest = posts.slice(0, site.blog.latestOnHome);
-
-  const links = site.links
-    .map(
-      (l) =>
-        '<a href="' + esc(l.href) + '"' + (/^https?:/.test(l.href) ? ' target="_blank" rel="noopener"' : '') + '>' +
-        '<span class="contact__k">' + esc(l.label) + '</span>' +
-        '<span class="contact__v">' + esc(l.value) + '</span>' +
-        '<span class="contact__arrow">' + icon('arrowRight', 14) + '</span></a>',
-    )
+  const latest = posts.slice(0, site.home.latestCount);
+  const recent = trips.slice(0, site.home.tripCount);
+  const headline = site.hero.title.split('\n').map((line) => esc(line)).join('<br />');
+  const actions = site.hero.actions
+    .map((a, i) => `<a class="btn${i === 0 ? ' btn--solid' : ''}" href="${esc(a.href)}" data-link>${esc(a.label)}</a>`)
     .join('');
 
   return {
     title: site.seo.title,
-    html: [
-      '<div class="page">',
-      '  <div class="shell">',
-      '    <section class="cover">',
-      '      <p class="cover__kicker mono mono--amber rv">' + esc(site.kicker) + '</p>',
-      '      <h1 class="cover__name rv">' + esc(site.name) + '</h1>',
-      '      <p class="cover__lead rv">' + esc(site.lead) + '</p>',
-      '      <p class="cover__meta rv"><span class="mono">' + esc(site.tagline) + '</span><span class="mono">共 ' + posts.length + ' 篇</span></p>',
-      '    </section>',
-      latest.length
-        ? [
-            '    <section class="sec">',
-            '      <header class="sec-head rv">',
-            '        <h2 class="sec-head__title">近作</h2>',
-            '        <span class="sec-head__spacer"></span>',
-            '        <a class="sec-head__more" href="/blog" data-link>全部 ' + posts.length + ' 篇 ' + icon('arrowRight', 13) + '</a>',
-            '      </header>',
-            '      <div class="rv">' + renderIndex(latest, { mini: true }) + '</div>',
-            '    </section>',
-          ].join('\n')
-        : '',
-      '    <section class="sec">',
-      '      <header class="sec-head rv">',
-      '        <h2 class="sec-head__title">联系</h2>',
-      '        <span class="sec-head__spacer"></span>',
-      '      </header>',
-      '      <div class="contact__links rv">' + links + '</div>',
-      '    </section>',
-      '  </div>',
-      '</div>',
-    ].join('\n'),
+    html: `<div class="home">
+  <section class="hero">
+    <p class="hero__eyebrow rv">${esc(site.hero.eyebrow)}</p>
+    <h1 class="hero__title rv">${headline}</h1>
+    <p class="hero__lead rv">${esc(site.hero.lead)}</p>
+    <p class="hero__actions rv">${actions}</p>
+  </section>
+
+  <section class="band" aria-labelledby="band-latest">
+    <header class="band__head rv">
+      <h2 class="band__title" id="band-latest">${esc(site.home.latest.title)}</h2>
+      <a class="band__more" href="/blog" data-link>${esc(site.home.latest.more)}<span data-icon="arrow" data-icon-size="14"></span></a>
+    </header>
+    ${latest.length ? essayList(latest) : '<p class="empty">还没有写下什么。第一篇正在路上。</p>'}
+  </section>
+
+  <section class="band" aria-labelledby="band-trips">
+    <header class="band__head rv">
+      <h2 class="band__title" id="band-trips">${esc(site.home.trips.title)}</h2>
+      <a class="band__more" href="/travel" data-link>${esc(site.home.trips.more)}<span data-icon="arrow" data-icon-size="14"></span></a>
+    </header>
+    ${recent.length ? `<ul class="tripcards">${recent.map(tripCard).join('')}</ul>` : '<p class="empty">还没有出门的记录。</p>'}
+  </section>
+</div>`,
   };
 }

@@ -1,24 +1,25 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="night">
+<html lang="zh-CN" data-theme="day">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#12100e" />
+    <meta name="theme-color" content="#f7f5f0" />
     <title>@@TITLE@@</title>
     <meta name="description" content="@@DESC@@" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="@@TITLE@@" />
     <meta property="og:description" content="@@DESC@@" />
+    <meta property="og:site_name" content="VENTAOO" />
     <!--@@META@@-->
     <script>
-      // 首帧前决定主题：'night' 暗夜（默认）/ 'day' 暖纸。
+      // 首帧之前定主题：默认明亮的纸色，夜里可以切到暗色。
       (function () {
-        var t = 'night';
+        var t = 'day';
         try {
-          t = localStorage.getItem('vx:theme') || 'night';
+          t = localStorage.getItem('vx:theme') || 'day';
         } catch (e) {}
-        document.documentElement.dataset.theme = t;
+        document.documentElement.dataset.theme = t === 'night' ? 'night' : 'day';
         document.documentElement.classList.add('js');
       })();
     </script>
@@ -26,47 +27,37 @@
   <body>
     <a class="skip" href="#view">跳到正文</a>
 
-    <header class="masthead" id="masthead">
+    <header class="masthead">
       <div class="masthead__inner">
         <a class="wordmark" href="/" data-link>
-          <span id="brand-name">VENTAOO</span>
+          <span class="wordmark__name" id="brand-name">VENTAOO</span>
+          <span class="wordmark__tagline" id="brand-tagline">随笔与旅途</span>
         </a>
-        <span class="masthead__where" id="runninghead">卷首</span>
 
         <nav class="nav" id="nav" aria-label="主导航">
-          <a href="/" data-link data-nav="home">卷首</a>
+          <a href="/" data-link data-nav="home">首页</a>
           <a href="/blog" data-link data-nav="blog">随笔</a>
+          <a href="/travel" data-link data-nav="travel">旅途</a>
           <a href="/about" data-link data-nav="about">关于</a>
         </nav>
 
-        <div class="controls">
-          <button class="ctl" id="ctl-theme" title="切换夜 / 昼" aria-label="切换明暗">
-            <span id="theme-glyph"></span>
-          </button>
-          <button class="ctl ctl--menu" id="ctl-menu" title="菜单" aria-label="菜单" aria-expanded="false" aria-controls="nav">
-            <span data-icon="menu" data-icon-size="18"></span>
-          </button>
-        </div>
+        <button class="ctl" id="ctl-theme" type="button" aria-label="切换到暗色">
+          <span id="theme-glyph"></span>
+        </button>
       </div>
     </header>
 
-    <main id="view" class="view">@@CONTENT@@</main>
+    <main id="view">@@CONTENT@@</main>
 
     <footer class="colophon">
       <div class="shell colophon__inner">
-        <p>© <span id="year"></span> <span id="footer-name">VENTAOO</span><span class="sep">·</span><span id="footer-note"></span></p>
-        <p><span id="colophon-note"></span><span class="sep">·</span>按 <kbd>?</kbd> 查看快捷键</p>
+        <p>
+          © <span id="year"></span> <span id="footer-name">VENTAOO</span><span class="sep">·</span
+          ><span id="footer-note">随笔与旅途</span>
+        </p>
+        <nav class="colophon__links" id="footer-links" aria-label="联系方式"></nav>
       </div>
     </footer>
-
-    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="快捷键" hidden>
-      <div class="modal__panel">
-        <button class="modal__close" id="modal-close" aria-label="关闭">
-          <span data-icon="close" data-icon-size="16"></span>
-        </button>
-        <div id="modal-body"></div>
-      </div>
-    </div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#e5e8e4"/>
+      <stop offset="1" stop-color="#f3ece1"/>
+    </linearGradient>
+    <radialGradient id="sun"><stop offset="0" stop-color="#efdcbe" stop-opacity="0.95"/><stop offset="1" stop-color="#efdcbe" stop-opacity="0"/></radialGradient>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+  </defs>
+  <rect width="1200" height="900" fill="url(#sky)"/>
+  <circle cx="576" cy="347" r="450" fill="url(#sun)"/>
+  <path d="M0 900 L0 460 L133 453 L267 442 L400 447 L533 427 L667 438 L800 466 L933 485 L1067 454 L1200 444 L1200 900 Z" fill="#9ea79b" opacity="0.92"/>
+  <path d="M0 900 L0 601 L133 581 L267 583 L400 555 L533 563 L667 586 L800 595 L933 602 L1067 577 L1200 585 L1200 900 Z" fill="#78867c" opacity="0.8600000000000001"/>
+  <path d="M0 900 L0 764 L133 754 L267 754 L400 748 L533 755 L667 762 L800 770 L933 778 L1067 755 L1200 753 L1200 900 Z" fill="#4f5b4d" opacity="0.8"/>
+  <rect width="1200" height="900" fill="#5b6154" opacity="0.027"/>
+  <rect width="1200" height="900" filter="url(#grain)" opacity="0.07"/>
+</svg>

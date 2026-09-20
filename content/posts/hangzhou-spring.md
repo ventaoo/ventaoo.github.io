@@ -2,6 +2,7 @@
 title: 杭州的春天很短
 date: 2025-03-30
 tags: [生活, 杭州]
+cover: /covers/spring.svg
 summary: 三月中旬还在穿棉衣，三月底就有人穿短袖了。中间那段最好看的日子，大概只有两星期。
 ---
 

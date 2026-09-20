@@ -67,22 +67,22 @@ function fixOgType(html: string, type: string): string {
 
 /** 没有 JS 的老浏览器 / 爬虫看到的样子：同一套纸色与苔绿。 */
 const NOJS_CSS = `<style>
-  .nojs{max-width:46rem;margin:0 auto;padding:80px 24px 64px;background:#f7f5f0;color:#24281f;
-    font-family:Inter,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;line-height:1.85;font-size:17px}
-  .nojs a{color:#4f6a45}
-  .nojs h1{font-size:34px;font-weight:640;letter-spacing:-.02em;margin:0 0 12px;line-height:1.15;color:#24281f}
-  .nojs h2{font-size:20px;font-weight:600;margin:38px 0 10px;padding-top:16px;border-top:1px solid #ded9cc}
+  .nojs{max-width:46rem;margin:0 auto;padding:80px 24px 64px;background:#fbfaf9;color:#17181a;
+    font-family:'LXGW WenKai',Inter,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;line-height:1.85;font-size:17px}
+  .nojs a{color:#c33d1c}
+  .nojs h1{font-size:34px;font-weight:640;letter-spacing:-.02em;margin:0 0 12px;line-height:1.15;color:#17181a}
+  .nojs h2{font-size:20px;font-weight:600;margin:38px 0 10px;padding-top:16px;border-top:1px solid #e8e6e2}
   .nojs h3{font-size:17px;font-weight:600;margin:26px 0 8px}
-  .nojs p,.nojs li{color:#5b6154}
+  .nojs p,.nojs li{color:#575c64}
   .nojs small,.nojs .dim{color:#676c60}
   .nojs ul,.nojs ol{padding-left:22px}
-  .nojs blockquote{margin:18px 0;padding-left:16px;border-left:2px solid #8a5f36;color:#5b6154}
-  .nojs code{background:#efebe2;border-radius:4px;padding:1px 6px;font-size:14px}
-  .nojs pre{background:#efebe2;border-radius:8px;padding:14px;overflow-x:auto}
+  .nojs blockquote{margin:18px 0;padding-left:16px;border-left:2px solid #8a5f36;color:#575c64}
+  .nojs code{background:#f5f4f1;border-radius:4px;padding:1px 6px;font-size:14px}
+  .nojs pre{background:#f5f4f1;border-radius:8px;padding:14px;overflow-x:auto}
   .nojs pre code{background:none;padding:0}
   .nojs img{max-width:100%;border-radius:8px}
   .nojs table{border-collapse:collapse}
-  .nojs th,.nojs td{border-bottom:1px solid #e9e5da;padding:6px 10px;text-align:left}
+  .nojs th,.nojs td{border-bottom:1px solid #f0eeea;padding:6px 10px;text-align:left}
 </style>`;
 
 function staticSite(): Plugin {

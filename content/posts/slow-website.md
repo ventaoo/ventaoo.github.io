@@ -2,6 +2,7 @@
 title: 做一个慢一点的网站
 date: 2025-05-11
 tags: [网站, 技术]
+cover: /covers/website.svg
 summary: 这个站没有评论区、没有统计脚本、也没有订阅弹窗。原因不是清高，是我想让它慢一点、稳一点。
 ---
 

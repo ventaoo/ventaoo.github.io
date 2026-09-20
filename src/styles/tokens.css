@@ -1,49 +1,45 @@
 /**
- * 设计变量：颜色、字号、间距、圆角、动效。
- * 配色取自路上见过的东西 —— 苔绿、砂岩、雾蓝，饱和度都压得很低，
- * 好让照片进来的时候是照片在说话。
+ * 设计变量：一个亮色主题，不做切换。
+ * 底色接近白，靠一层很淡的彩色光晕和卡片阴影撑起空间感；
+ * 标题用霞鹜文楷（有手写体温的现代楷体），正文用 Inter + 系统黑体，元数据用等宽。
  */
 
 :root {
-  /* ── 纸与墨 ─────────────────────────────────────────────────────── */
-  --paper: #f7f5f0;
-  --paper-2: #efebe2;
-  --card: #fdfbf6;
-  --ink: #24281f;
-  --ink-2: #5b6154;
-  --ink-3: #676c60;
-  --line: #ded9cc;
-  --line-2: #e9e5da;
+  /* ── 底色与墨色 ─────────────────────────────────────────────────── */
+  --bg: #fbfaf9;
+  --surface: #ffffff;
+  --surface-2: #f5f4f1;
+  --ink: #17181a;
+  --ink-2: #575c64;
+  --ink-3: #6a6f76; /* 小字也要过 AA，所以比"看起来对"的灰再深一档 */
+  --line: #e8e6e2;
+  --line-2: #f0eeea;
 
-  /* ── 三个点缀色 ─────────────────────────────────────────────────── */
-  --moss: #4f6a45;
-  --moss-soft: #e4ead9;
-  --sand: #8a5f36;
-  --mist: #4e6977;
-
-  --accent: var(--moss);
-  --accent-soft: var(--moss-soft);
-  --on-accent: #fbfbf6;
+  /* ── 点缀色 ─────────────────────────────────────────────────────── */
+  --accent: #f0532f;
+  --accent-ink: #c33d1c; /* 文字用的深一档，保证对比度 */
+  --accent-soft: #feece6;
+  --peri: #6b8afd;
+  --on-accent: #fffaf8;
 
   /* ── 字体 ───────────────────────────────────────────────────────── */
+  --font-display: 'LXGW WenKai', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC',
+    'Microsoft YaHei', system-ui, sans-serif;
   --font-sans: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Source Han Sans SC',
-    'Microsoft YaHei', sans-serif;
-  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas,
-    monospace;
+    'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --t-2xs: 0.72rem;
   --t-xs: 0.8rem;
   --t-sm: 0.9rem;
   --t-md: 1rem;
-  --t-lg: 1.12rem;
-  --t-xl: 1.35rem;
-  --t-2xl: 1.7rem;
-  --t-3xl: clamp(1.9rem, 4.2vw, 2.7rem);
-  --t-hero: clamp(2.3rem, 6.6vw, 4.2rem);
+  --t-lg: 1.09rem;
+  --t-xl: 1.3rem;
+  --t-2xl: 1.6rem;
+  --t-3xl: clamp(1.75rem, 3.6vw, 2.5rem);
+  --t-hero: clamp(2.15rem, 5vw, 3.9rem);
 
   /* ── 间距 ───────────────────────────────────────────────────────── */
-  --s-1: 0.25rem;
   --s-2: 0.5rem;
   --s-3: 0.75rem;
   --s-4: 1rem;
@@ -55,46 +51,22 @@
   --s-10: 7rem;
 
   /* ── 形状 ───────────────────────────────────────────────────────── */
-  --r-sm: 4px;
-  --r-md: 8px;
-  --r-lg: 14px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 24px;
   --r-full: 999px;
-  --sh-1: 0 1px 2px rgba(36, 40, 31, 0.04), 0 10px 30px -22px rgba(36, 40, 31, 0.35);
+  --sh-1: 0 1px 2px rgba(23, 24, 26, 0.04), 0 8px 24px -18px rgba(23, 24, 26, 0.28);
+  --sh-2: 0 2px 6px rgba(23, 24, 26, 0.06), 0 20px 44px -24px rgba(23, 24, 26, 0.34);
 
   /* ── 尺度 ───────────────────────────────────────────────────────── */
-  --w-prose: 38rem;
+  --w-shell: 70rem;
+  --w-prose: 40rem;
   --w-page: 46rem;
-  --w-wide: 62rem;
-  --w-shell: 68rem;
 
-  /* ── 动效 ───────────────────────────────────────────────────────── */
+  /* ── 动效（只留必要的） ─────────────────────────────────────────── */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --dur: 0.3s;
+  --dur: 0.22s;
 
   color-scheme: light;
-}
-
-/* ── 夜：同一套颜色的暗面，不是反相 ─────────────────────────────────── */
-:root[data-theme='night'] {
-  --paper: #161815;
-  --paper-2: #1d201b;
-  --card: #1c1f1a;
-  --ink: #e9e8df;
-  --ink-2: #a9aea1;
-  --ink-3: #8d9284;
-  --line: #2d312a;
-  --line-2: #242821;
-
-  --moss: #a6bf92;
-  --moss-soft: #263021;
-  --sand: #d5aa7c;
-  --mist: #96b1bd;
-
-  --accent: var(--moss);
-  --accent-soft: #262f21;
-  --on-accent: #161815;
-
-  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px -22px rgba(0, 0, 0, 0.8);
-
-  color-scheme: dark;
 }

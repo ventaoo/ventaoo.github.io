@@ -1,3 +1,5 @@
+/* 字体：中文标题用霞鹜文楷 Bold（按 unicode-range 分片，浏览器只取用到的部分） */
+@import 'lxgw-wenkai-webfont/lxgwwenkai-bold.css';
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/jetbrains-mono';
 

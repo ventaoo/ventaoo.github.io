@@ -2,6 +2,7 @@
 title: 写作是为了想清楚
 date: 2025-08-24
 tags: [写作, 方法]
+cover: /covers/writing.svg
 summary: 想不明白的事，写下来往往就明白了一半。这不是修辞，是我试过很多次之后才信的一句话。
 ---
 

@@ -1,12 +1,12 @@
-/** 站骨：页眉、导航、页脚、主题开关。 */
+/** 页眉与页脚。 */
 
 .masthead {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: color-mix(in srgb, var(--paper) 86%, transparent);
-  backdrop-filter: saturate(1.5) blur(12px);
-  -webkit-backdrop-filter: saturate(1.5) blur(12px);
+  background: color-mix(in srgb, var(--bg) 84%, transparent);
+  backdrop-filter: saturate(1.6) blur(14px);
+  -webkit-backdrop-filter: saturate(1.6) blur(14px);
   border-bottom: 1px solid var(--line-2);
 }
 
@@ -15,27 +15,40 @@
   align-items: center;
   gap: var(--s-5);
   width: 100%;
-  max-width: var(--w-shell);
-  min-height: 4.25rem;
+  max-width: calc(var(--w-shell) + var(--s-5) * 2);
+  min-height: 4.1rem;
   margin-inline: auto;
   padding-inline: var(--s-5);
 }
 
-.wordmark {
+.brand {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.6rem;
   min-width: 0;
 }
 
-.wordmark__name {
-  font-size: 1.02rem;
-  font-weight: 650;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent-ink) 10%, var(--peri) 120%);
+  border-radius: 9px;
 }
 
-.wordmark__tagline {
+.brand__name {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+.brand__tag {
   font-size: var(--t-xs);
   color: var(--ink-3);
   white-space: nowrap;
@@ -49,8 +62,7 @@
 }
 
 .nav a {
-  position: relative;
-  padding: 0.45rem 0.75rem;
+  padding: 0.42rem 0.8rem;
   font-size: var(--t-sm);
   color: var(--ink-2);
   border-radius: var(--r-full);
@@ -61,52 +73,20 @@
 
 .nav a:hover {
   color: var(--ink);
-  background: var(--paper-2);
+  background: var(--surface-2);
 }
 
 .nav a.is-active {
-  color: var(--ink);
-  font-weight: 550;
-}
-
-.nav a.is-active::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: 0.1rem;
-  width: 1rem;
-  height: 2px;
-  border-radius: var(--r-full);
-  background: var(--accent);
-  transform: translateX(-50%);
-}
-
-.ctl {
-  display: grid;
-  place-items: center;
-  width: 2.15rem;
-  height: 2.15rem;
-  color: var(--ink-2);
-  border: 1px solid var(--line);
-  border-radius: var(--r-full);
-  transition:
-    color var(--dur) var(--ease),
-    border-color var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
-}
-
-.ctl:hover {
-  color: var(--ink);
-  border-color: var(--accent);
-  transform: rotate(-12deg);
+  color: var(--accent-ink);
+  background: var(--accent-soft);
 }
 
 /* ── 页脚 ───────────────────────────────────────────────────────── */
 
 .colophon {
-  margin-top: var(--s-9);
-  padding-block: var(--s-6) var(--s-7);
-  border-top: 1px solid var(--line-2);
+  margin-top: var(--s-10);
+  padding-block: var(--s-6) var(--s-8);
+  border-top: 1px solid var(--line);
   font-size: var(--t-sm);
   color: var(--ink-3);
 }
@@ -122,7 +102,7 @@
 .colophon__links {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s-4);
+  gap: var(--s-5);
 }
 
 .colophon__links a {
@@ -134,34 +114,27 @@
 }
 
 .colophon__links a:hover {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
-
-/* ── 手机 ───────────────────────────────────────────────────────── */
 
 @media (max-width: 44rem) {
   .masthead__inner {
     flex-wrap: wrap;
-    gap: 0.35rem 0.9rem;
-    padding-block: 0.7rem;
+    gap: 0.3rem 0.9rem;
+    padding-block: 0.6rem;
   }
 
-  .wordmark__tagline {
+  .brand__tag {
     display: none;
   }
 
   .nav {
     order: 3;
     width: 100%;
-    margin-left: calc(var(--s-4) * -1);
-    gap: 0.1rem;
+    margin-left: -0.5rem;
   }
 
   .nav a {
     padding-inline: 0.7rem;
-  }
-
-  .nav a.is-active::after {
-    bottom: 0.02rem;
   }
 }

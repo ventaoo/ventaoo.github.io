@@ -1,8 +1,9 @@
-/** 旅途故事页：封面、时间地点、照片与文字，最后能翻到前后两趟。 */
+/** 旅途故事页：封面、时间地点、照片与文字。 */
 import { esc } from '../core/dom';
 import { site } from '../../site.config';
-import { dateRange, dotted } from '../blog/frontmatter';
+import { dateRange } from '../blog/frontmatter';
 import { getTrip, tripNeighbours } from '../blog/travel';
+import { bindProgress } from '../core/progress';
 import type { Ctx, View } from '../core/router';
 import { missingPage } from './missing';
 
@@ -16,11 +17,10 @@ export async function tripPage(ctx: Ctx): Promise<View> {
 
   return {
     title: `${trip.title} · ${site.name}`,
-    html: `<article class="story">
+    html: `<div class="progress" aria-hidden="true"></div>
+<article class="story">
   <header class="story__head rv">
-    <p class="story__place">
-      <span data-icon="pin" data-icon-size="15"></span>${esc(trip.place)}
-    </p>
+    <p class="eyebrow">${esc(trip.place)}</p>
     <h1 class="story__title">${esc(trip.title)}</h1>
     <p class="story__meta">
       <time datetime="${esc(trip.start)}">${dateRange(trip.start, trip.end)}</time>
@@ -53,6 +53,9 @@ export async function tripPage(ctx: Ctx): Promise<View> {
     <a class="backlink" href="/travel" data-link><span data-icon="arrow" data-icon-size="14"></span>回到旅途</a>
   </footer>
 </article>`,
-    mount: (root) => bindCopy(root),
+    mount: (root) => {
+      bindCopy(root);
+      return bindProgress(root);
+    },
   };
 }

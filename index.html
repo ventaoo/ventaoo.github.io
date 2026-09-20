@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="day">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#f7f5f0" />
+    <meta name="theme-color" content="#fbfaf9" />
     <title>@@TITLE@@</title>
     <meta name="description" content="@@DESC@@" />
     <meta property="og:type" content="website" />
@@ -13,15 +13,7 @@
     <meta property="og:site_name" content="VENTAOO" />
     <!--@@META@@-->
     <script>
-      // 首帧之前定主题：默认明亮的纸色，夜里可以切到暗色。
-      (function () {
-        var t = 'day';
-        try {
-          t = localStorage.getItem('vx:theme') || 'day';
-        } catch (e) {}
-        document.documentElement.dataset.theme = t === 'night' ? 'night' : 'day';
-        document.documentElement.classList.add('js');
-      })();
+      document.documentElement.classList.add('js');
     </script>
   </head>
   <body>
@@ -29,9 +21,10 @@
 
     <header class="masthead">
       <div class="masthead__inner">
-        <a class="wordmark" href="/" data-link>
-          <span class="wordmark__name" id="brand-name">VENTAOO</span>
-          <span class="wordmark__tagline" id="brand-tagline">随笔与旅途</span>
+        <a class="brand" href="/" data-link>
+          <span class="brand__mark" aria-hidden="true">V</span>
+          <span class="brand__name" id="brand-name">VENTAOO</span>
+          <span class="brand__tag" id="brand-tagline">随笔与旅途</span>
         </a>
 
         <nav class="nav" id="nav" aria-label="主导航">
@@ -40,10 +33,6 @@
           <a href="/travel" data-link data-nav="travel">旅途</a>
           <a href="/about" data-link data-nav="about">关于</a>
         </nav>
-
-        <button class="ctl" id="ctl-theme" type="button" aria-label="切换到暗色">
-          <span id="theme-glyph"></span>
-        </button>
       </div>
     </header>
 

@@ -1,10 +1,9 @@
-/** 入口：填充配置、装好主题、注册路由、启动。 */
+/** 入口：填充配置、注册路由、启动。 */
 import './styles/index.css';
 
 import { esc } from './core/dom';
 import { hydrateIcons } from './core/icons';
 import { route, startRouter } from './core/router';
-import { initTheme } from './core/theme';
 import { LOCALE, site } from '../site.config';
 import { aboutPage } from './pages/about';
 import { blogPage } from './pages/blog';
@@ -57,7 +56,6 @@ function registerRoutes(): void {
 
 function main(): void {
   applyConfig();
-  initTheme();
   hydrateIcons(document);
   registerRoutes();
   startRouter();
